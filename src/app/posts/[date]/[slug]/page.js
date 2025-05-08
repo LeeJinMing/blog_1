@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { findOneBySlug, connectToDatabase } from '@/lib/mongo'
+import ReactMarkdown from 'react-markdown'
+
+import { findOneBySlug } from '@/lib/mongo'
 
 // 格式化日期为 YYYYMMDD
 function formatDateToYYYYMMDD (dateString) {
@@ -9,22 +11,6 @@ function formatDateToYYYYMMDD (dateString) {
   const month = (date.getMonth() + 1).toString().padStart(2, '0')
   const day = date.getDate().toString().padStart(2, '0')
   return `${year}${month}${day}`
-}
-
-// 生成静态参数
-export async function generateStaticParams () {
-  try {
-    const db = await connectToDatabase()
-    const posts = await db.collection('posts').find({}, { projection: { slug: 1, createdAt: 1 } }).toArray()
-
-    return posts.map((post) => ({
-      date: formatDateToYYYYMMDD(post.createdAt),
-      slug: post.slug
-    }))
-  } catch (error) {
-    console.error('Error generating static params:', error)
-    return []
-  }
 }
 
 // 获取帖子数据
@@ -63,7 +49,7 @@ export default async function PostPage ({ params }) {
         <Link href='/'>← 返回列表</Link>
         <h1>{post.title}</h1>
         <p>发布于: {displayYear}-{displayMonth}-{displayDay} (URL Date: {date})</p>
-        <div>{post.content || '这篇文章还没有详细内容。'}</div>
+        <ReactMarkdown>{post.content || '这篇文章还没有详细内容。'}</ReactMarkdown>
         {post.summary && (
           <div>
             <h2>摘要</h2>

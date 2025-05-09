@@ -17,7 +17,7 @@ export default async function HomePage () {
 
   return (
     <main>
-      <h1>我的博客</h1>
+      <h1>我的博客1</h1>
       <div>
         {postsToDisplay.map((post) => {
           const yyyymmdd = formatDateToYYYYMMDD(post.createdAt) // 获取 YYYYMMDD 格式

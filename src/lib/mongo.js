@@ -38,6 +38,30 @@ async function findOneBySlug (collectionName, slug) {
   }
 }
 
+// 插入一个帖子
+async function insertOnePost (collectionName, post) {
+  if (!collectionName || !post) {
+    throw new Error('collectionName and post are required')
+  }
+
+  let client
+  try {
+    client = await connectMongo()
+    const collection = client.db().collection(collectionName)
+    const result = await collection.insertOne(post)
+    console.log(`insertOnePost(${collectionName}):`, result.insertedId)
+    return result
+  } catch (error) {
+    console.error(`Error inserting post to ${collectionName}:`, error)
+    throw error
+  } finally {
+    if (client) {
+      await client.close()
+      console.log('MongoDB connection closed for insertOnePost')
+    }
+  }
+}
+
 // 查找多个帖子
 async function findManyPosts (collectionName, limit = 5) {
   if (!collectionName) {
@@ -69,4 +93,4 @@ async function findManyPosts (collectionName, limit = 5) {
   }
 }
 
-export { findOneBySlug, findManyPosts }
+export { findOneBySlug, insertOnePost, findManyPosts }

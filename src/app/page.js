@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import Link from 'next/link'
 import { findManyPosts } from '@/lib/mongo'
 
@@ -28,7 +29,7 @@ export default async function HomePage () {
               <Link href={postUrl}>
                 <h2>{post.title}</h2>
               </Link>
-              <p>{post.createdAt}</p>
+              <p>{dayjs(post.createdAt).format('YYYY-MM-DD')}</p>
               <p>{post.summary || '暂无摘要'}</p>
             </article>
           )

@@ -1,0 +1,217 @@
+.sidebar {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.section {
+  background-color: var(--bg-secondary, #f8f9fa);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--heading-color, #212529);
+  border-bottom: 2px solid var(--accent-color, #0066cc);
+  padding-bottom: 0.5rem;
+  display: inline-block;
+}
+
+/* 订阅表单样式 */
+.subscribeForm {
+  margin-top: 1rem;
+}
+
+.subscribeText {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  color: var(--text-secondary, #6c757d);
+}
+
+.inputGroup {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.emailInput {
+  flex-grow: 1;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color, #dee2e6);
+  border-right: 0;
+  border-radius: 4px 0 0 4px;
+  font-size: 0.9rem;
+}
+
+.subscribeButton {
+  background-color: var(--accent-color, #0066cc);
+  color: white;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.subscribeButton:hover {
+  background-color: var(--accent-color-hover, #0052a3);
+}
+
+.errorMessage {
+  color: var(--error-color, #dc3545);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.successMessage {
+  background-color: var(--success-bg, #d4edda);
+  color: var(--success-text, #155724);
+  padding: 1rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+.checkmark {
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-weight: bold;
+}
+
+/* 热门文章样式 */
+.popularPostsList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.popularPostItem {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light, #f0f0f0);
+}
+
+.popularPostItem:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.popularPostLink {
+  display: block;
+  text-decoration: none;
+  color: var(--text-primary, #212529);
+  transition: color 0.2s;
+}
+
+.popularPostLink:hover {
+  color: var(--accent-color, #0066cc);
+}
+
+.popularPostTitle {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.popularPostMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #6c757d);
+}
+
+/* 标签云样式 */
+.tagCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tagItem {
+  display: inline-block;
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  background-color: var(--tag-bg, #e9ecef);
+  color: var(--text-primary, #343a40);
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.tagItem:hover {
+  background-color: var(--tag-bg-hover, #dee2e6);
+  transform: translateY(-2px);
+}
+
+.tagCount {
+  font-size: 0.75rem;
+  display: inline-block;
+  margin-left: 0.5rem;
+  color: var(--text-secondary, #6c757d);
+}
+
+/* 标签大小变化 */
+.tagSize1 {
+  font-size: 0.75rem;
+}
+.tagSize2 {
+  font-size: 0.85rem;
+}
+.tagSize3 {
+  font-size: 0.95rem;
+}
+.tagSize4 {
+  font-size: 1.05rem;
+}
+.tagSize5 {
+  font-size: 1.15rem;
+  font-weight: bold;
+}
+
+/* 关于博客部分 */
+.aboutBlog {
+  font-size: 0.9rem;
+  color: var(--text-secondary, #6c757d);
+}
+
+.aboutLink {
+  display: inline-block;
+  margin-top: 0.75rem;
+  color: var(--accent-color, #0066cc);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.aboutLink:hover {
+  color: var(--accent-color-hover, #0052a3);
+  text-decoration: underline;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .section {
+    padding: 1.25rem;
+  }
+
+  .inputGroup {
+    flex-direction: column;
+  }
+
+  .emailInput {
+    border-radius: 4px;
+    border-right: 1px solid var(--border-color, #dee2e6);
+    margin-bottom: 0.5rem;
+  }
+
+  .subscribeButton {
+    border-radius: 4px;
+  }
+}

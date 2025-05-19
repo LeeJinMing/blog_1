@@ -1,0 +1,125 @@
+.nav {
+  display: flex;
+  align-items: center;
+}
+
+.navList {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navItem {
+  position: relative;
+  margin: 0 0.5rem;
+}
+
+.navLink {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-secondary);
+}
+
+.navLink:hover {
+  color: var(--color-accent);
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdownToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.arrow {
+  font-size: 0.6rem;
+  transition: transform 0.15s ease;
+}
+
+.dropdown[aria-expanded="true"] .arrow {
+  transform: rotate(180deg);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  min-width: 180px;
+  padding: 0.5rem 0;
+  margin: 0.25rem 0 0;
+  list-style: none;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  clear: both;
+  text-align: inherit;
+  white-space: nowrap;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.dropdownItem:hover {
+  text-decoration: none;
+  background-color: var(--color-background-alt);
+  color: var(--color-accent);
+}
+
+.viewAll {
+  border-top: 1px solid var(--color-border);
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--color-accent);
+}
+
+/* 响应式设计 - 移动端 */
+@media (max-width: 768px) {
+  .navList {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .navItem {
+    margin: 0;
+    width: 100%;
+  }
+
+  .navLink {
+    width: 100%;
+    padding: 0.75rem 1rem;
+  }
+
+  .dropdownMenu {
+    position: static;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    background-color: var(--color-background-alt);
+    padding: 0;
+  }
+
+  .dropdownItem {
+    padding-left: 2rem;
+  }
+}

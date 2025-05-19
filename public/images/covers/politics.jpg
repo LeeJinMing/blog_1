@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="800" height="400" fill="#991b1b" />
+
+  <!-- 政治元素背景 -->
+  <g opacity="0.1" fill="white">
+    <path d="M100,50 h600 v300 h-600 z" />
+    <rect x="150" y="100" width="500" height="200" />
+    <circle cx="400" cy="200" r="150" />
+  </g>
+
+  <!-- 建筑柱状元素 -->
+  <g fill="white" opacity="0.8">
+    <!-- 左侧柱子 -->
+    <rect x="220" y="150" width="30" height="180" rx="2" />
+    <rect x="215" y="330" width="40" height="10" rx="2" />
+    <rect x="200" y="340" width="70" height="10" rx="2" />
+    <rect x="205" y="140" width="60" height="10" rx="2" />
+
+    <!-- 中间柱子 -->
+    <rect x="385" y="150" width="30" height="180" rx="2" />
+    <rect x="380" y="330" width="40" height="10" rx="2" />
+    <rect x="365" y="340" width="70" height="10" rx="2" />
+    <rect x="370" y="140" width="60" height="10" rx="2" />
+
+    <!-- 右侧柱子 -->
+    <rect x="550" y="150" width="30" height="180" rx="2" />
+    <rect x="545" y="330" width="40" height="10" rx="2" />
+    <rect x="530" y="340" width="70" height="10" rx="2" />
+    <rect x="535" y="140" width="60" height="10" rx="2" />
+
+    <!-- 顶部 -->
+    <path d="M175,130 L625,130 L400,80 Z" />
+  </g>
+
+  <!-- 文字装饰线 -->
+  <line x1="250" y1="90" x2="550" y2="90" stroke="white" stroke-width="3" opacity="0.6" />
+  <line x1="300" y1="310" x2="500" y2="310" stroke="white" stroke-width="3" opacity="0.6" />
+
+  <!-- 标题文字 -->
+  <text x="400" y="240" font-family="Arial, sans-serif" font-size="56" font-weight="bold" text-anchor="middle"
+    fill="white">政治与外交</text>
+  <text x="400" y="280" font-family="Arial, sans-serif" font-size="24" text-anchor="middle"
+    fill="white">剖析国内外政治格局</text>
+</svg>

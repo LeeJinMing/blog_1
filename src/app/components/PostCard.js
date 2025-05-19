@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import TagTracker from "@/app/posts/[date]/[slug]/TagTracker";
 import FallbackCover from "./FallbackCover";
 import styles from "./PostCard.module.css";
+import { getTagTextById } from "@/lib/tags";
 
 // 估算阅读时间（每分钟200字）
 function calculateReadTime(content) {
@@ -34,10 +35,11 @@ function getCoverImage(post) {
   };
 
   // 查找匹配的标签
-  if (post.tags && post.tags.length > 0) {
-    for (const tag of post.tags) {
+  if (post.tagIds && post.tagIds.length > 0) {
+    for (const tagId of post.tagIds) {
+      const tagText = getTagTextById(tagId);
       for (const [key, url] of Object.entries(defaultImages)) {
-        if (tag.includes(key)) {
+        if (tagText.includes(key)) {
           return url;
         }
       }
@@ -216,10 +218,10 @@ export default function PostCard({ post, showImage = true }) {
           )}
         </div>
 
-        {post.tags && post.tags.length > 0 && (
+        {post.tagIds && post.tagIds.length > 0 && (
           <div className={styles.tags}>
-            {post.tags.slice(0, 3).map((tag, index) => (
-              <TagTracker key={index} tag={tag} className={styles.tag} />
+            {post.tagIds.slice(0, 3).map((tagId, index) => (
+              <TagTracker key={index} tagId={tagId} className={styles.tag} />
             ))}
           </div>
         )}

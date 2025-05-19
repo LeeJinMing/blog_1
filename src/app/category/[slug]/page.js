@@ -1,8 +1,9 @@
 import { Suspense } from "react";
-import { findManyPosts } from "@/lib/mongo";
+import { getPosts } from "@/lib/db";
 import Link from "next/link";
 import PostCard from "@/app/components/PostCard";
 import ClientAdPlaceholder from "@/app/components/ClientAdPlaceholder";
+import { getTagTextById } from "@/lib/tags";
 
 // 预定义的分类
 const categories = {
@@ -28,28 +29,14 @@ const categories = {
   },
 };
 
-// 为页面启用增量静态再生成 (ISR)
-// 使用较长的缓存时间，如1周
-export const revalidate = 604800; // 1周（60 * 60 * 24 * 7秒）
-
-// 序列化文章对象
-function serializePost(post) {
-  if (!post) return null;
-
-  return {
-    ...post,
-    _id: post._id.toString(),
-    createdAt:
-      post.createdAt instanceof Date
-        ? post.createdAt.toISOString()
-        : post.createdAt,
-  };
-}
+// 修改 ISR 缓存时间，从 1 周改为 20 分钟
+// 使用较短的缓存时间，以便更频繁地获取新数据
+export const revalidate = 1200; // 20 分钟
 
 // 根据分类标签筛选文章
 async function getCategoryPosts(slug) {
   // 获取所有文章
-  const allPosts = await findManyPosts("posts", 50);
+  const allPosts = await getPosts(50);
 
   // 如果分类不存在，返回空数组
   if (!categories[slug]) {
@@ -71,14 +58,16 @@ async function getCategoryPosts(slug) {
   // 筛选出包含相关标签或关键词的文章
   const filteredPosts = allPosts.filter((post) => {
     // 检查文章标签
-    if (post.tags && post.tags.length > 0) {
-      for (const tag of post.tags) {
-        // 检查标签是否包含分类名称
-        if (tag.includes(categoryName)) return true;
+    if (post.tagIds && post.tagIds.length > 0) {
+      for (const tagId of post.tagIds) {
+        const tagText = getTagTextById(tagId);
 
-        // 检查标签是否包含相关关键词
+        // 检查标签文本是否包含分类名称
+        if (tagText.includes(categoryName)) return true;
+
+        // 检查标签文本是否包含相关关键词
         for (const keyword of keywords) {
-          if (tag.includes(keyword)) return true;
+          if (tagText.includes(keyword)) return true;
         }
       }
     }
@@ -95,13 +84,39 @@ async function getCategoryPosts(slug) {
     return false;
   });
 
-  return filteredPosts.map(serializePost);
+  return filteredPosts;
 }
 
+// 预先生成可能的静态参数，这有助于Next.js优化路由
+export async function generateStaticParams() {
+  return Object.keys(categories).map((slug) => ({
+    slug,
+  }));
+}
+
+// 为每个页面生成元数据
+export async function generateMetadata({ params }) {
+  const resolvedParams = await params;
+  const categorySlug = resolvedParams.slug;
+  const category = categories[categorySlug] || { name: "未知分类" };
+
+  return {
+    title: `${category.name} - 博客分类`,
+    description: category.description || "查看此分类下的所有文章",
+  };
+}
+
+// 页面组件
 export default async function CategoryPage({ params }) {
-  const { slug } = params;
-  const posts = await getCategoryPosts(slug);
-  const category = categories[slug] || {
+  // Next.js App Router模式下安全获取参数
+  const resolvedParams = await params;
+  const categorySlug = resolvedParams.slug;
+
+  // 获取此分类的文章
+  const posts = await getCategoryPosts(categorySlug);
+
+  // 获取分类信息
+  const category = categories[categorySlug] || {
     name: "未知分类",
     description: "找不到该分类的信息",
   };

@@ -8,7 +8,7 @@ import styles from "./styles.module.css";
 export default function CacheStatusPage() {
   const [status, setStatus] = useState({
     isInitialized: false,
-    hasChangeStream: false,
+    indexesCreated: false,
     lastChecked: null,
   });
 
@@ -75,41 +75,59 @@ export default function CacheStatusPage() {
     }
   };
 
+  // 手动触发页面刷新
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1>缓存和数据库监听状态</h1>
-        <Link href="/" className={styles.backLink}>
-          ← 返回首页
-        </Link>
+        <h1>系统状态监控</h1>
+        <div className={styles.actions}>
+          <Link href="/admin" className={styles.backLink}>
+            返回管理面板
+          </Link>
+          <button className={styles.refreshButton} onClick={handleRefresh}>
+            刷新状态
+          </button>
+        </div>
       </header>
 
-      <section className={styles.infoPanel}>
-        <h2>系统状态</h2>
-        <table className={styles.infoTable}>
-          <tbody>
-            <tr>
-              <td>Next.js 版本</td>
-              <td>{systemInfo.nextVersion}</td>
-            </tr>
-            <tr>
-              <td>Node.js 版本</td>
-              <td>{systemInfo.nodeVersion}</td>
-            </tr>
-            <tr>
-              <td>环境</td>
-              <td>{systemInfo.environment}</td>
-            </tr>
-            <tr>
-              <td>最后检查时间</td>
-              <td>{formatDate(status.lastChecked)}</td>
-            </tr>
-          </tbody>
-        </table>
+      <section className={styles.statusPanel}>
+        <h2>系统信息</h2>
+        <div className={styles.statusGrid}>
+          <div className={styles.statusCard}>
+            <div className={styles.statusHeader}>
+              <h3>Next.js 版本</h3>
+              <span className={styles.versionTag}>
+                {systemInfo.nextVersion}
+              </span>
+            </div>
+          </div>
+
+          <div className={styles.statusCard}>
+            <div className={styles.statusHeader}>
+              <h3>Node.js 版本</h3>
+              <span className={styles.versionTag}>
+                {systemInfo.nodeVersion}
+              </span>
+            </div>
+          </div>
+
+          <div className={styles.statusCard}>
+            <div className={styles.statusHeader}>
+              <h3>运行环境</h3>
+              <span className={styles.environmentTag}>
+                {systemInfo.environment}
+              </span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className={styles.statusPanel}>
-        <h2>数据库监听状态</h2>
+        <h2>应用状态</h2>
         <div className={styles.statusGrid}>
           <div className={styles.statusCard}>
             <div className={styles.statusHeader}>
@@ -129,43 +147,53 @@ export default function CacheStatusPage() {
 
           <div className={styles.statusCard}>
             <div className={styles.statusHeader}>
-              <h3>数据库变更监听</h3>
+              <h3>数据库索引</h3>
               <span
                 className={
-                  status.hasChangeStream ? styles.statusOn : styles.statusOff
+                  status.indexesCreated ? styles.statusOn : styles.statusOff
                 }
               >
-                {status.hasChangeStream ? "已连接" : "未连接"}
+                {status.indexesCreated ? "已创建" : "未创建"}
               </span>
             </div>
             <p className={styles.statusDescription}>
-              数据库变更流是否已成功连接并正在监听文章更新
+              数据库查询所需的索引是否已创建
             </p>
           </div>
         </div>
       </section>
 
-      <section className={styles.infoPanel}>
-        <h2>ISR 缓存信息</h2>
-        <p>
-          使用 ISR (增量静态生成) 策略缓存页面，设置的重新验证时间为 3600 秒
-          (1小时)。 当数据库中的内容发生变化时，系统会自动重新验证并更新缓存。
-        </p>
-        <div className={styles.featureList}>
-          <div className={styles.feature}>
-            <h3>自动重新验证</h3>
-            <p>通过数据库变更流监听内容更新，无需手动触发</p>
-          </div>
-          <div className={styles.feature}>
-            <h3>性能优化</h3>
-            <p>缓存页面内容，减少数据库查询，提高响应速度</p>
-          </div>
-          <div className={styles.feature}>
-            <h3>内容新鲜度</h3>
-            <p>当内容发生变化时，自动刷新受影响的页面</p>
+      <section className={styles.statusPanel}>
+        <h2>缓存策略</h2>
+        <div className={styles.infoCard}>
+          <div className={styles.infoContent}>
+            <h3>客户端 ISR 缓存</h3>
+            <p>
+              当前使用客户端增量静态再生成 (ISR)
+              缓存策略。当数据库更新时，用户页面会在缓存过期后自动获取最新内容。
+            </p>
+            <ul className={styles.cacheInfo}>
+              <li>
+                首页缓存时间: <strong>30分钟</strong>
+              </li>
+              <li>
+                文章详情页缓存时间: <strong>10分钟</strong>
+              </li>
+              <li>
+                分类页面缓存时间: <strong>20分钟</strong>
+              </li>
+            </ul>
+            <p>
+              最近检查时间:{" "}
+              {status.lastChecked ? formatDate(status.lastChecked) : "未检查"}
+            </p>
           </div>
         </div>
       </section>
+
+      <footer className={styles.footer}>
+        <p>博客管理系统 &copy; {new Date().getFullYear()}</p>
+      </footer>
     </div>
   );
 }

@@ -157,6 +157,24 @@
   color: var(--text-secondary, #6c757d);
 }
 
+/* 查看所有标签链接 */
+.moreTagsLink {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.moreTagsLink a {
+  font-size: 0.9rem;
+  color: var(--accent-color, #0066cc);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.moreTagsLink a:hover {
+  color: var(--accent-color-hover, #0052a3);
+  text-decoration: underline;
+}
+
 /* 标签大小变化 */
 .tagSize1 {
   font-size: 0.75rem;

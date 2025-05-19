@@ -4,19 +4,12 @@ import Link from "next/link";
 import EnhancedSearch from "./components/EnhancedSearch";
 import NavMenu from "./components/NavMenu";
 import AnalyticsWrapper from "./components/AnalyticsWrapper";
-import { initializeApp } from "@/lib/init";
 
 export const metadata = {
   title: "Insights Blog | Thoughtful Analysis on Global Affairs",
   description:
     "In-depth analysis and thoughtful perspectives on business, technology, and global affairs.",
 };
-
-// 尝试初始化应用，设置数据库变更监听
-// 由于这是一个异步操作，我们不会在这里等待完成，避免阻塞页面渲染
-initializeApp().catch((error) => {
-  console.error("Failed to initialize app in layout:", error);
-});
 
 export default function RootLayout({ children }) {
   return (

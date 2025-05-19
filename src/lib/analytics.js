@@ -30,11 +30,13 @@ export function trackExternalLinkClick(url, text) {
 
 /**
  * 跟踪标签点击
- * @param {string} tag - 标签名称
+ * @param {string} tagId - 标签ID
+ * @param {string} tagText - 标签文本
  */
-export function trackTagClick(tag) {
+export function trackTagClick(tagId, tagText) {
   track("tag_click", {
-    tag,
+    tagId,
+    tagText,
     location: typeof window !== "undefined" ? window.location.pathname : "",
   });
 }

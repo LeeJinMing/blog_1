@@ -4,7 +4,12 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import dayjs from "dayjs";
-import { findOneBySlug, findManyPosts } from "@/lib/mongo";
+import {
+  getPostBySlug,
+  getPosts,
+  formatDateForUrl,
+  getUrlSafeSlug,
+} from "@/lib/db";
 import PostViewTracker from "./PostViewTracker"; // 导入分离的客户端组件
 import {
   removeRepeatedTitle,
@@ -13,27 +18,25 @@ import {
 } from "./utils"; // 导入工具函数
 import ClientAdPlaceholder from "@/app/components/ClientAdPlaceholder";
 import ClientRelatedPosts from "@/app/components/ClientRelatedPosts";
-import ClientShareButtons from "@/app/components/ClientShareButtons";
-import { getUrlSafeSlug, formatDateToYYYYMMDD } from "@/lib/utils";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import styles from "./article.module.css";
-import Image from "next/image";
 import TagTracker from "@/app/components/TagTracker";
 import { Suspense } from "react";
 import ShareButtonsContainer from "./ShareButtonsContainer";
+import { getTagTextById } from "@/lib/tags";
 
-// 为页面启用 ISR，设置重新验证时间为 3600 秒 (1小时)
-export const revalidate = 3600;
+// 调整ISR缓存时间，使其与db.js中的全局缓存有效期一致
+export const revalidate = 3600; // 1小时重新验证一次
 
-// 预生成最近的文章路径参数，以加速最常访问的页面
+// 为了更好的性能，使用静态生成
 export async function generateStaticParams() {
   try {
-    // 获取最近的 20 篇文章
-    const recentPosts = await findManyPosts("posts", 20);
+    // 从全局缓存获取文章，这只会触发一次数据库查询
+    const recentPosts = await getPosts(100);
 
     return recentPosts.map((post) => {
-      const dateStr = formatDateToYYYYMMDD(post.createdAt);
+      const dateStr = formatDateForUrl(post.createdAt);
       return {
         date: dateStr,
         slug: getUrlSafeSlug(post.slug),
@@ -45,50 +48,14 @@ export async function generateStaticParams() {
   }
 }
 
-// 将MongoDB文档序列化为普通对象
-function serializePost(post) {
-  if (!post) return null;
-
-  return {
-    ...post,
-    _id: post._id.toString(), // 将ObjectId转换为字符串
-    createdAt:
-      post.createdAt instanceof Date
-        ? post.createdAt.toISOString()
-        : post.createdAt,
-  };
-}
-
-// Get post data with improved error handling
+// 使用全局缓存简化数据获取
 async function getPostData({ date: yyyymmddParam, slug: slugParam }) {
   try {
-    console.log(
-      `Looking for post with date: ${yyyymmddParam}, slug: ${slugParam}`
-    );
-
-    // Try to find the post by slug (the findOneBySlug function has been improved to handle special characters)
-    const post = await findOneBySlug("posts", slugParam);
-
-    if (!post) {
-      console.log(`Post not found with slug: ${slugParam}`);
-      return null;
-    }
-
-    // Validate date match
-    const postDateFormatted = formatDateToYYYYMMDD(post.createdAt);
-    console.log(`Post date: ${postDateFormatted}, URL date: ${yyyymmddParam}`);
-
-    if (postDateFormatted !== yyyymmddParam) {
-      console.log(
-        `Date mismatch: Expected ${yyyymmddParam}, got ${postDateFormatted}`
-      );
-      // Allow a small date mismatch - this is optional and can be removed if strict matching is required
-      // return null;
-    }
-
+    // 直接从全局缓存获取文章
+    const post = await getPostBySlug(slugParam);
     return post;
   } catch (error) {
-    console.error("Error fetching post:", error);
+    console.error("Error fetching post:", error.message);
     return null;
   }
 }
@@ -96,14 +63,6 @@ async function getPostData({ date: yyyymmddParam, slug: slugParam }) {
 // Preprocess content to improve markdown rendering for specific posts
 function preprocessContent(content, slug, title) {
   if (!content) return "";
-
-  console.log(`Preprocessing content for post: ${title} (${slug})`);
-  console.log(`Original content length: ${content.length} characters`);
-
-  // 检查标题格式，记录分析信息
-  const hasSeparator = title.includes("：") || title.includes(":");
-  const titleParts = title.split(/[：:]/);
-  const mainTitle = titleParts[0].trim();
 
   // 检查是否是Pemex文章
   const isPemexArticle =
@@ -113,18 +72,8 @@ function preprocessContent(content, slug, title) {
       title.includes("困境") ||
       title.includes("迷雾"));
 
-  console.log(`Title format analysis: 
-  - Full title: "${title}"
-  - Has separator (：/:): ${hasSeparator}
-  - Main title part: "${mainTitle}"
-  - Title parts count: ${titleParts.length}
-  - Is Pemex article: ${isPemexArticle}
-  `);
-
   // Pemex文章的特殊预处理
   if (isPemexArticle) {
-    console.log("Applying special preprocessing for Pemex article");
-
     // 直接移除特定格式的标题行或段落
     let pemexProcessed = content;
 
@@ -159,9 +108,6 @@ function preprocessContent(content, slug, title) {
     });
 
     pemexProcessed = filteredLines.join("\n");
-    console.log(
-      `Content length after Pemex-specific processing: ${pemexProcessed.length} characters`
-    );
 
     // 使用处理过的内容继续下一步
     content = pemexProcessed;
@@ -169,36 +115,28 @@ function preprocessContent(content, slug, title) {
 
   // 第一步：规范化内容，处理各种格式问题
   let processedContent = normalizeContent(content, title);
-  console.log(
-    `Content length after normalization: ${processedContent.length} characters`
-  );
 
   // 第二步：移除重复的标题
   processedContent = removeRepeatedTitle(processedContent, title);
-  console.log(
-    `Content length after removing titles: ${processedContent.length} characters`
-  );
 
   // 如果内容几乎没有变化，可能需要更积极的重复标题删除
   if (Math.abs(processedContent.length - content.length) < 20) {
-    console.log(
-      "Title removal had minimal effect, applying more aggressive approach"
-    );
-
     // 更积极地查找并删除标题行
     const titleWords = title.split(/\s+/).filter((word) => word.length > 3);
 
     // 对于带冒号的标题，特别关注主标题部分
-    if (hasSeparator && mainTitle.length > 3) {
-      const mainTitleWords = mainTitle
-        .split(/\s+/)
-        .filter((word) => word.length > 2);
-      console.log(
-        `Using main title words for matching: ${mainTitleWords.join(", ")}`
-      );
+    const hasSeparator = title.includes("：") || title.includes(":");
+    if (hasSeparator) {
+      const titleParts = title.split(/[：:]/);
+      const mainTitle = titleParts[0].trim();
+      if (mainTitle.length > 3) {
+        const mainTitleWords = mainTitle
+          .split(/\s+/)
+          .filter((word) => word.length > 2);
 
-      // 将主标题关键词添加到匹配列表
-      titleWords.push(...mainTitleWords);
+        // 将主标题关键词添加到匹配列表
+        titleWords.push(...mainTitleWords);
+      }
     }
 
     // 对于Pemex文章，增加一些特殊关键词
@@ -213,13 +151,8 @@ function preprocessContent(content, slug, title) {
         "投资",
         "逻辑",
       ];
-      console.log(
-        `Adding Pemex-specific keywords: ${pemexKeywords.join(", ")}`
-      );
       titleWords.push(...pemexKeywords);
     }
-
-    console.log(`Using title keywords for matching: ${titleWords.join(", ")}`);
 
     const lines = processedContent.split("\n");
 
@@ -243,16 +176,11 @@ function preprocessContent(content, slug, title) {
       .join("\n")
       .replace(/\n{3,}/g, "\n\n") // 整理多余的空行
       .trim();
-
-    console.log(
-      `Content length after aggressive title removal: ${processedContent.length} characters`
-    );
   }
 
   // 第三步：处理特定格式的文章内容
   if (slug.includes("generative-ai") || slug.includes("nvidia")) {
     processedContent = processHtmlContent(processedContent);
-    console.log(`Content processed for HTML in special post type`);
   }
 
   // Pemex文章的最终清理
@@ -283,15 +211,10 @@ function preprocessContent(content, slug, title) {
     });
 
     processedContent = finalFiltered.join("\n");
-    console.log(
-      `Content length after final Pemex cleanup: ${processedContent.length} characters`
-    );
   }
 
   // 最后一步：确保内容首尾没有多余空行和空格
-  processedContent = processedContent.trim();
-
-  return processedContent;
+  return processedContent.trim();
 }
 
 // 分割内容，以便在合适的位置插入广告
@@ -324,8 +247,11 @@ function splitContentForAds(content) {
 }
 
 export default async function PostPage({ params }) {
-  // Use await to properly access params in an async component
-  const { date, slug } = await params;
+  // 使用更标准的方式获取参数
+  // Next.js的最新版本中，需要先await整个params对象
+  const resolvedParams = await params;
+  const date = resolvedParams.date;
+  const slug = resolvedParams.slug;
 
   // The slug might be URL-encoded, let's try both versions
   let post = await getPostData({ date, slug });
@@ -354,7 +280,7 @@ export default async function PostPage({ params }) {
     splitContentForAds(processedContent);
 
   // 序列化文章数据，以便传递给客户端组件
-  const serializedPost = serializePost(post);
+  const serializedPost = post;
 
   // 渲染Markdown内容的函数
   const renderMarkdown = (content) => {
@@ -584,13 +510,15 @@ export default async function PostPage({ params }) {
             {formattedDate}
           </time>
 
-          {post.tags && post.tags.length > 0 && (
+          {post.tagIds && post.tagIds.length > 0 && (
             <div className={styles.tags}>
-              {post.tags.slice(0, 3).map((tag, index) => (
-                <TagTracker key={index} tag={tag} className={styles.tag} />
+              {post.tagIds.slice(0, 3).map((tagId, index) => (
+                <TagTracker key={index} tagId={tagId} className={styles.tag} />
               ))}
-              {post.tags.length > 3 && (
-                <span className={styles.moreTags}>+{post.tags.length - 3}</span>
+              {post.tagIds.length > 3 && (
+                <span className={styles.moreTags}>
+                  +{post.tagIds.length - 3}
+                </span>
               )}
             </div>
           )}
@@ -662,13 +590,13 @@ export default async function PostPage({ params }) {
       {/* 相关文章推荐 */}
       <ClientRelatedPosts currentPost={serializedPost} />
 
-      {post.tags && post.tags.length > 0 && (
+      {post.tagIds && post.tagIds.length > 0 && (
         <div className={styles.postTags}>
           <h3>Tags</h3>
           <div className={styles.tagsContainer}>
-            {post.tags.map((tag, index) => (
+            {post.tagIds.map((tagId, index) => (
               <span key={index} className={styles.tag}>
-                {tag}
+                {getTagTextById(tagId)}
               </span>
             ))}
           </div>

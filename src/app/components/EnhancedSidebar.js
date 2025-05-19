@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./EnhancedSidebar.module.css";
 import { trackClick } from "@/lib/analytics";
+import { getAllTags, getTagTextById } from "@/lib/tags";
 
 // 热门文章数据，实际应用中可以从API获取
 const popularPosts = [
@@ -31,26 +32,40 @@ const popularPosts = [
   },
 ];
 
-// 热门标签数据，实际应用中可以从API获取
-const popularTags = [
-  { name: "AI", count: 42 },
-  { name: "经济", count: 38 },
-  { name: "技术", count: 35 },
-  { name: "投资", count: 29 },
-  { name: "全球事务", count: 26 },
-  { name: "可持续发展", count: 24 },
-  { name: "创新", count: 22 },
-  { name: "金融", count: 21 },
-  { name: "商业战略", count: 18 },
-  { name: "领导力", count: 17 },
-  { name: "气候变化", count: 16 },
-  { name: "趋势", count: 15 },
+// 标签数据，使用ID而不是文本
+const defaultTags = [
+  { id: "ai", count: 42 },
+  { id: "economy", count: 38 },
+  { id: "technology", count: 35 },
+  { id: "investment", count: 29 },
+  { id: "global-affairs", count: 26 },
+  { id: "sustainable-development", count: 24 },
+  { id: "innovation", count: 22 },
+  { id: "finance", count: 21 },
+  { id: "business-strategy", count: 18 },
+  { id: "leadership", count: 17 },
+  { id: "climate-change", count: 16 },
+  { id: "trends", count: 15 },
 ];
 
 const EnhancedSidebar = () => {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [error, setError] = useState("");
+  const [popularTags, setPopularTags] = useState(defaultTags);
+
+  // 初始化时从标签系统获取标签
+  useEffect(() => {
+    // 获取所有标签并添加默认的计数
+    const allTags = getAllTags().map((tag) => ({
+      id: tag.id,
+      text: tag.text,
+      count: Math.floor(Math.random() * 40) + 10, // 随机计数，实际应用中应从API获取
+    }));
+
+    // 限制显示的标签数量
+    setPopularTags(allTags.slice(0, 12));
+  }, []);
 
   // 处理订阅表单提交
   const handleSubscribe = (e) => {
@@ -72,8 +87,8 @@ const EnhancedSidebar = () => {
   };
 
   // 处理标签点击
-  const handleTagClick = (tag) => {
-    trackClick(`tag-${tag}`, "sidebar-tag", tag);
+  const handleTagClick = (tagId, tagText) => {
+    trackClick(`tag-${tagId}`, "sidebar-tag", tagText);
   };
 
   // 处理文章点击
@@ -144,24 +159,27 @@ const EnhancedSidebar = () => {
       <section className={styles.section}>
         <h3 className={styles.sectionTitle}>探索话题</h3>
         <div className={styles.tagCloud}>
-          {popularTags.map((tag) => (
-            <Link
-              key={tag.name}
-              href={`/tags/${encodeURIComponent(tag.name)}`}
-              className={`${styles.tagItem} ${
-                styles[
-                  `tagSize${Math.min(
-                    5,
-                    Math.max(1, Math.ceil(tag.count / 10))
-                  )}`
-                ]
-              }`}
-              onClick={() => handleTagClick(tag.name)}
-            >
-              {tag.name}
-              <span className={styles.tagCount}>{tag.count}</span>
-            </Link>
-          ))}
+          {popularTags.map((tag) => {
+            const tagText = tag.text || getTagTextById(tag.id);
+            return (
+              <Link
+                key={tag.id}
+                href={`/category/${encodeURIComponent(tag.id)}`}
+                className={`${styles.tagItem} ${
+                  styles[
+                    `tagSize${Math.min(
+                      5,
+                      Math.max(1, Math.ceil(tag.count / 10))
+                    )}`
+                  ]
+                }`}
+                onClick={() => handleTagClick(tag.id, tagText)}
+              >
+                {tagText}
+                <span className={styles.tagCount}>{tag.count}</span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

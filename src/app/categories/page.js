@@ -98,13 +98,13 @@ export default function CategoriesPage() {
               </div>
             </Link>
 
-            <Link href="/tags" className="page-link">
+            <Link href="/" className="page-link">
               <div className="page-link-icon">
                 <FaTag />
               </div>
               <div className="page-link-content">
-                <h3>标签云</h3>
-                <p>按照特定标签浏览文章</p>
+                <h3>热门标签</h3>
+                <p>在首页浏览热门标签和内容</p>
               </div>
             </Link>
 

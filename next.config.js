@@ -27,6 +27,10 @@ const nextConfig = {
     }
     return config;
   },
+
+  // 使用正确格式的Turbopack配置
+  // 在Turbopack中，我们不使用alias禁用模块
+  // 而是依赖于webpack配置处理这些Node.js模块
 };
 
 module.exports = nextConfig;

@@ -1,13 +1,16 @@
 "use client";
 
 import { trackTagClick } from "@/lib/analytics";
+import { getTagTextById } from "@/lib/tags";
 
 /**
  * 可跟踪点击的标签组件
  */
-export default function TagTracker({ tag, className }) {
+export default function TagTracker({ tagId, className }) {
+  const tagText = getTagTextById(tagId);
+
   const handleClick = () => {
-    trackTagClick(tag);
+    trackTagClick(tagId, tagText);
   };
 
   return (
@@ -22,8 +25,9 @@ export default function TagTracker({ tag, className }) {
           handleClick();
         }
       }}
+      title={tagText}
     >
-      {tag}
+      {tagText}
     </span>
   );
 }

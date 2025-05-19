@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dayjs from "dayjs";
@@ -33,26 +33,34 @@ function getUrlSafeSlug(slug) {
 /**
  * 相关文章组件 - 根据当前文章的标签显示相关推荐
  * @param {Object} currentPost - 当前文章
- * @param {Array} currentPost.tags - 当前文章的标签数组
+ * @param {Array} currentPost.tagIds - 当前文章的标签ID数组
  * @param {string} currentPost._id - 当前文章ID，用于排除自己
  */
 export default function RelatedPosts({ currentPost }) {
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const fetchedRef = useRef(false); // 用于跟踪是否已经发起过请求
 
   useEffect(() => {
     async function fetchRelatedPosts() {
-      if (!currentPost || !currentPost.tags || currentPost.tags.length === 0) {
+      if (
+        !currentPost ||
+        !currentPost.tagIds ||
+        currentPost.tagIds.length === 0 ||
+        fetchedRef.current
+      ) {
         setRelatedPosts([]);
         setLoading(false);
         return;
       }
 
+      fetchedRef.current = true; // 标记已经发起过请求
+
       try {
         // 获取带有相同标签的文章
-        const tags = encodeURIComponent(currentPost.tags.join(","));
+        const tagIds = encodeURIComponent(currentPost.tagIds.join(","));
         const response = await fetch(
-          `/api/related?tags=${tags}&exclude=${currentPost._id}`
+          `/api/related?tags=${tagIds}&exclude=${currentPost._id}`
         );
 
         if (!response.ok) {

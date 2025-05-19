@@ -486,6 +486,124 @@ export default async function PostPage({ params }) {
               </code>
             );
           },
+          // 处理术语解释框
+          em: ({ node, ...props }) => {
+            const content = props.children?.[0]?.toString() || "";
+
+            // 检查是否是术语解释框开始或结束标记
+            if (
+              content === "_术语解释框：__" ||
+              content === "__术语解释框：__" ||
+              content === "*" ||
+              content === "*\n"
+            ) {
+              return null; // 不渲染这个标记
+            }
+
+            // 检测是否是术语解释框内容
+            if (
+              (content.startsWith("*") && content.endsWith("*")) ||
+              (content.startsWith("GMV") && content.includes("："))
+            ) {
+              // 处理带有冒号或分号的定义
+              let term, explanation;
+              if (content.includes("：") || content.includes(":")) {
+                // 移除星号并分割
+                const cleanContent = content.replace(/^\*|\*$/g, "").trim();
+                const splitIndex = Math.max(
+                  cleanContent.indexOf("："),
+                  cleanContent.indexOf(":")
+                );
+                term = cleanContent.substring(0, splitIndex).trim();
+                explanation = cleanContent.substring(splitIndex + 1).trim();
+              } else {
+                // 没有明确的分隔符，可能只是加粗或斜体文本
+                return <em {...props} />;
+              }
+
+              return (
+                <div className={styles.termBox}>
+                  <strong className={styles.termTitle}>{term}</strong>
+                  <p className={styles.termExplanation}>{explanation}</p>
+                </div>
+              );
+            }
+
+            // 常规斜体文本
+            return <em {...props} />;
+          },
+          // 处理投资启示和反面观点等特殊格式
+          p: ({ node, ...props }) => {
+            // 获取段落文本内容
+            let content = "";
+            if (Array.isArray(props.children)) {
+              // 尝试获取所有子节点的文本
+              content = props.children
+                .map((child) =>
+                  typeof child === "string"
+                    ? child
+                    : child?.props?.children?.[0]?.toString() || ""
+                )
+                .join("");
+            } else if (typeof props.children === "string") {
+              content = props.children;
+            } else if (props.children?.props?.children) {
+              content = props.children.props.children[0]?.toString() || "";
+            }
+
+            // 检查是否是投资启示段落
+            if (
+              content.includes("投资启示：") ||
+              (content.startsWith("*") &&
+                content.includes("投资启示") &&
+                content.endsWith("*"))
+            ) {
+              let insightText = content;
+
+              // 清理格式标记
+              insightText = insightText.replace(/^\*|\*$/g, "").trim();
+
+              // 提取标题和内容
+              const titleEnd = insightText.indexOf("：") + 1;
+              const title = insightText.substring(0, titleEnd).trim();
+              const contentText = insightText.substring(titleEnd).trim();
+
+              return (
+                <div className={styles.insightBox}>
+                  <h4 className={styles.insightTitle}>{title}</h4>
+                  <p className={styles.insightContent}>{contentText}</p>
+                </div>
+              );
+            }
+
+            // 检查是否是反面观点
+            if (
+              content.includes("反面观点：") ||
+              (content.startsWith("*") &&
+                content.includes("反面观点") &&
+                content.endsWith("*"))
+            ) {
+              let counterText = content;
+
+              // 清理格式标记
+              counterText = counterText.replace(/^\*|\*$/g, "").trim();
+
+              // 提取标题和内容
+              const titleEnd = counterText.indexOf("：") + 1;
+              const title = counterText.substring(0, titleEnd).trim();
+              const contentText = counterText.substring(titleEnd).trim();
+
+              return (
+                <div className={styles.counterBox}>
+                  <h4 className={styles.counterTitle}>{title}</h4>
+                  <p className={styles.counterContent}>{contentText}</p>
+                </div>
+              );
+            }
+
+            // 普通段落正常渲染
+            return <p {...props} />;
+          },
           // Add more custom renderers as needed
         }}
       >

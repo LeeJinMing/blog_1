@@ -206,6 +206,73 @@
   color: var(--link-hover);
 }
 
+/* 术语解释框样式 */
+.termBox {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-left: 4px solid #4a90e2;
+  border-radius: 4px;
+}
+
+.termTitle {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+.termExplanation {
+  margin: 0;
+  color: #4a4a4a;
+}
+
+/* 投资启示框样式 */
+.insightBox {
+  margin: 1.5rem 0;
+  padding: 1.2rem;
+  background-color: #f0f7ff;
+  border: 1px solid #cce5ff;
+  border-radius: 8px;
+}
+
+.insightTitle {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  color: #0066cc;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #cce5ff;
+  padding-bottom: 0.5rem;
+}
+
+.insightContent {
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* 反面观点框样式 */
+.counterBox {
+  margin: 1.5rem 0;
+  padding: 1.2rem;
+  background-color: #fff5f5;
+  border: 1px solid #ffd6d6;
+  border-radius: 8px;
+}
+
+.counterTitle {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  color: #e53e3e;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #ffd6d6;
+  padding-bottom: 0.5rem;
+}
+
+.counterContent {
+  margin: 0;
+  line-height: 1.6;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .article {
@@ -222,5 +289,18 @@
 
   .postContent h3 {
     font-size: 1.3rem;
+  }
+
+  .termBox,
+  .insightBox,
+  .counterBox {
+    padding: 1rem;
+    margin: 1.2rem 0;
+  }
+
+  .termTitle,
+  .insightTitle,
+  .counterTitle {
+    font-size: 1.1rem;
   }
 }

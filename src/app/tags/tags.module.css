@@ -1,0 +1,113 @@
+.tagsPage {
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.subtitle {
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.tagCloudContainer {
+  margin: 2rem 0;
+}
+
+.tagCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.tagItem {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #f3f4f6;
+  color: #333;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.tagItem:hover {
+  background-color: #e2e4e7;
+  transform: translateY(-2px);
+}
+
+.tagCount {
+  font-size: 0.8em;
+  margin-left: 0.4rem;
+  color: #666;
+}
+
+.midAdContainer,
+.bottomAdContainer {
+  margin: 3rem 0;
+  text-align: center;
+}
+
+.topAdContainer {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.bottomLinks {
+  margin: 3rem 0;
+  text-align: center;
+}
+
+.linksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.featureLink {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.featureLink:hover {
+  background-color: #e9ecef;
+  transform: translateY(-3px);
+}
+
+.linkIcon {
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+
+.linkText h3 {
+  margin: 0 0 0.3rem 0;
+  font-size: 1.2rem;
+}
+
+.linkText p {
+  margin: 0;
+  color: #666;
+}
+
+.noTags {
+  text-align: center;
+  color: #666;
+  padding: 3rem 0;
+}
+
+@media (max-width: 768px) {
+  .linksGrid {
+    grid-template-columns: 1fr;
+  }
+}

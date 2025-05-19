@@ -108,7 +108,7 @@ export default function CategoriesPage() {
               </div>
             </Link>
 
-            <Link href="/archive/2024" className="page-link">
+            <Link href="/archive/2025" className="page-link">
               <div className="page-link-icon">
                 <FaChartLine />
               </div>

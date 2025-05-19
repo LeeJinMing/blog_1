@@ -18,12 +18,7 @@ export default function NavMenu() {
   ];
 
   // 定义按日期归档
-  const archives = [
-    { name: "2024年", slug: "2024" },
-    { name: "2023年", slug: "2023" },
-    { name: "2022年", slug: "2022" },
-    { name: "更早", slug: "earlier" },
-  ];
+  const archives = [{ name: "2025年", slug: "2025" }];
 
   // 切换下拉菜单状态
   const toggleCategory = () => {

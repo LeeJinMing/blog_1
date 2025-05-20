@@ -1,0 +1,181 @@
+.hero {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 2rem 0;
+  background-color: var(--bg-secondary, #f8f9fa);
+  border-radius: 8px;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary, #6c757d);
+  margin-top: 0.5rem;
+}
+
+.archivesContainer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.topAdContainer,
+.midAdContainer,
+.bottomAdContainer {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.archiveContent {
+  margin: 2rem 0;
+}
+
+.noArchives {
+  text-align: center;
+  color: var(--text-secondary, #6c757d);
+  font-style: italic;
+  padding: 2rem;
+  background-color: var(--bg-secondary, #f8f9fa);
+  border-radius: 8px;
+}
+
+.yearSection {
+  margin-bottom: 3rem;
+}
+
+.yearHeading {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: var(--heading-color, #212529);
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--border-color, #dee2e6);
+}
+
+.monthSection {
+  margin-bottom: 2rem;
+  padding-left: 1rem;
+}
+
+.monthHeading {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-primary, #0066cc);
+}
+
+.monthIcon {
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.articleCount {
+  margin-left: 0.75rem;
+  font-size: 1rem;
+  color: var(--text-secondary, #6c757d);
+  font-weight: normal;
+}
+
+.articleList {
+  list-style-type: none;
+  padding-left: 2rem;
+  margin: 0;
+}
+
+.articleItem {
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: baseline;
+}
+
+.articleDate {
+  min-width: 80px;
+  font-size: 0.9rem;
+  color: var(--text-secondary, #6c757d);
+  margin-right: 1rem;
+}
+
+.articleLink {
+  color: var(--text-primary, #212529);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.articleLink:hover {
+  color: var(--color-primary, #0066cc);
+  text-decoration: underline;
+}
+
+.bottomLinks {
+  margin: 3rem 0;
+  padding: 2rem;
+  background-color: var(--bg-secondary, #f8f9fa);
+  border-radius: 8px;
+}
+
+.bottomLinks h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+}
+
+.linksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.featureLink {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-primary, #212529);
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.featureLink:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.linkIcon {
+  font-size: 1.8rem;
+  color: var(--color-primary, #0066cc);
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  background-color: var(--bg-secondary, #f8f9fa);
+  border-radius: 50%;
+}
+
+.linkText h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+}
+
+.linkText p {
+  margin: 0;
+  color: var(--text-secondary, #6c757d);
+  font-size: 0.9rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .linksGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .articleItem {
+    flex-direction: column;
+  }
+
+  .articleDate {
+    margin-bottom: 0.25rem;
+  }
+}

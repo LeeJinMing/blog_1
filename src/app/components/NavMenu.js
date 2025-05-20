@@ -18,7 +18,11 @@ export default function NavMenu() {
   ];
 
   // Define archives by date
-  const archives = [{ name: "2025", slug: "2025" }];
+  const archives = [
+    { name: "All Years", slug: "all" },
+    { name: "2025", slug: "2025" },
+    { name: "Archive", slug: "archive" },
+  ];
 
   // Toggle dropdown menu state
   const toggleCategory = () => {
@@ -95,7 +99,7 @@ export default function NavMenu() {
               {archives.map((archive) => (
                 <li key={archive.slug}>
                   <Link
-                    href={`/archive/${archive.slug}`}
+                    href={`/archives`}
                     className={styles.dropdownItem}
                     onClick={closeMenus}
                   >

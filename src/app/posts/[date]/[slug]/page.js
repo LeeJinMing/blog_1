@@ -278,6 +278,42 @@ function splitContentForAds(content) {
   };
 }
 
+// 获取上一篇和下一篇文章的函数
+async function getAdjacentPosts(currentPost) {
+  if (!currentPost) return { prevPost: null, nextPost: null };
+
+  try {
+    // 获取所有文章，按创建日期排序
+    const allPosts = await getPosts(500);
+
+    // 确保文章按日期排序（从新到旧）
+    const sortedPosts = allPosts.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    // 找到当前文章的索引
+    const currentIndex = sortedPosts.findIndex(
+      (post) => post._id.toString() === currentPost._id.toString()
+    );
+
+    if (currentIndex === -1) {
+      return { prevPost: null, nextPost: null };
+    }
+
+    // 获取相邻文章
+    const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
+    const prevPost =
+      currentIndex < sortedPosts.length - 1
+        ? sortedPosts[currentIndex + 1]
+        : null;
+
+    return { prevPost, nextPost };
+  } catch (error) {
+    console.error("Error fetching adjacent posts:", error);
+    return { prevPost: null, nextPost: null };
+  }
+}
+
 export default async function PostPage({ params }) {
   // Use a more standard way to get parameters
   const resolvedParams = await params;
@@ -296,6 +332,9 @@ export default async function PostPage({ params }) {
     console.log(`Post not found for date: ${date}, slug: ${slug}`);
     notFound();
   }
+
+  // 获取上一篇和下一篇文章
+  const { prevPost, nextPost } = await getAdjacentPosts(post);
 
   const formattedDate = dayjs(post.createdAt).format("MMMM D, YYYY");
 
@@ -408,6 +447,37 @@ export default async function PostPage({ params }) {
           )}
         </div>
 
+        {/* 添加在文章底部的上一篇/下一篇导航 */}
+        <div className={styles.postNavigation}>
+          {prevPost && (
+            <Link
+              href={`/posts/${formatDateForUrl(
+                prevPost.createdAt
+              )}/${getUrlSafeSlug(prevPost.slug)}`}
+              className={styles.prevPostLink}
+            >
+              <span className={styles.navLabel}>← Previous Article</span>
+              <span className={styles.navTitle}>
+                {translateTitle(prevPost.title)}
+              </span>
+            </Link>
+          )}
+
+          {nextPost && (
+            <Link
+              href={`/posts/${formatDateForUrl(
+                nextPost.createdAt
+              )}/${getUrlSafeSlug(nextPost.slug)}`}
+              className={styles.nextPostLink}
+            >
+              <span className={styles.navLabel}>Next Article →</span>
+              <span className={styles.navTitle}>
+                {translateTitle(nextPost.title)}
+              </span>
+            </Link>
+          )}
+        </div>
+
         {/* Related posts section */}
         <Suspense
           fallback={
@@ -419,4 +489,110 @@ export default async function PostPage({ params }) {
       </article>
     </GlobalLayout>
   );
+}
+
+// 修改文章详情页元数据生成函数，添加更多SEO相关信息
+export async function generateMetadata({ params }) {
+  const resolvedParams = await params;
+  const date = resolvedParams.date;
+  const slug = resolvedParams.slug;
+
+  // 获取文章
+  const post = await getPostData({ date, slug });
+
+  if (!post) {
+    return {
+      title: "Article Not Found",
+      description: "The requested article could not be found.",
+    };
+  }
+
+  // 获取上一篇和下一篇文章
+  const { prevPost, nextPost } = await getAdjacentPosts(post);
+
+  // 获取文章标题的英文版本
+  const title = translateTitle(post.title);
+
+  // 创建摘要
+  let description = post.summary;
+  if (!description && post.content) {
+    // 如果没有摘要，从内容中提取前150个字符
+    description = String(post.content).substring(0, 150).trim() + "...";
+  }
+
+  // 提取标签作为关键词
+  const keywords = post.tagIds
+    ? post.tagIds.map(getTagTextById).join(", ")
+    : "";
+
+  // 生成URL
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001";
+  const url = `${baseUrl}/posts/${date}/${slug}`;
+
+  // 创建日期
+  const publishedTime = new Date(post.createdAt).toISOString();
+  const modifiedTime = post.updatedAt
+    ? new Date(post.updatedAt).toISOString()
+    : publishedTime;
+
+  // 准备links数组，包含上一篇下一篇文章的链接
+  const links = [];
+
+  if (prevPost) {
+    const prevDate = formatDateForUrl(prevPost.createdAt);
+    const prevSlug = getUrlSafeSlug(prevPost.slug);
+    links.push({
+      rel: "prev",
+      href: `/posts/${prevDate}/${prevSlug}`,
+    });
+  }
+
+  if (nextPost) {
+    const nextDate = formatDateForUrl(nextPost.createdAt);
+    const nextSlug = getUrlSafeSlug(nextPost.slug);
+    links.push({
+      rel: "next",
+      href: `/posts/${nextDate}/${nextSlug}`,
+    });
+  }
+
+  return {
+    title: `${title} | Insights Blog`,
+    description,
+    keywords,
+    author: post.author || "Insights Blog Team",
+    openGraph: {
+      title: title,
+      description: description,
+      url: url,
+      type: "article",
+      publishedTime: publishedTime,
+      modifiedTime: modifiedTime,
+      images: [
+        {
+          url: `${baseUrl}/api/og?title=${encodeURIComponent(title)}`,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+      authors: [post.author || "Insights Blog Team"],
+      tags: post.tagIds ? post.tagIds.map(getTagTextById) : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: title,
+      description: description,
+      images: [`${baseUrl}/api/og?title=${encodeURIComponent(title)}`],
+    },
+    alternates: {
+      canonical: url,
+    },
+    other: {
+      "article:published_time": publishedTime,
+      "article:modified_time": modifiedTime,
+    },
+    // 添加上一页下一页链接
+    ...(links.length > 0 ? { links } : {}),
+  };
 }

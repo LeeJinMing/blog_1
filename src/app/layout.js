@@ -79,19 +79,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* Google AdSense 代码 - 使用dangerouslySetInnerHTML避免data-nscript属性 */}
+        {/* Google AdSense 代码 - 使用标准方式添加，便于Google验证 */}
         <script
-          dangerouslySetInnerHTML={{
-            __html: `
-            (function() {
-              var script = document.createElement('script');
-              script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1911238866563211";
-              script.async = true;
-              script.crossOrigin = "anonymous";
-              document.head.appendChild(script);
-            })();
-          `,
-          }}
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1911238866563211"
+          crossOrigin="anonymous"
         />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />

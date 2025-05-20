@@ -2,9 +2,13 @@
 
 import { Analytics } from "@vercel/analytics/react";
 import { useEffect, useState } from "react";
+import Script from "next/script";
 
 export default function AnalyticsWrapper() {
   const [analyticsReady, setAnalyticsReady] = useState(false);
+
+  // Google Analytics ID从环境变量获取
+  const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
   // 检查analytics是否加载完成
   useEffect(() => {
@@ -40,10 +44,31 @@ export default function AnalyticsWrapper() {
   };
 
   return (
-    <Analytics
-      mode="auto"
-      debug={process.env.NODE_ENV === "development"}
-      beforeSend={handleBeforeSend}
-    />
+    <>
+      {/* Google Analytics - 只有在有ID时才加载 */}
+      {GA_MEASUREMENT_ID && (
+        <>
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+            strategy="afterInteractive"
+          />
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_MEASUREMENT_ID}');
+            `}
+          </Script>
+        </>
+      )}
+
+      {/* Vercel Analytics */}
+      <Analytics
+        mode="auto"
+        debug={process.env.NODE_ENV === "development"}
+        beforeSend={handleBeforeSend}
+      />
+    </>
   );
 }

@@ -1,9 +1,10 @@
 .article {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-  line-height: 1.6;
-  color: var(--text-primary);
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .header {
@@ -12,21 +13,20 @@
 
 .title {
   font-size: 2.5rem;
-  margin-bottom: 1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
   line-height: 1.2;
-  color: var(--heading-color);
+  color: #111;
 }
 
 .meta {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  color: #666;
   font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin: 1rem 0;
 }
 
-.meta time {
+.date {
   margin-right: 1rem;
 }
 
@@ -236,113 +236,79 @@
   line-height: 1.6;
 }
 
-/* 响应式设计 */
+.likeButtonWrapper {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.postNavigation {
+  display: flex;
+  justify-content: space-between;
+  margin: 3rem 0 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eaeaea;
+}
+
+.prevPostLink,
+.nextPostLink {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.prevPostLink {
+  margin-right: 0.5rem;
+  text-align: left;
+}
+
+.nextPostLink {
+  margin-left: 0.5rem;
+  text-align: right;
+}
+
+.prevPostLink:hover,
+.nextPostLink:hover {
+  background-color: #f5f5f5;
+}
+
+.navLabel {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.3rem;
+}
+
+.navTitle {
+  display: block;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
 @media (max-width: 768px) {
   .article {
-    padding: 0 0.5rem;
+    padding: 1.5rem 1rem;
   }
 
   .title {
     font-size: 2rem;
   }
 
-  .postContent h2 {
-    font-size: 1.5rem;
-  }
-
-  .postContent h3 {
-    font-size: 1.3rem;
-  }
-
-  .termBox,
-  .insightBox,
-  .counterBox {
-    padding: 1rem;
-    margin: 1.2rem 0;
-  }
-
-  .termTitle,
-  .insightTitle,
-  .counterTitle {
-    font-size: 1.1rem;
-  }
-}
-
-/* 添加点赞按钮包装器样式 */
-.likeButtonWrapper {
-  display: flex;
-  justify-content: center;
-  margin: 1rem 0;
-}
-
-/* 文章导航样式 */
-.postNavigation {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--border-color, #dee2e6);
-}
-
-.prevPostLink,
-.nextPostLink {
-  display: flex;
-  flex-direction: column;
-  max-width: 45%;
-  text-decoration: none;
-  padding: 1rem;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  background-color: var(--bg-secondary, #f8f9fa);
-}
-
-.prevPostLink:hover,
-.nextPostLink:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  background-color: white;
-}
-
-.prevPostLink {
-  text-align: left;
-}
-
-.nextPostLink {
-  text-align: right;
-  margin-left: auto;
-}
-
-.navLabel {
-  display: block;
-  font-size: 0.9rem;
-  color: var(--text-secondary, #6c757d);
-  margin-bottom: 0.5rem;
-}
-
-.navTitle {
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: var(--text-primary, #212529);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  line-clamp: 2;
-  overflow: hidden;
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
   .postNavigation {
     flex-direction: column;
-    gap: 1rem;
   }
 
   .prevPostLink,
   .nextPostLink {
-    max-width: 100%;
-  }
-
-  .nextPostLink {
-    margin-left: 0;
+    margin: 0.5rem 0;
   }
 }

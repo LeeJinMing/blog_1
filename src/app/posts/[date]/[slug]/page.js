@@ -1,8 +1,5 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
-import remarkGfm from "remark-gfm";
 import dayjs from "dayjs";
 import {
   getPostBySlug,
@@ -18,14 +15,13 @@ import {
 } from "./utils";
 import ClientAdPlaceholder from "@/app/components/ClientAdPlaceholder";
 import ClientRelatedPosts from "@/app/components/ClientRelatedPosts";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import styles from "./article.module.css";
 import { Suspense } from "react";
 import ShareButtonsContainer from "./ShareButtonsContainer";
 import { getTagTextById } from "@/lib/tags";
 import GlobalLayout from "@/app/components/GlobalLayout";
 import LikeButtonWrapper from "./LikeButtonWrapper";
+import ArticleRenderer from "@/app/components/ArticleRenderer";
 
 // 添加标题翻译映射
 const titleTranslations = {
@@ -198,55 +194,14 @@ function preprocessContent(content, slug, title) {
         line.toLowerCase().includes(word.toLowerCase())
       ).length;
 
-      // 如果包含超过一定比例的标题关键词，可能是重复标题
-      // 对Pemex文章使用更低的阈值
-      const threshold = isPemexArticle ? 0.3 : hasSeparator ? 0.4 : 0.5;
-      return matchCount < titleWords.length * threshold;
+      // 如果包含超过一半的关键词，可能是标题的变体，删除它
+      return matchCount < titleWords.length / 2;
     });
 
-    processedContent = filteredLines
-      .join("\n")
-      .replace(/\n{3,}/g, "\n\n") // 整理多余的空行
-      .trim();
+    processedContent = filteredLines.join("\n");
   }
 
-  // 第三步：处理特定格式的文章内容
-  if (slug.includes("generative-ai") || slug.includes("nvidia")) {
-    processedContent = processHtmlContent(processedContent);
-  }
-
-  // Pemex文章的最终清理
-  if (isPemexArticle) {
-    // 再次检查有无剩余的标题
-    const finalLines = processedContent.split("\n");
-    const finalFiltered = finalLines.filter((line) => {
-      const trimmed = line.trim().toLowerCase();
-
-      // 只对长度足够长且包含特定组合的行进行过滤
-      if (trimmed.length > 15) {
-        // 特别检查"Pemex的困境与曙光"和"在腐败丑闻与治理困境中"这两种形式
-        if (
-          (trimmed.includes("pemex") &&
-            (trimmed.includes("困境") ||
-              trimmed.includes("曙光") ||
-              trimmed.includes("腐败") ||
-              trimmed.includes("迷雾"))) ||
-          trimmed.includes("治理困境") ||
-          trimmed.includes("墨西哥能源巨头") ||
-          trimmed.includes("投资逻辑")
-        ) {
-          return false;
-        }
-      }
-
-      return true;
-    });
-
-    processedContent = finalFiltered.join("\n");
-  }
-
-  // 最后一步：确保内容首尾没有多余空行和空格
-  return processedContent.trim();
+  return processedContent;
 }
 
 // Split content to insert ads at appropriate positions
@@ -314,181 +269,178 @@ async function getAdjacentPosts(currentPost) {
   }
 }
 
-export default async function PostPage({ params }) {
-  // Use a more standard way to get parameters
-  const resolvedParams = await params;
-  const date = resolvedParams.date;
-  const slug = resolvedParams.slug;
+// 从文章内容中提取内容各部分
+function extractArticleParts(content) {
+  if (!content) return { introduction: "", mainContent: "", conclusion: "" };
 
-  // The slug might be URL-encoded, let's try both versions
-  let post = await getPostData({ date, slug });
+  // 假设内容结构可能包含Introduction和Conclusion部分
+  let introduction = "";
+  let mainContent = content;
+  let conclusion = "";
 
-  // If not found with the encoded slug, try the decoded version
-  if (!post && slug !== decodeURIComponent(slug)) {
-    post = await getPostData({ date, slug: decodeURIComponent(slug) });
+  // 寻找Introduction部分
+  const introPattern = /###\s*Introduction\s*\n([^#]*)/i;
+  const introMatch = content.match(introPattern);
+
+  if (introMatch && introMatch[1]) {
+    introduction = introMatch[1].trim();
+    // 从主内容中移除Introduction部分
+    mainContent = mainContent.replace(introPattern, "");
   }
 
-  if (!post) {
-    console.log(`Post not found for date: ${date}, slug: ${slug}`);
-    notFound();
+  // 寻找Conclusion部分
+  const conclusionPattern = /###\s*Conclusion\s*\n([^#]*)/i;
+  const conclusionMatch = mainContent.match(conclusionPattern);
+
+  if (conclusionMatch && conclusionMatch[1]) {
+    conclusion = conclusionMatch[1].trim();
+    // 从主内容中移除Conclusion部分
+    mainContent = mainContent.replace(conclusionPattern, "");
   }
 
-  // 获取上一篇和下一篇文章
-  const { prevPost, nextPost } = await getAdjacentPosts(post);
-
-  const formattedDate = dayjs(post.createdAt).format("MMMM D, YYYY");
-
-  // Preprocess the content if necessary
-  let processedContent = post.content;
-  if (post.content) {
-    // Pass in title parameter to remove duplicate titles
-    processedContent = preprocessContent(post.content, slug, post.title);
-  }
-
-  // Split content to insert ads at appropriate locations
-  const { firstPart, middlePart, lastPart } =
-    splitContentForAds(processedContent);
-
-  // Serialize article data to pass to client components
-  const serializedPost = post;
-
-  // Function to render Markdown content
-  const renderMarkdown = (content) => {
-    return (
-      <ReactMarkdown
-        rehypePlugins={[rehypeRaw]}
-        remarkPlugins={[remarkGfm]}
-        components={{
-          // Custom rendering for code blocks
-          code({ node, inline, className, children, ...props }) {
-            const match = /language-(\w+)/.exec(className || "");
-            return !inline && match ? (
-              <SyntaxHighlighter
-                style={atomDark}
-                language={match[1]}
-                PreTag="div"
-                {...props}
-              >
-                {String(children).replace(/\n$/, "")}
-              </SyntaxHighlighter>
-            ) : (
-              <code className={className} {...props}>
-                {children}
-              </code>
-            );
-          },
-          // Handle other elements as needed
-        }}
-      >
-        {content}
-      </ReactMarkdown>
-    );
+  return {
+    introduction,
+    mainContent: mainContent.trim(),
+    conclusion,
   };
+}
 
-  return (
-    <GlobalLayout>
-      <article className={styles.article}>
-        <header className={styles.header}>
-          <h1 className={styles.title}>{translateTitle(post.title)}</h1>
+export default async function PostPage({ params }) {
+  try {
+    const resolvedParams = await params;
+    const date = resolvedParams.date;
+    const slug = resolvedParams.slug;
+
+    // 获取文章数据
+    const post = await getPostData({ date, slug });
+
+    if (!post) {
+      notFound();
+    }
+
+    // 获取上一篇和下一篇文章
+    const { prevPost, nextPost } = await getAdjacentPosts(post);
+
+    // 格式化日期
+    const formattedDate = dayjs(post.createdAt).format("YYYY-MM-DD");
+
+    // 预处理文章内容，包含特殊格式处理和标题删除
+    const processedContent = preprocessContent(
+      post.content,
+      post.slug,
+      post.title
+    );
+
+    // 将文章分割为多个部分用于广告插入（这部分现在由ArticleRenderer内部处理）
+    // const { firstPart, middlePart, lastPart } = splitContentForAds(processedContent);
+
+    // 将内容分解为独立部分
+    const {
+      introduction,
+      mainContent,
+      conclusion: extractedConclusion,
+    } = extractArticleParts(processedContent);
+
+    // 准备传递给ArticleRenderer的完整文章对象，确保包含所有必要字段
+    const articleData = {
+      title: post.title,
+      content: processedContent, // 保留完整内容用于备用
+      introduction: introduction || "", // 添加介绍部分
+      mainContent: mainContent || "", // 添加主体内容部分
+      summary: post.summary || "", // 确保包含摘要
+      conclusion: post.conclusion || extractedConclusion || "", // 优先使用数据库中的结论，否则使用从内容中提取的
+      tags: post.tagIds ? post.tagIds.map(getTagTextById) : [], // 转换tagIds为实际tag文本
+      createdAt: post.createdAt,
+      links: post.links || [], // 确保包含链接
+      _id: post._id,
+      slug: post.slug,
+    };
+
+    console.log("Rendering article:", {
+      title: articleData.title,
+      hasSummary: !!articleData.summary,
+      contentLength: articleData.content?.length || 0,
+      hasConclusion: !!articleData.conclusion,
+      tagsCount: articleData.tags?.length || 0,
+      linksCount: articleData.links?.length || 0,
+    });
+
+    return (
+      <GlobalLayout>
+        <article className={styles.article}>
+          {/* 顶部区域只保留日期，标题由ArticleRenderer渲染 */}
           <div className={styles.meta}>
             <time dateTime={post.createdAt} className={styles.date}>
               {formattedDate}
             </time>
           </div>
-        </header>
 
-        {/* Client-side view tracker */}
-        <PostViewTracker postId={post._id.toString()} slug={post.slug} />
+          {/* Client-side view tracker */}
+          <PostViewTracker postId={post._id.toString()} slug={post.slug} />
 
-        {/* 文章点赞按钮，放在分享按钮前面 */}
-        <div className={styles.likeButtonWrapper}>
-          <LikeButtonWrapper postId={post._id.toString()} slug={post.slug} />
-        </div>
+          {/* 文章点赞按钮 */}
+          <div className={styles.likeButtonWrapper}>
+            <LikeButtonWrapper postId={post._id.toString()} slug={post.slug} />
+          </div>
 
-        {/* Share buttons */}
-        <Suspense
-          fallback={
-            <div className={styles.loading}>Loading share options...</div>
-          }
-        >
-          <ShareButtonsContainer post={serializedPost} />
-        </Suspense>
+          {/* Share buttons */}
+          <Suspense
+            fallback={
+              <div className={styles.loading}>Loading share options...</div>
+            }
+          >
+            <ShareButtonsContainer post={post} />
+          </Suspense>
 
-        {/* Main content split into parts with ads */}
-        <div className={styles.content}>
-          <div className={styles.contentPart}>{renderMarkdown(firstPart)}</div>
+          {/* 使用新的文章渲染器 */}
+          <ArticleRenderer article={articleData} />
 
-          {middlePart && (
-            <>
-              {/* Ad in the middle of the article */}
-              <div className={styles.inArticleAd}>
-                <ClientAdPlaceholder size="banner" position="in-article" />
-              </div>
+          {/* 添加在文章底部的上一篇/下一篇导航 */}
+          <div className={styles.postNavigation}>
+            {prevPost && (
+              <Link
+                href={`/posts/${formatDateForUrl(
+                  prevPost.createdAt
+                )}/${getUrlSafeSlug(prevPost.slug)}`}
+                className={styles.prevPostLink}
+              >
+                <span className={styles.navLabel}>← Previous Article</span>
+                <span className={styles.navTitle}>
+                  {translateTitle(prevPost.title)}
+                </span>
+              </Link>
+            )}
 
-              <div className={styles.contentPart}>
-                {renderMarkdown(middlePart)}
-              </div>
-            </>
-          )}
+            {nextPost && (
+              <Link
+                href={`/posts/${formatDateForUrl(
+                  nextPost.createdAt
+                )}/${getUrlSafeSlug(nextPost.slug)}`}
+                className={styles.nextPostLink}
+              >
+                <span className={styles.navLabel}>Next Article →</span>
+                <span className={styles.navTitle}>
+                  {translateTitle(nextPost.title)}
+                </span>
+              </Link>
+            )}
+          </div>
 
-          {lastPart && (
-            <>
-              {/* Another ad if there's a last part */}
-              {middlePart && (
-                <div className={styles.inArticleAd}>
-                  <ClientAdPlaceholder size="banner" position="in-article-2" />
-                </div>
-              )}
-
-              <div className={styles.contentPart}>
-                {renderMarkdown(lastPart)}
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* 添加在文章底部的上一篇/下一篇导航 */}
-        <div className={styles.postNavigation}>
-          {prevPost && (
-            <Link
-              href={`/posts/${formatDateForUrl(
-                prevPost.createdAt
-              )}/${getUrlSafeSlug(prevPost.slug)}`}
-              className={styles.prevPostLink}
-            >
-              <span className={styles.navLabel}>← Previous Article</span>
-              <span className={styles.navTitle}>
-                {translateTitle(prevPost.title)}
-              </span>
-            </Link>
-          )}
-
-          {nextPost && (
-            <Link
-              href={`/posts/${formatDateForUrl(
-                nextPost.createdAt
-              )}/${getUrlSafeSlug(nextPost.slug)}`}
-              className={styles.nextPostLink}
-            >
-              <span className={styles.navLabel}>Next Article →</span>
-              <span className={styles.navTitle}>
-                {translateTitle(nextPost.title)}
-              </span>
-            </Link>
-          )}
-        </div>
-
-        {/* Related posts section */}
-        <Suspense
-          fallback={
-            <div className={styles.loading}>Loading related articles...</div>
-          }
-        >
-          <ClientRelatedPosts currentPost={serializedPost} />
-        </Suspense>
-      </article>
-    </GlobalLayout>
-  );
+          {/* Related posts section */}
+          <Suspense
+            fallback={
+              <div className={styles.loading}>Loading related articles...</div>
+            }
+          >
+            <ClientRelatedPosts currentPost={post} />
+          </Suspense>
+        </article>
+      </GlobalLayout>
+    );
+  } catch (error) {
+    console.error("Error rendering post:", error);
+    return <div>Error loading article</div>;
+  }
 }
 
 // 修改文章详情页元数据生成函数，添加更多SEO相关信息

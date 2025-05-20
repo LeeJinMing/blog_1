@@ -4,6 +4,7 @@ import Link from "next/link";
 import EnhancedSearch from "./components/EnhancedSearch";
 import NavMenu from "./components/NavMenu";
 import AnalyticsWrapper from "./components/AnalyticsWrapper";
+import Script from "next/script";
 
 /**
  * 站点默认全局元数据
@@ -78,6 +79,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        {/* Google AdSense 代码 */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1911238866563211"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

@@ -281,27 +281,41 @@ const ArticleRenderer = ({ article }) => {
     );
 
     // 处理参考链接 [text][ref]
-    if (links && links.length > 0) {
-      parts = processInlineFormat(
-        parts,
-        /\[([^\]]+)\]\[([^\]]+)\]/g,
-        (match, text, reference) => {
-          const url = findReferenceUrl(reference);
-          return url ? (
-            <Link
-              href={url}
-              key={`ref-${Math.random().toString(36).slice(2, 11)}`}
-              className={styles.link}
-            >
-              {text}
-            </Link>
-          ) : (
-            <span
-              key={`no-ref-${Math.random().toString(36).slice(2, 11)}`}
-            >{`[${text}][${reference}]`}</span>
-          );
-        }
+    if (links && Array.isArray(links) && links.length > 0) {
+      // 预先过滤掉无效链接
+      const validLinks = links.filter(
+        (link) => link !== null && link !== undefined
       );
+
+      if (validLinks.length > 0) {
+        parts = processInlineFormat(
+          parts,
+          /\[([^\]]+)\]\[([^\]]+)\]/g,
+          (match, text, reference) => {
+            if (!reference)
+              return (
+                <span key={`no-ref-${Math.random().toString(36).slice(2, 11)}`}>
+                  {match}
+                </span>
+              );
+
+            const url = findReferenceUrl(reference);
+            return url ? (
+              <Link
+                href={url}
+                key={`ref-${Math.random().toString(36).slice(2, 11)}`}
+                className={styles.link}
+              >
+                {text || reference}
+              </Link>
+            ) : (
+              <span
+                key={`no-ref-${Math.random().toString(36).slice(2, 11)}`}
+              >{`[${text || ""}][${reference || ""}]`}</span>
+            );
+          }
+        );
+      }
     }
 
     // 处理已处理好的数组，将字符串和React元素混合在一起
@@ -357,29 +371,60 @@ const ArticleRenderer = ({ article }) => {
   const findReferenceUrl = (reference) => {
     if (!links || !Array.isArray(links)) return null;
 
-    console.log("Looking for reference:", reference, "in links:", links);
+    // 过滤掉links中的null和undefined值
+    const validLinks = links.filter(
+      (link) => link !== null && link !== undefined
+    );
+
+    if (validLinks.length === 0) return null;
+
+    console.log(
+      "Looking for reference:",
+      reference,
+      "in valid links:",
+      validLinks.length
+    );
 
     // 处理各种引用格式
 
     // 完整URL引用
-    if (reference.includes("http")) {
+    if (
+      reference &&
+      typeof reference === "string" &&
+      reference.includes("http")
+    ) {
       return reference;
     }
 
     // 处理domain.com格式
-    const domainMatch = reference.match(
-      /([a-zA-Z0-9-]+\.[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)?)$/
-    );
+    const domainMatch =
+      reference && typeof reference === "string"
+        ? reference.match(/([a-zA-Z0-9-]+\.[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)?)$/)
+        : null;
+
     if (domainMatch) {
       const domain = domainMatch[1];
-      const link = links.find(
-        (url) => url && typeof url === "string" && url.includes(domain)
-      );
-      return link || null;
+      const link = validLinks.find((url) => {
+        if (!url) return false;
+        if (typeof url === "string") {
+          return url.includes(domain);
+        } else if (url && typeof url === "object" && url.url) {
+          return url.url.includes(domain);
+        }
+        return false;
+      });
+      return link
+        ? typeof link === "object" && link.url
+          ? link.url
+          : link
+        : null;
     }
 
     // 处理站点名称引用，如"billboard"
-    const siteName = reference.toLowerCase().trim();
+    const siteName =
+      reference && typeof reference === "string"
+        ? reference.toLowerCase().trim()
+        : "";
     const siteMap = {
       billboard: "billboard.com",
       livenation: "livenationentertainment.com",
@@ -390,13 +435,23 @@ const ArticleRenderer = ({ article }) => {
 
     if (siteMap[siteName]) {
       const domain = siteMap[siteName];
-      const link = links.find(
-        (url) => url && typeof url === "string" && url.includes(domain)
-      );
+      const link = validLinks.find((url) => {
+        if (!url) return false;
+        if (typeof url === "string") {
+          return url.includes(domain);
+        } else if (url && typeof url === "object" && url.url) {
+          return url.url.includes(domain);
+        }
+        return false;
+      });
       if (link) {
         console.log("Found link for", siteName, ":", link);
       }
-      return link || null;
+      return link
+        ? typeof link === "object" && link.url
+          ? link.url
+          : link
+        : null;
     }
 
     return null;
@@ -457,13 +512,28 @@ const ArticleRenderer = ({ article }) => {
         <div className={styles.references}>
           <h3 className={styles.referencesTitle}>参考链接</h3>
           <ul className={styles.referencesList}>
-            {links.map((link, index) => (
-              <li key={`ref-${index}`} className={styles.referenceItem}>
-                <Link href={link} className={styles.referenceLink}>
-                  {link}
-                </Link>
-              </li>
-            ))}
+            {links
+              .filter((link) => link !== null && link !== undefined) // 过滤掉null和undefined
+              .map((link, index) => (
+                <li key={`ref-${index}`} className={styles.referenceItem}>
+                  <Link
+                    href={
+                      typeof link === "object" && link && link.url
+                        ? link.url
+                        : typeof link === "string"
+                        ? link
+                        : "#"
+                    }
+                    className={styles.referenceLink}
+                  >
+                    {typeof link === "object" && link && link.text
+                      ? link.text
+                      : typeof link === "string"
+                      ? link
+                      : "链接"}
+                  </Link>
+                </li>
+              ))}
           </ul>
         </div>
       )}

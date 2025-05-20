@@ -5,26 +5,33 @@
  * @returns {string} - 处理后的内容
  */
 export function removeRepeatedTitle(content, title) {
-  if (!content || !title) return content || "";
-
-  // 确保content和title是字符串
-  if (typeof content !== "string") {
-    console.error(
-      "Error: Content is not a string type in removeRepeatedTitle:",
-      typeof content
-    );
-    content = String(content || "");
-  }
-
-  if (typeof title !== "string") {
-    console.error(
-      "Error: Title is not a string type in removeRepeatedTitle:",
-      typeof title
-    );
-    title = String(title || "");
+  if (
+    !content ||
+    !title ||
+    typeof content !== "string" ||
+    typeof title !== "string"
+  ) {
+    return content || "";
   }
 
   try {
+    // 确保content和title是字符串
+    if (typeof content !== "string") {
+      console.error(
+        "Error: Content is not a string type in removeRepeatedTitle:",
+        typeof content
+      );
+      content = String(content || "");
+    }
+
+    if (typeof title !== "string") {
+      console.error(
+        "Error: Title is not a string type in removeRepeatedTitle:",
+        typeof title
+      );
+      title = String(title || "");
+    }
+
     // 准备标题的不同变体进行匹配
     const escapedTitle = title
       .replace(/[.*+?^${}()|[\]\\]/g, "\\$&") // 转义正则表达式特殊字符
@@ -329,8 +336,8 @@ export function removeRepeatedTitle(content, title) {
 
     return processedContent;
   } catch (error) {
-    console.error("Error removing repeated title:", error);
-    return content; // 发生错误时返回原始内容
+    console.error("Error in removeRepeatedTitle:", error);
+    return content; // 返回原始内容
   }
 }
 
@@ -381,19 +388,12 @@ function calculateSimilarity(str1, str2) {
  * @returns {string} - 格式化后的内容
  */
 export function normalizeContent(content, title) {
-  if (!content) return "";
-
-  // 确保content和title是字符串
-  if (typeof content !== "string") {
+  if (!content || typeof content !== "string") {
     console.error(
       "Content is not a string type in normalizeContent:",
       typeof content
     );
-    content = String(content || "");
-  }
-
-  if (typeof title !== "string") {
-    title = String(title || "");
+    return "";
   }
 
   try {
@@ -591,8 +591,8 @@ export function normalizeContent(content, title) {
 
     return normalizedContent;
   } catch (error) {
-    console.error("Error normalizing content:", error);
-    return content;
+    console.error("Error in normalizeContent:", error);
+    return content; // 返回原始内容
   }
 }
 
@@ -601,43 +601,52 @@ export function normalizeContent(content, title) {
  * @param {string} content - 包含HTML标签的内容
  * @returns {string} - 处理后的内容
  */
-export function processHtmlContent(content) {
-  // 确保content是字符串
-  if (typeof content !== "string") {
-    console.error(
-      "Content is not a string type in processHtmlContent:",
-      typeof content
-    );
-    content = String(content || "");
+export function processHtmlContent(htmlContent) {
+  if (!htmlContent || typeof htmlContent !== "string") {
+    return "";
   }
 
-  let processedContent = content;
+  try {
+    let processedContent = htmlContent;
 
-  // 替换HTML标签为Markdown等效格式
-  processedContent = processedContent.replace(/<h1>(.*?)<\/h1>/g, "## $1\n\n"); // 注意直接转为h2
-  processedContent = processedContent.replace(/<h2>(.*?)<\/h2>/g, "## $1\n\n");
-  processedContent = processedContent.replace(/<h3>(.*?)<\/h3>/g, "### $1\n\n");
-  processedContent = processedContent.replace(/<p>(.*?)<\/p>/g, "$1\n\n");
-  processedContent = processedContent.replace(/<ul>/g, "\n");
-  processedContent = processedContent.replace(/<\/ul>/g, "\n");
-  processedContent = processedContent.replace(/<li>(.*?)<\/li>/g, "- $1\n");
-  processedContent = processedContent.replace(/<em>(.*?)<\/em>/g, "*$1*");
-  processedContent = processedContent.replace(
-    /<strong>(.*?)<\/strong>/g,
-    "**$1**"
-  );
+    // 替换HTML标签为Markdown等效格式
+    processedContent = processedContent.replace(
+      /<h1>(.*?)<\/h1>/g,
+      "## $1\n\n"
+    ); // 注意直接转为h2
+    processedContent = processedContent.replace(
+      /<h2>(.*?)<\/h2>/g,
+      "## $1\n\n"
+    );
+    processedContent = processedContent.replace(
+      /<h3>(.*?)<\/h3>/g,
+      "### $1\n\n"
+    );
+    processedContent = processedContent.replace(/<p>(.*?)<\/p>/g, "$1\n\n");
+    processedContent = processedContent.replace(/<ul>/g, "\n");
+    processedContent = processedContent.replace(/<\/ul>/g, "\n");
+    processedContent = processedContent.replace(/<li>(.*?)<\/li>/g, "- $1\n");
+    processedContent = processedContent.replace(/<em>(.*?)<\/em>/g, "*$1*");
+    processedContent = processedContent.replace(
+      /<strong>(.*?)<\/strong>/g,
+      "**$1**"
+    );
 
-  // 处理图片和图片说明
-  processedContent = processedContent.replace(
-    /<figure>\s*<img src="(.*?)" alt="(.*?)">\s*<figcaption>(.*?)<\/figcaption>\s*<\/figure>/g,
-    "![$2]($1)\n*$3*\n\n"
-  );
+    // 处理图片和图片说明
+    processedContent = processedContent.replace(
+      /<figure>\s*<img src="(.*?)" alt="(.*?)">\s*<figcaption>(.*?)<\/figcaption>\s*<\/figure>/g,
+      "![$2]($1)\n*$3*\n\n"
+    );
 
-  // 处理链接
-  processedContent = processedContent.replace(
-    /<a href="(.*?)".*?>(.*?)<\/a>/g,
-    "[$2]($1)"
-  );
+    // 处理链接
+    processedContent = processedContent.replace(
+      /<a href="(.*?)".*?>(.*?)<\/a>/g,
+      "[$2]($1)"
+    );
 
-  return processedContent;
+    return processedContent;
+  } catch (error) {
+    console.error("Error in processHtmlContent:", error);
+    return htmlContent; // 返回原始内容
+  }
 }

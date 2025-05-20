@@ -61,9 +61,18 @@ export const revalidate = 3600; // 1 hour
 export async function generateStaticParams() {
   try {
     // Get articles from global cache, this will only trigger one database query
-    const recentPosts = await getPosts(100);
+    const recentPosts = await getPosts(50); // 减少预渲染的页面数量，避免构建时间过长
 
-    return recentPosts.map((post) => {
+    // 过滤掉可能存在问题的posts
+    const validPosts = recentPosts.filter(
+      (post) =>
+        post &&
+        post.createdAt &&
+        post.slug &&
+        typeof post.createdAt === "string"
+    );
+
+    return validPosts.map((post) => {
       const dateStr = formatDateForUrl(post.createdAt);
       return {
         date: dateStr,
@@ -315,31 +324,53 @@ export default async function PostPage({ params }) {
     const post = await getPostData({ date, slug });
 
     if (!post) {
-      notFound();
+      return notFound();
     }
 
-    // 获取上一篇和下一篇文章
-    const { prevPost, nextPost } = await getAdjacentPosts(post);
+    // 确保文章有必要的字段
+    if (!post.content || !post.title) {
+      console.error(`Incomplete post data for ${slug}`);
+      return notFound();
+    }
+
+    // 获取上一篇和下一篇文章 - 在try-catch中处理以防错误
+    let prevPost = null;
+    let nextPost = null;
+    try {
+      const adjacentPosts = await getAdjacentPosts(post);
+      prevPost = adjacentPosts.prevPost;
+      nextPost = adjacentPosts.nextPost;
+    } catch (err) {
+      console.error("Failed to get adjacent posts:", err);
+      // 继续执行，不显示上一篇/下一篇
+    }
 
     // 格式化日期
     const formattedDate = dayjs(post.createdAt).format("YYYY-MM-DD");
 
-    // 预处理文章内容，包含特殊格式处理和标题删除
-    const processedContent = preprocessContent(
-      post.content,
-      post.slug,
-      post.title
-    );
-
-    // 将文章分割为多个部分用于广告插入（这部分现在由ArticleRenderer内部处理）
-    // const { firstPart, middlePart, lastPart } = splitContentForAds(processedContent);
+    // 预处理文章内容，包含特殊格式处理和标题删除 - 确保不会出错
+    let processedContent = "";
+    try {
+      processedContent = preprocessContent(post.content, post.slug, post.title);
+    } catch (err) {
+      console.error("Failed to preprocess content:", err);
+      processedContent = post.content || ""; // 退回到原始内容
+    }
 
     // 将内容分解为独立部分
-    const {
-      introduction,
-      mainContent,
-      conclusion: extractedConclusion,
-    } = extractArticleParts(processedContent);
+    let introduction = "";
+    let mainContent = processedContent;
+    let extractedConclusion = "";
+
+    try {
+      const parts = extractArticleParts(processedContent);
+      introduction = parts.introduction || "";
+      mainContent = parts.mainContent || processedContent;
+      extractedConclusion = parts.conclusion || "";
+    } catch (err) {
+      console.error("Failed to extract article parts:", err);
+      // 使用默认值继续
+    }
 
     // 准备传递给ArticleRenderer的完整文章对象，确保包含所有必要字段
     const articleData = {
@@ -349,9 +380,27 @@ export default async function PostPage({ params }) {
       mainContent: mainContent || "", // 添加主体内容部分
       summary: post.summary || "", // 确保包含摘要
       conclusion: post.conclusion || extractedConclusion || "", // 优先使用数据库中的结论，否则使用从内容中提取的
-      tags: post.tagIds ? post.tagIds.map(getTagTextById) : [], // 转换tagIds为实际tag文本
+      tags: post.tagIds ? post.tagIds.map(getTagTextById).filter(Boolean) : [], // 转换tagIds为实际tag文本
       createdAt: post.createdAt,
-      links: post.links || [], // 确保包含链接
+      // 确保links是有效的数组，并且过滤掉null和undefined项
+      links: Array.isArray(post.links)
+        ? post.links
+            .filter((link) => link !== null && link !== undefined)
+            .map((link) => {
+              // 如果link是字符串但不是有效URL，添加http://前缀
+              if (typeof link === "string" && !link.match(/^https?:\/\//)) {
+                // 检查是否是域名格式
+                if (
+                  link.match(
+                    /^[a-zA-Z0-9][-a-zA-Z0-9]*(\.[a-zA-Z0-9][-a-zA-Z0-9]*)+$/
+                  )
+                ) {
+                  return `http://${link}`;
+                }
+              }
+              return link;
+            })
+        : [],
       _id: post._id,
       slug: post.slug,
     };
@@ -439,7 +488,18 @@ export default async function PostPage({ params }) {
     );
   } catch (error) {
     console.error("Error rendering post:", error);
-    return <div>Error loading article</div>;
+    // 返回一个简单的错误页面，而不是抛出错误
+    return (
+      <GlobalLayout>
+        <div className={styles.article}>
+          <h1>文章加载失败</h1>
+          <p>抱歉，无法加载请求的文章。请返回主页或尝试其他内容。</p>
+          <Link href="/" className={styles.link}>
+            返回首页
+          </Link>
+        </div>
+      </GlobalLayout>
+    );
   }
 }
 

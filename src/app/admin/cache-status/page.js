@@ -44,10 +44,10 @@ export default function CacheStatusPage() {
           setSystemInfo(data);
         }
       } catch (error) {
-        console.error("获取系统信息失败:", error);
+        console.error("Failed to get system info:", error);
         setSystemInfo({
-          nextVersion: "获取失败",
-          nodeVersion: "获取失败",
+          nextVersion: "Failed to retrieve",
+          nodeVersion: "Failed to retrieve",
           environment: process.env.NODE_ENV || "unknown",
         });
       }
@@ -91,23 +91,23 @@ export default function CacheStatusPage() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1>系统状态监控</h1>
+        <h1>System Status Monitoring</h1>
         <div className={styles.actions}>
           <Link href="/admin" className={styles.backLink}>
-            返回管理面板
+            Return to Admin Panel
           </Link>
           <button className={styles.refreshButton} onClick={handleRefresh}>
-            刷新状态
+            Refresh Status
           </button>
         </div>
       </header>
 
       <section className={styles.statusPanel}>
-        <h2>系统信息</h2>
+        <h2>System Information</h2>
         <div className={styles.statusGrid}>
           <div className={styles.statusCard}>
             <div className={styles.statusHeader}>
-              <h3>Next.js 版本</h3>
+              <h3>Next.js Version</h3>
               <span className={styles.versionTag}>
                 {systemInfo.nextVersion}
               </span>
@@ -116,7 +116,7 @@ export default function CacheStatusPage() {
 
           <div className={styles.statusCard}>
             <div className={styles.statusHeader}>
-              <h3>Node.js 版本</h3>
+              <h3>Node.js Version</h3>
               <span className={styles.versionTag}>
                 {systemInfo.nodeVersion}
               </span>
@@ -125,7 +125,7 @@ export default function CacheStatusPage() {
 
           <div className={styles.statusCard}>
             <div className={styles.statusHeader}>
-              <h3>运行环境</h3>
+              <h3>Environment</h3>
               <span className={styles.environmentTag}>
                 {systemInfo.environment}
               </span>
@@ -135,72 +135,77 @@ export default function CacheStatusPage() {
       </section>
 
       <section className={styles.statusPanel}>
-        <h2>应用状态</h2>
+        <h2>Application Status</h2>
         <div className={styles.statusGrid}>
           <div className={styles.statusCard}>
             <div className={styles.statusHeader}>
-              <h3>初始化状态</h3>
+              <h3>Initialization Status</h3>
               <span
                 className={
                   status.isInitialized ? styles.statusOn : styles.statusOff
                 }
               >
-                {status.isInitialized ? "已初始化" : "未初始化"}
+                {status.isInitialized ? "Initialized" : "Not Initialized"}
               </span>
             </div>
             <p className={styles.statusDescription}>
-              应用是否已成功初始化并启动所有必要的服务
+              Whether the application has successfully initialized and started
+              all necessary services
             </p>
           </div>
 
           <div className={styles.statusCard}>
             <div className={styles.statusHeader}>
-              <h3>数据库索引</h3>
+              <h3>Database Indexes</h3>
               <span
                 className={
                   status.indexesCreated ? styles.statusOn : styles.statusOff
                 }
               >
-                {status.indexesCreated ? "已创建" : "未创建"}
+                {status.indexesCreated ? "Created" : "Not Created"}
               </span>
             </div>
             <p className={styles.statusDescription}>
-              数据库查询所需的索引是否已创建
+              Whether the indexes required for database queries have been
+              created
             </p>
           </div>
         </div>
       </section>
 
       <section className={styles.statusPanel}>
-        <h2>缓存策略</h2>
+        <h2>Cache Strategy</h2>
         <div className={styles.infoCard}>
           <div className={styles.infoContent}>
-            <h3>客户端 ISR 缓存</h3>
+            <h3>Client ISR Cache</h3>
             <p>
-              当前使用客户端增量静态再生成 (ISR)
-              缓存策略。当数据库更新时，用户页面会在缓存过期后自动获取最新内容。
+              Current use client incremental static regeneration (ISR) cache
+              strategy. When the database is updated, the user page will
+              automatically get the latest content after the cache expires.
             </p>
             <ul className={styles.cacheInfo}>
               <li>
-                首页缓存时间: <strong>30分钟</strong>
+                Homepage cache time: <strong>30 minutes</strong>
               </li>
               <li>
-                文章详情页缓存时间: <strong>10分钟</strong>
+                Article detail page cache time: <strong>10 minutes</strong>
               </li>
               <li>
-                分类页面缓存时间: <strong>20分钟</strong>
+                Category page cache time: <strong>20 minutes</strong>
               </li>
             </ul>
             <p>
-              最近检查时间:{" "}
-              {status.lastChecked ? formatDate(status.lastChecked) : "未检查"}
+              Last checked time:{" "}
+              {status.lastChecked
+                ? formatDate(status.lastChecked)
+                : "Not checked"}
             </p>
           </div>
         </div>
       </section>
 
       <footer className={styles.footer}>
-        <p>博客管理系统 &copy; {new Date().getFullYear()}</p>
+        <p>Blog Management System &copy; {new Date().getFullYear()}</p>
       </footer>
     </div>
   );

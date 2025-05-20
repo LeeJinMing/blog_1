@@ -71,12 +71,12 @@ export function trackPageView(url) {
     }
 
     // 这里可以添加其他分析平台的跟踪代码
-    console.log(`页面浏览: ${url}`);
+    console.log(`Page view: ${url}`);
 
     // 可选: 发送到自定义分析端点
     // sendToAnalyticsAPI('pageview', { url });
   } catch (err) {
-    console.error("跟踪页面浏览失败:", err);
+    console.error("Failed to track page view:", err);
   }
 }
 
@@ -96,12 +96,12 @@ export function trackSearchQuery(query, resultCount) {
       });
     }
 
-    console.log(`搜索查询: "${cleanQuery}" (结果: ${resultCount})`);
+    console.log(`Search query: "${cleanQuery}" (Results: ${resultCount})`);
 
     // 可选: 发送到自定义分析端点
     // sendToAnalyticsAPI('search', { query: cleanQuery, resultCount });
   } catch (err) {
-    console.error("跟踪搜索失败:", err);
+    console.error("Failed to track search:", err);
   }
 }
 
@@ -118,12 +118,12 @@ export function trackShare(platform, contentTitle) {
       });
     }
 
-    console.log(`内容分享: "${contentTitle}" 到 ${platform}`);
+    console.log(`Content shared: "${contentTitle}" to ${platform}`);
 
     // 可选: 发送到自定义分析端点
     // sendToAnalyticsAPI('share', { platform, contentTitle });
   } catch (err) {
-    console.error("跟踪分享失败:", err);
+    console.error("Failed to track share:", err);
   }
 }
 
@@ -140,12 +140,12 @@ export function trackClick(elementId, category, label) {
       });
     }
 
-    console.log(`点击: ${elementId} (${category}: ${label})`);
+    console.log(`Click: ${elementId} (${category}: ${label})`);
 
     // 可选: 发送到自定义分析端点
     // sendToAnalyticsAPI('click', { elementId, category, label });
   } catch (err) {
-    console.error("跟踪点击失败:", err);
+    console.error("Failed to track click:", err);
   }
 }
 
@@ -153,7 +153,10 @@ export function trackClick(elementId, category, label) {
 function sendToAnalyticsAPI(eventType, data) {
   // 仅在生产环境发送真实数据
   if (process.env.NODE_ENV !== "production") {
-    console.log("开发环境分析数据:", { eventType, ...data });
+    console.log("Development environment analytics data:", {
+      eventType,
+      ...data,
+    });
     return;
   }
 

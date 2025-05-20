@@ -8,19 +8,19 @@ export default function NavMenu() {
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
 
-  // 定义主要分类
+  // Define main categories
   const categories = [
-    { name: "政治与外交", slug: "politics-diplomacy" },
-    { name: "商业与经济", slug: "business-economy" },
-    { name: "科技与创新", slug: "tech-innovation" },
-    { name: "国际关系", slug: "international-relations" },
-    { name: "文化与社会", slug: "culture-society" },
+    { name: "Politics & Diplomacy", slug: "politics-diplomacy" },
+    { name: "Business & Economy", slug: "business-economy" },
+    { name: "Technology & Innovation", slug: "tech-innovation" },
+    { name: "International Relations", slug: "international-relations" },
+    { name: "Culture & Society", slug: "culture-society" },
   ];
 
-  // 定义按日期归档
-  const archives = [{ name: "2025年", slug: "2025" }];
+  // Define archives by date
+  const archives = [{ name: "2025", slug: "2025" }];
 
-  // 切换下拉菜单状态
+  // Toggle dropdown menu state
   const toggleCategory = () => {
     setCategoryOpen(!categoryOpen);
     if (dateOpen) setDateOpen(false);
@@ -31,7 +31,7 @@ export default function NavMenu() {
     if (categoryOpen) setCategoryOpen(false);
   };
 
-  // 关闭所有下拉菜单
+  // Close all dropdown menus
   const closeMenus = () => {
     setCategoryOpen(false);
     setDateOpen(false);
@@ -42,7 +42,7 @@ export default function NavMenu() {
       <ul className={styles.navList}>
         <li className={styles.navItem}>
           <Link href="/" className={styles.navLink} onClick={closeMenus}>
-            首页
+            Home
           </Link>
         </li>
 
@@ -52,7 +52,7 @@ export default function NavMenu() {
             onClick={toggleCategory}
             aria-expanded={categoryOpen}
           >
-            按主题 <span className={styles.arrow}>▼</span>
+            By Topic <span className={styles.arrow}>▼</span>
           </button>
 
           {categoryOpen && (
@@ -74,7 +74,7 @@ export default function NavMenu() {
                   className={`${styles.dropdownItem} ${styles.viewAll}`}
                   onClick={closeMenus}
                 >
-                  查看所有分类 →
+                  View All Categories →
                 </Link>
               </li>
             </ul>
@@ -87,7 +87,7 @@ export default function NavMenu() {
             onClick={toggleDate}
             aria-expanded={dateOpen}
           >
-            按日期 <span className={styles.arrow}>▼</span>
+            By Date <span className={styles.arrow}>▼</span>
           </button>
 
           {dateOpen && (
@@ -109,7 +109,7 @@ export default function NavMenu() {
 
         <li className={styles.navItem}>
           <Link href="/about" className={styles.navLink} onClick={closeMenus}>
-            关于我们
+            About Us
           </Link>
         </li>
       </ul>

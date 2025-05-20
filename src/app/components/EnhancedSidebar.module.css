@@ -233,3 +233,12 @@
     border-radius: 4px;
   }
 }
+
+/* 添加加载中样式 */
+.loading {
+  padding: 1rem;
+  text-align: center;
+  color: var(--text-secondary, #6c757d);
+  font-size: 0.9rem;
+  font-style: italic;
+}

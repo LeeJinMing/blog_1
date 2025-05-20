@@ -10,29 +10,61 @@ import {
   formatDateForUrl,
   getUrlSafeSlug,
 } from "@/lib/db";
-import PostViewTracker from "./PostViewTracker"; // 导入分离的客户端组件
+import PostViewTracker from "./PostViewTracker";
 import {
   removeRepeatedTitle,
   processHtmlContent,
   normalizeContent,
-} from "./utils"; // 导入工具函数
+} from "./utils";
 import ClientAdPlaceholder from "@/app/components/ClientAdPlaceholder";
 import ClientRelatedPosts from "@/app/components/ClientRelatedPosts";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import styles from "./article.module.css";
-import TagTracker from "@/app/components/TagTracker";
 import { Suspense } from "react";
 import ShareButtonsContainer from "./ShareButtonsContainer";
 import { getTagTextById } from "@/lib/tags";
+import GlobalLayout from "@/app/components/GlobalLayout";
+import LikeButtonWrapper from "./LikeButtonWrapper";
 
-// 调整ISR缓存时间，使其与db.js中的全局缓存有效期一致
-export const revalidate = 3600; // 1小时重新验证一次
+// 添加标题翻译映射
+const titleTranslations = {
+  网红经济赋能者佳品: "Creator Economy Empowerment",
+  现象与营销新纪元: "Phenomenon and New Era of Marketing",
+  "网红经济赋能者佳品：Valeria Marquez现象与营销新纪元":
+    "Creator Economy Empowerment: Valeria Marquez Phenomenon and New Era of Marketing",
+};
 
-// 为了更好的性能，使用静态生成
+// 翻译中文标题为英文
+function translateTitle(title) {
+  // 检查完整标题是否有翻译
+  if (titleTranslations[title]) {
+    return titleTranslations[title];
+  }
+
+  // 检查是否是带冒号的格式，分别翻译两部分
+  if (title.includes("：") || title.includes(":")) {
+    const separator = title.includes("：") ? "：" : ":";
+    const parts = title.split(separator);
+
+    const translatedParts = parts.map((part) => {
+      const trimmedPart = part.trim();
+      return titleTranslations[trimmedPart] || trimmedPart;
+    });
+
+    return translatedParts.join(": ");
+  }
+
+  return title;
+}
+
+// Adjust ISR cache time
+export const revalidate = 3600; // 1 hour
+
+// For better performance, use static generation
 export async function generateStaticParams() {
   try {
-    // 从全局缓存获取文章，这只会触发一次数据库查询
+    // Get articles from global cache, this will only trigger one database query
     const recentPosts = await getPosts(100);
 
     return recentPosts.map((post) => {
@@ -44,14 +76,14 @@ export async function generateStaticParams() {
     });
   } catch (error) {
     console.error("Error generating static params:", error);
-    return []; // 出错时返回空数组
+    return []; // Return empty array on error
   }
 }
 
-// 使用全局缓存简化数据获取
+// Use global cache to simplify data fetching
 async function getPostData({ date: yyyymmddParam, slug: slugParam }) {
   try {
-    // 直接从全局缓存获取文章
+    // Get article directly from global cache
     const post = await getPostBySlug(slugParam);
     return post;
   } catch (error) {
@@ -142,14 +174,14 @@ function preprocessContent(content, slug, title) {
     // 对于Pemex文章，增加一些特殊关键词
     if (isPemexArticle) {
       const pemexKeywords = [
-        "困境",
-        "曙光",
-        "腐败",
-        "迷雾",
-        "治理",
-        "挑战",
-        "投资",
-        "逻辑",
+        "dilemma",
+        "dawn",
+        "corruption",
+        "fog",
+        "governance",
+        "challenges",
+        "investment",
+        "logic",
       ];
       titleWords.push(...pemexKeywords);
     }
@@ -217,14 +249,14 @@ function preprocessContent(content, slug, title) {
   return processedContent.trim();
 }
 
-// 分割内容，以便在合适的位置插入广告
+// Split content to insert ads at appropriate positions
 function splitContentForAds(content) {
   if (!content) return { firstPart: "", middlePart: "", lastPart: "" };
 
-  // 基于段落分割内容
+  // Split content based on paragraphs
   const paragraphs = content.split("\n\n");
 
-  // 如果内容很短，不要分割
+  // If content is short, don't split
   if (paragraphs.length < 6) {
     return {
       firstPart: content,
@@ -233,7 +265,7 @@ function splitContentForAds(content) {
     };
   }
 
-  // 计算分割点 - 大约在33%和66%的位置
+  // Calculate split points - roughly at 33% and 66% positions
   const firstSplitIndex = Math.floor(paragraphs.length * 0.33);
   const secondSplitIndex = Math.floor(paragraphs.length * 0.66);
 
@@ -247,8 +279,7 @@ function splitContentForAds(content) {
 }
 
 export default async function PostPage({ params }) {
-  // 使用更标准的方式获取参数
-  // Next.js的最新版本中，需要先await整个params对象
+  // Use a more standard way to get parameters
   const resolvedParams = await params;
   const date = resolvedParams.date;
   const slug = resolvedParams.slug;
@@ -271,210 +302,31 @@ export default async function PostPage({ params }) {
   // Preprocess the content if necessary
   let processedContent = post.content;
   if (post.content) {
-    // 传入标题参数以便移除重复标题
+    // Pass in title parameter to remove duplicate titles
     processedContent = preprocessContent(post.content, slug, post.title);
   }
 
-  // 分割内容，以便在合适的位置插入广告
+  // Split content to insert ads at appropriate locations
   const { firstPart, middlePart, lastPart } =
     splitContentForAds(processedContent);
 
-  // 序列化文章数据，以便传递给客户端组件
+  // Serialize article data to pass to client components
   const serializedPost = post;
 
-  // 渲染Markdown内容的函数
+  // Function to render Markdown content
   const renderMarkdown = (content) => {
     return (
       <ReactMarkdown
         rehypePlugins={[rehypeRaw]}
         remarkPlugins={[remarkGfm]}
         components={{
-          // Custom rendering for specific elements if needed
-          h1: ({ node, ...props }) => {
-            // 将文章内容中的 h1 转换为 h2，避免与页面标题重复
-            const content = props.children?.[0]?.toString() || "";
-
-            // 检查是否是Pemex文章
-            const isPemexArticle =
-              post.title.includes("Pemex") &&
-              (post.title.includes("腐败") ||
-                post.title.includes("挑战") ||
-                post.title.includes("困境") ||
-                post.title.includes("迷雾"));
-
-            // 检查内容是否与标题相似
-            if (content) {
-              // 计算相似度的简单方法
-              const titleLower = post.title.toLowerCase();
-              const contentLower = content.toLowerCase();
-
-              // 方法1：检查完整匹配
-              if (contentLower === titleLower) {
-                return null; // 如果完全匹配，不渲染
-              }
-
-              // 方法2：检查是否主标题匹配（冒号前的部分）
-              const titleParts = post.title.split(/[：:]/);
-              const mainTitle = titleParts[0].trim().toLowerCase();
-              if (mainTitle.length > 3 && contentLower === mainTitle) {
-                return null;
-              }
-
-              // 方法3：检查内容是否包含在标题中或标题是否包含在内容中
-              if (
-                (titleLower.includes(contentLower) &&
-                  contentLower.length > 10) ||
-                (contentLower.includes(titleLower) && titleLower.length > 10)
-              ) {
-                return null;
-              }
-
-              // Pemex文章的特殊处理
-              if (isPemexArticle) {
-                // 检查是否包含特定关键词组合
-                if (
-                  (contentLower.includes("pemex") &&
-                    (contentLower.includes("困境") ||
-                      contentLower.includes("曙光") ||
-                      contentLower.includes("腐败") ||
-                      contentLower.includes("迷雾") ||
-                      contentLower.includes("治理") ||
-                      contentLower.includes("挑战") ||
-                      contentLower.includes("墨西哥") ||
-                      contentLower.includes("投资逻辑"))) ||
-                  contentLower.includes("的困境与曙光") ||
-                  contentLower.includes("腐败迷雾与治理")
-                ) {
-                  return null; // 移除匹配的标题
-                }
-              }
-            }
-
-            // 如果没有被过滤掉，将h1转为h2
-            return <h2 {...props} />;
-          },
-          h2: ({ node, ...props }) => {
-            // 检查 h2 内容是否与文章标题相似
-            const content = props.children?.[0]?.toString() || "";
-
-            // 检查是否是Pemex文章
-            const isPemexArticle =
-              post.title.includes("Pemex") &&
-              (post.title.includes("腐败") ||
-                post.title.includes("挑战") ||
-                post.title.includes("困境") ||
-                post.title.includes("迷雾"));
-
-            if (content) {
-              // 完整标题匹配
-              if (content.toLowerCase() === post.title.toLowerCase()) {
-                return null; // 不渲染重复的标题
-              }
-
-              // 主标题匹配（冒号前的部分）
-              const titleParts = post.title.split(/[：:]/);
-              const mainTitle = titleParts[0].trim();
-              if (
-                mainTitle.length > 3 &&
-                content.toLowerCase() === mainTitle.toLowerCase()
-              ) {
-                return null;
-              }
-
-              // 副标题匹配（冒号后的部分）
-              if (titleParts.length > 1) {
-                const subTitle = titleParts.slice(1).join("：").trim();
-                if (
-                  subTitle.length > 5 &&
-                  content.toLowerCase() === subTitle.toLowerCase()
-                ) {
-                  return null;
-                }
-              }
-
-              // 标题相似度检查
-              const titleLower = post.title.toLowerCase();
-              const contentLower = content.toLowerCase();
-
-              // 1. 标题包含关系检查
-              if (
-                (titleLower.includes(contentLower) &&
-                  contentLower.length > 10) ||
-                (contentLower.includes(titleLower) && titleLower.length > 10)
-              ) {
-                return null;
-              }
-
-              // 2. 包含相同关键词的检查
-              const titleWords = titleLower
-                .split(/\s+/)
-                .filter((w) => w.length > 3);
-              const contentWords = contentLower
-                .split(/\s+/)
-                .filter((w) => w.length > 3);
-
-              if (titleWords.length > 0 && contentWords.length > 0) {
-                let matchCount = 0;
-                for (const titleWord of titleWords) {
-                  if (
-                    contentWords.some(
-                      (contentWord) =>
-                        contentWord.includes(titleWord) ||
-                        titleWord.includes(contentWord)
-                    )
-                  ) {
-                    matchCount++;
-                  }
-                }
-
-                // 如果匹配度超过75%，可能是重复标题
-                if (
-                  matchCount / titleWords.length > 0.75 &&
-                  content.length >= mainTitle.length * 0.7
-                ) {
-                  return null;
-                }
-              }
-
-              // Pemex文章的特殊处理
-              if (isPemexArticle) {
-                const contentLower = content.toLowerCase();
-
-                // 特定格式检查 - 完全匹配各种可能的标题变体
-                if (
-                  contentLower.includes("pemex的困境与曙光") ||
-                  contentLower.includes("pemex腐败迷雾") ||
-                  contentLower.includes("墨西哥能源巨头") ||
-                  contentLower.includes("投资逻辑") ||
-                  contentLower.includes("治理挑战") ||
-                  contentLower.match(/pemex的.+困境/) ||
-                  contentLower.match(/pemex.+治理/)
-                ) {
-                  return null;
-                }
-              }
-            }
-
-            return <h2 {...props} />;
-          },
-          img: ({ node, ...props }) => (
-            <img
-              {...props}
-              className="post-image"
-              style={{ maxWidth: "100%", height: "auto" }}
-            />
-          ),
-          a: ({ node, ...props }) => (
-            <a {...props} target="_blank" rel="noopener noreferrer" />
-          ),
-          code: ({ node, inline, className, children, ...props }) => {
+          // Custom rendering for code blocks
+          code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || "");
-            const language = match ? match[1] : "";
-
             return !inline && match ? (
               <SyntaxHighlighter
                 style={atomDark}
-                language={language}
+                language={match[1]}
                 PreTag="div"
                 {...props}
               >
@@ -486,255 +338,85 @@ export default async function PostPage({ params }) {
               </code>
             );
           },
-          // 处理术语解释框
-          em: ({ node, ...props }) => {
-            const content = props.children?.[0]?.toString() || "";
-
-            // 检查是否是术语解释框开始或结束标记
-            if (
-              content === "_术语解释框：__" ||
-              content === "__术语解释框：__" ||
-              content === "*" ||
-              content === "*\n"
-            ) {
-              return null; // 不渲染这个标记
-            }
-
-            // 检测是否是术语解释框内容
-            if (
-              (content.startsWith("*") && content.endsWith("*")) ||
-              (content.startsWith("GMV") && content.includes("："))
-            ) {
-              // 处理带有冒号或分号的定义
-              let term, explanation;
-              if (content.includes("：") || content.includes(":")) {
-                // 移除星号并分割
-                const cleanContent = content.replace(/^\*|\*$/g, "").trim();
-                const splitIndex = Math.max(
-                  cleanContent.indexOf("："),
-                  cleanContent.indexOf(":")
-                );
-                term = cleanContent.substring(0, splitIndex).trim();
-                explanation = cleanContent.substring(splitIndex + 1).trim();
-              } else {
-                // 没有明确的分隔符，可能只是加粗或斜体文本
-                return <em {...props} />;
-              }
-
-              return (
-                <div className={styles.termBox}>
-                  <strong className={styles.termTitle}>{term}</strong>
-                  <p className={styles.termExplanation}>{explanation}</p>
-                </div>
-              );
-            }
-
-            // 常规斜体文本
-            return <em {...props} />;
-          },
-          // 处理投资启示和反面观点等特殊格式
-          p: ({ node, ...props }) => {
-            // 获取段落文本内容
-            let content = "";
-            if (Array.isArray(props.children)) {
-              // 尝试获取所有子节点的文本
-              content = props.children
-                .map((child) =>
-                  typeof child === "string"
-                    ? child
-                    : child?.props?.children?.[0]?.toString() || ""
-                )
-                .join("");
-            } else if (typeof props.children === "string") {
-              content = props.children;
-            } else if (props.children?.props?.children) {
-              content = props.children.props.children[0]?.toString() || "";
-            }
-
-            // 检查是否是投资启示段落
-            if (
-              content.includes("投资启示：") ||
-              (content.startsWith("*") &&
-                content.includes("投资启示") &&
-                content.endsWith("*"))
-            ) {
-              let insightText = content;
-
-              // 清理格式标记
-              insightText = insightText.replace(/^\*|\*$/g, "").trim();
-
-              // 提取标题和内容
-              const titleEnd = insightText.indexOf("：") + 1;
-              const title = insightText.substring(0, titleEnd).trim();
-              const contentText = insightText.substring(titleEnd).trim();
-
-              return (
-                <div className={styles.insightBox}>
-                  <h4 className={styles.insightTitle}>{title}</h4>
-                  <p className={styles.insightContent}>{contentText}</p>
-                </div>
-              );
-            }
-
-            // 检查是否是反面观点
-            if (
-              content.includes("反面观点：") ||
-              (content.startsWith("*") &&
-                content.includes("反面观点") &&
-                content.endsWith("*"))
-            ) {
-              let counterText = content;
-
-              // 清理格式标记
-              counterText = counterText.replace(/^\*|\*$/g, "").trim();
-
-              // 提取标题和内容
-              const titleEnd = counterText.indexOf("：") + 1;
-              const title = counterText.substring(0, titleEnd).trim();
-              const contentText = counterText.substring(titleEnd).trim();
-
-              return (
-                <div className={styles.counterBox}>
-                  <h4 className={styles.counterTitle}>{title}</h4>
-                  <p className={styles.counterContent}>{contentText}</p>
-                </div>
-              );
-            }
-
-            // 普通段落正常渲染
-            return <p {...props} />;
-          },
-          // Add more custom renderers as needed
+          // Handle other elements as needed
         }}
       >
-        {content || "This article has no content yet."}
+        {content}
       </ReactMarkdown>
     );
   };
 
   return (
-    <article className={styles.article}>
-      {/* 添加客户端跟踪组件，传递序列化后的post数据 */}
-      <PostViewTracker post={serializedPost} />
+    <GlobalLayout>
+      <article className={styles.article}>
+        <header className={styles.header}>
+          <h1 className={styles.title}>{translateTitle(post.title)}</h1>
+          <div className={styles.meta}>
+            <time dateTime={post.createdAt} className={styles.date}>
+              {formattedDate}
+            </time>
+          </div>
+        </header>
 
-      <Link href="/" className="back-link">
-        ← Back to Articles
-      </Link>
+        {/* Client-side view tracker */}
+        <PostViewTracker postId={post._id.toString()} slug={post.slug} />
 
-      <header className={styles.header}>
-        <h1 className={styles.title}>{post.title}</h1>
-        <div className={styles.meta}>
-          <time dateTime={dayjs(post.createdAt).format("YYYY-MM-DD")}>
-            {formattedDate}
-          </time>
+        {/* 文章点赞按钮，放在分享按钮前面 */}
+        <div className={styles.likeButtonWrapper}>
+          <LikeButtonWrapper postId={post._id.toString()} slug={post.slug} />
+        </div>
 
-          {post.tagIds && post.tagIds.length > 0 && (
-            <div className={styles.tags}>
-              {post.tagIds.slice(0, 3).map((tagId, index) => (
-                <TagTracker key={index} tagId={tagId} className={styles.tag} />
-              ))}
-              {post.tagIds.length > 3 && (
-                <span className={styles.moreTags}>
-                  +{post.tagIds.length - 3}
-                </span>
+        {/* Share buttons */}
+        <Suspense
+          fallback={
+            <div className={styles.loading}>Loading share options...</div>
+          }
+        >
+          <ShareButtonsContainer post={serializedPost} />
+        </Suspense>
+
+        {/* Main content split into parts with ads */}
+        <div className={styles.content}>
+          <div className={styles.contentPart}>{renderMarkdown(firstPart)}</div>
+
+          {middlePart && (
+            <>
+              {/* Ad in the middle of the article */}
+              <div className={styles.inArticleAd}>
+                <ClientAdPlaceholder size="banner" position="in-article" />
+              </div>
+
+              <div className={styles.contentPart}>
+                {renderMarkdown(middlePart)}
+              </div>
+            </>
+          )}
+
+          {lastPart && (
+            <>
+              {/* Another ad if there's a last part */}
+              {middlePart && (
+                <div className={styles.inArticleAd}>
+                  <ClientAdPlaceholder size="banner" position="in-article-2" />
+                </div>
               )}
-            </div>
+
+              <div className={styles.contentPart}>
+                {renderMarkdown(lastPart)}
+              </div>
+            </>
           )}
         </div>
 
-        {/* 添加分享按钮 */}
-        <Suspense fallback={<div>加载分享选项...</div>}>
-          <ShareButtonsContainer title={post.title} summary={post.summary} />
+        {/* Related posts section */}
+        <Suspense
+          fallback={
+            <div className={styles.loading}>Loading related articles...</div>
+          }
+        >
+          <ClientRelatedPosts currentPost={serializedPost} />
         </Suspense>
-      </header>
-
-      {post.summary && (
-        <div className={styles.postSummary}>
-          <p>
-            <em>{post.summary}</em>
-          </p>
-          <hr className={styles.summaryDivider} />
-        </div>
-      )}
-
-      {/* 摘要下方的顶部广告占位符 */}
-      <ClientAdPlaceholder
-        size="leaderboard"
-        position="in-article"
-        theme="light"
-      />
-
-      <div className={styles.postContent}>
-        {/* 第一部分内容 */}
-        {firstPart && renderMarkdown(firstPart)}
-
-        {/* 中间广告占位符 - 仅当内容足够长时显示 */}
-        {middlePart && (
-          <ClientAdPlaceholder
-            size="rectangle"
-            position="in-article"
-            theme="brand"
-          />
-        )}
-
-        {/* 第二部分内容 */}
-        {middlePart && renderMarkdown(middlePart)}
-
-        {/* 第三部分内容 */}
-        {lastPart && renderMarkdown(lastPart)}
-      </div>
-
-      {/* 文章底部，结论前的广告占位符 */}
-      <ClientAdPlaceholder size="banner" position="footer" theme="light" />
-
-      {post.conclusion && (
-        <div className={styles.postConclusion}>
-          <h2>Conclusion</h2>
-          <p>{post.conclusion}</p>
-
-          {/* 添加文章底部分享按钮 */}
-          <div className={styles.conclusionShareButtons}>
-            <h3>喜欢这篇文章？分享给朋友！</h3>
-            <Suspense fallback={<div>加载分享选项...</div>}>
-              <ShareButtonsContainer
-                title={post.title}
-                summary={post.summary}
-              />
-            </Suspense>
-          </div>
-        </div>
-      )}
-
-      {/* 相关文章推荐 */}
-      <ClientRelatedPosts currentPost={serializedPost} />
-
-      {post.tagIds && post.tagIds.length > 0 && (
-        <div className={styles.postTags}>
-          <h3>Tags</h3>
-          <div className={styles.tagsContainer}>
-            {post.tagIds.map((tagId, index) => (
-              <span key={index} className={styles.tag}>
-                {getTagTextById(tagId)}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {post.links && post.links.length > 0 && (
-        <div className={styles.postReferences}>
-          <h3>References</h3>
-          <ul className={styles.referencesList}>
-            {post.links.map((link, index) => (
-              <li key={index}>
-                <a href={link} target="_blank" rel="noopener noreferrer">
-                  {link}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </article>
+      </article>
+    </GlobalLayout>
   );
 }

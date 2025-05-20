@@ -30,32 +30,6 @@
   margin-right: 1rem;
 }
 
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.tag {
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  background-color: var(--tag-bg);
-  color: var(--tag-text);
-  font-size: 0.8rem;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.tag:hover {
-  background-color: var(--tag-bg-hover);
-}
-
-.moreTags {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  margin-left: 0.5rem;
-}
-
 .postSummary {
   margin: 1.5rem 0;
   padding: 1rem;
@@ -171,17 +145,6 @@
   margin-bottom: 1rem;
   font-size: 1.2rem;
   color: var(--text-secondary);
-}
-
-.postTags {
-  margin: 2rem 0;
-}
-
-.tagsContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
 }
 
 .postReferences {
@@ -303,4 +266,11 @@
   .counterTitle {
     font-size: 1.1rem;
   }
+}
+
+/* 添加点赞按钮包装器样式 */
+.likeButtonWrapper {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
 }

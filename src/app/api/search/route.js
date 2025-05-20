@@ -23,7 +23,7 @@ export async function GET(request) {
       // 查找标题、内容、摘要
       const basicMatch =
         (post.title && searchRegex.test(post.title)) ||
-        (post.content && searchRegex.test(post.content)) ||
+        (post.content && searchRegex.test(String(post.content))) ||
         (post.summary && searchRegex.test(post.summary));
 
       if (basicMatch) return true;

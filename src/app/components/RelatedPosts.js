@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import dayjs from "dayjs";
 
-// 格式化日期为URL格式
+// Format date for URL format
 function formatDateToYYYYMMDD(dateString) {
   const date = new Date(dateString);
   const year = date.getFullYear();
@@ -14,7 +14,7 @@ function formatDateToYYYYMMDD(dateString) {
   return `${year}${month}${day}`;
 }
 
-// URL安全的slug处理
+// URL safe slug processing
 function getUrlSafeSlug(slug) {
   if (!slug) return "";
 
@@ -31,15 +31,15 @@ function getUrlSafeSlug(slug) {
 }
 
 /**
- * 相关文章组件 - 根据当前文章的标签显示相关推荐
- * @param {Object} currentPost - 当前文章
- * @param {Array} currentPost.tagIds - 当前文章的标签ID数组
- * @param {string} currentPost._id - 当前文章ID，用于排除自己
+ * Related Posts Component - Shows recommendations based on current article tags
+ * @param {Object} currentPost - Current article
+ * @param {Array} currentPost.tagIds - Current article's tag ID array
+ * @param {string} currentPost._id - Current article ID, used to exclude itself
  */
 export default function RelatedPosts({ currentPost }) {
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const fetchedRef = useRef(false); // 用于跟踪是否已经发起过请求
+  const fetchedRef = useRef(false); // Used to track if a request has already been initiated
 
   useEffect(() => {
     async function fetchRelatedPosts() {
@@ -54,10 +54,10 @@ export default function RelatedPosts({ currentPost }) {
         return;
       }
 
-      fetchedRef.current = true; // 标记已经发起过请求
+      fetchedRef.current = true; // Mark that a request has been initiated
 
       try {
-        // 获取带有相同标签的文章
+        // Get articles with the same tags
         const tagIds = encodeURIComponent(currentPost.tagIds.join(","));
         const response = await fetch(
           `/api/related?tags=${tagIds}&exclude=${currentPost._id}`
@@ -68,7 +68,7 @@ export default function RelatedPosts({ currentPost }) {
         }
 
         const data = await response.json();
-        setRelatedPosts(data.slice(0, 3)); // 最多显示3篇相关文章
+        setRelatedPosts(data.slice(0, 3)); // Show at most 3 related articles
       } catch (error) {
         console.error("Error fetching related posts:", error);
         setRelatedPosts([]);
@@ -80,14 +80,14 @@ export default function RelatedPosts({ currentPost }) {
     fetchRelatedPosts();
   }, [currentPost]);
 
-  // 如果没有相关文章，则不渲染
+  // If there are no related posts, don't render
   if (!loading && relatedPosts.length === 0) {
     return null;
   }
 
   return (
     <div className="related-posts-container">
-      <h3 className="related-posts-title">相关推荐</h3>
+      <h3 className="related-posts-title">Related Articles</h3>
 
       {loading ? (
         <div className="related-posts-loading">

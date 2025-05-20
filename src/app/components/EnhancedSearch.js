@@ -16,7 +16,7 @@ export default function EnhancedSearch() {
   const inputRef = useRef(null);
   const router = useRouter();
 
-  // 初始化时从本地存储加载最近的搜索记录
+  // Load recent searches from local storage on initialization
   useEffect(() => {
     const storedSearches = localStorage.getItem("recentSearches");
     if (storedSearches) {
@@ -28,7 +28,7 @@ export default function EnhancedSearch() {
     }
   }, []);
 
-  // 监听点击事件，实现点击外部关闭搜索
+  // Listen for click events to close search when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -42,7 +42,7 @@ export default function EnhancedSearch() {
     };
   }, []);
 
-  // 搜索建议逻辑
+  // Search suggestion logic
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (query.length < 2) {
@@ -52,14 +52,14 @@ export default function EnhancedSearch() {
 
       setIsLoading(true);
       try {
-        // 这里可以连接到你的实际建议API
-        // 现在我们模拟一些建议
+        // Here you can connect to your actual suggestion API
+        // Now we are simulating some suggestions
         setTimeout(() => {
           const mockSuggestions = [
-            `${query} 分析`,
-            `${query} 历史`,
-            `${query} 案例`,
-            `${query} 最新动态`,
+            `${query} analysis`,
+            `${query} history`,
+            `${query} case studies`,
+            `${query} latest developments`,
           ].filter((s) => s.length > query.length);
 
           setSuggestions(mockSuggestions);
@@ -81,10 +81,10 @@ export default function EnhancedSearch() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (query.trim()) {
-      // 记录搜索到分析系统
+      // Record search to analytics system
       trackSearch(query, -1);
 
-      // 保存到最近搜索记录
+      // Save to recent searches
       const updatedSearches = [
         query,
         ...recentSearches.filter((s) => s !== query),
@@ -93,7 +93,7 @@ export default function EnhancedSearch() {
       setRecentSearches(updatedSearches);
       localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
 
-      // 跳转到搜索页面
+      // Navigate to search page
       router.push(`/search?q=${encodeURIComponent(query.trim())}`);
       setIsExpanded(false);
     }
@@ -102,7 +102,7 @@ export default function EnhancedSearch() {
   const toggleSearch = () => {
     setIsExpanded(!isExpanded);
     if (!isExpanded) {
-      // 当搜索框展开时，自动聚焦
+      // Auto-focus when search box expands
       setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
@@ -113,7 +113,7 @@ export default function EnhancedSearch() {
     setQuery(suggestion);
     trackSearch(suggestion, -1);
 
-    // 保存到最近搜索记录
+    // Save to recent searches
     const updatedSearches = [
       suggestion,
       ...recentSearches.filter((s) => s !== suggestion),
@@ -122,7 +122,7 @@ export default function EnhancedSearch() {
     setRecentSearches(updatedSearches);
     localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
 
-    // 跳转到搜索页面
+    // Navigate to search page
     router.push(`/search?q=${encodeURIComponent(suggestion.trim())}`);
     setIsExpanded(false);
   };
@@ -149,7 +149,7 @@ export default function EnhancedSearch() {
         type="button"
         className={styles.searchToggle}
         onClick={toggleSearch}
-        aria-label={isExpanded ? "关闭搜索" : "打开搜索"}
+        aria-label={isExpanded ? "Close Search" : "Open Search"}
       >
         {isExpanded ? (
           <span className={styles.closeIcon}>✕</span>
@@ -166,20 +166,22 @@ export default function EnhancedSearch() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="搜索文章、主题或关键词..."
+              placeholder="Search articles, topics, or keywords..."
               className={styles.searchInput}
-              aria-label="搜索文章"
+              aria-label="Search articles"
             />
             <button type="submit" className={styles.searchButton}>
-              搜索
+              Search
             </button>
           </form>
 
-          {/* 搜索建议 */}
+          {/* Search suggestions */}
           {query.length > 1 && (
             <div className={styles.suggestionsContainer}>
               {isLoading ? (
-                <div className={styles.loadingIndicator}>加载建议中...</div>
+                <div className={styles.loadingIndicator}>
+                  Loading suggestions...
+                </div>
               ) : suggestions.length > 0 ? (
                 <ul className={styles.suggestionsList}>
                   {suggestions.map((suggestion, index) => (
@@ -201,30 +203,34 @@ export default function EnhancedSearch() {
                     </li>
                   ))}
                 </ul>
-              ) : null}
+              ) : (
+                <div className={styles.noSuggestions}>
+                  No matching results found
+                </div>
+              )}
             </div>
           )}
 
-          {/* 最近搜索 */}
+          {/* Recent searches */}
           {query.length === 0 && recentSearches.length > 0 && (
-            <div className={styles.recentSearches}>
-              <div className={styles.recentHeader}>
-                <span>最近搜索</span>
+            <div className={styles.recentSearchesContainer}>
+              <div className={styles.recentSearchesHeader}>
+                <h3>Recent Searches</h3>
                 <button
-                  className={styles.clearButton}
                   onClick={clearRecentSearches}
+                  className={styles.clearRecentButton}
                 >
-                  清除
+                  Clear
                 </button>
               </div>
-              <ul className={styles.recentList}>
+              <ul className={styles.recentSearchesList}>
                 {recentSearches.map((search, index) => (
-                  <li key={index} className={styles.recentItem}>
+                  <li key={index} className={styles.recentSearchItem}>
                     <button
                       onClick={() => handleRecentSearchClick(search)}
-                      className={styles.recentButton}
+                      className={styles.recentSearchButton}
                     >
-                      <span className={styles.historyIcon}>⟲</span>
+                      <span className={styles.historyIcon}>⏱️</span>
                       {search}
                     </button>
                   </li>

@@ -23,10 +23,10 @@ const ShareButtons = ({ title, summary }) => {
   const tooltipRef = useRef(null);
 
   useEffect(() => {
-    // 获取当前页面URL
+    // Get current page URL
     setShareUrl(window.location.href);
 
-    // 点击外部区域时关闭QR码和提示框
+    // Close QR code and tooltip when clicking outside
     const handleClickOutside = (event) => {
       if (qrRef.current && !qrRef.current.contains(event.target)) {
         setShowQR(false);
@@ -42,7 +42,7 @@ const ShareButtons = ({ title, summary }) => {
     };
   }, []);
 
-  // 分享到微博
+  // Share to Weibo
   const shareToWeibo = () => {
     const weiboUrl = `http://service.weibo.com/share/share.php?url=${encodeURIComponent(
       shareUrl
@@ -51,7 +51,7 @@ const ShareButtons = ({ title, summary }) => {
     trackShare("weibo", title);
   };
 
-  // 分享到Twitter
+  // Share to Twitter
   const shareToTwitter = () => {
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       title
@@ -60,7 +60,7 @@ const ShareButtons = ({ title, summary }) => {
     trackShare("twitter", title);
   };
 
-  // 分享到Facebook
+  // Share to Facebook
   const shareToFacebook = () => {
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
       shareUrl
@@ -69,7 +69,7 @@ const ShareButtons = ({ title, summary }) => {
     trackShare("facebook", title);
   };
 
-  // 复制链接
+  // Copy link
   const copyLink = () => {
     navigator.clipboard.writeText(shareUrl).then(() => {
       setShowTooltip(true);
@@ -78,7 +78,7 @@ const ShareButtons = ({ title, summary }) => {
     });
   };
 
-  // 显示微信二维码
+  // Show WeChat QR code
   const showWeChatQR = () => {
     setShowQR(true);
     trackShare("wechat_qr_shown", title);
@@ -86,12 +86,12 @@ const ShareButtons = ({ title, summary }) => {
 
   return (
     <div className={styles.shareContainer}>
-      <p className={styles.shareText}>分享到:</p>
+      <p className={styles.shareText}>Share to:</p>
       <div className={styles.shareButtons}>
         <button
           className={`${styles.shareButton} ${styles.wechat}`}
           onClick={showWeChatQR}
-          aria-label="分享到微信"
+          aria-label="Share to WeChat"
         >
           <FaWeixin />
         </button>
@@ -99,7 +99,7 @@ const ShareButtons = ({ title, summary }) => {
         <button
           className={`${styles.shareButton} ${styles.weibo}`}
           onClick={shareToWeibo}
-          aria-label="分享到微博"
+          aria-label="Share to Weibo"
         >
           <FaWeibo />
         </button>
@@ -107,7 +107,7 @@ const ShareButtons = ({ title, summary }) => {
         <button
           className={`${styles.shareButton} ${styles.twitter}`}
           onClick={shareToTwitter}
-          aria-label="分享到Twitter"
+          aria-label="Share to Twitter"
         >
           <FaTwitter />
         </button>
@@ -115,7 +115,7 @@ const ShareButtons = ({ title, summary }) => {
         <button
           className={`${styles.shareButton} ${styles.facebook}`}
           onClick={shareToFacebook}
-          aria-label="分享到Facebook"
+          aria-label="Share to Facebook"
         >
           <FaFacebook />
         </button>
@@ -123,12 +123,12 @@ const ShareButtons = ({ title, summary }) => {
         <button
           className={`${styles.shareButton} ${styles.copyLink}`}
           onClick={copyLink}
-          aria-label="复制链接"
+          aria-label="Copy link"
         >
           <FaLink />
           {showTooltip && (
             <div className={styles.tooltip} ref={tooltipRef}>
-              链接已复制!
+              Link copied!
             </div>
           )}
         </button>
@@ -140,16 +140,16 @@ const ShareButtons = ({ title, summary }) => {
             <button
               className={styles.closeButton}
               onClick={() => setShowQR(false)}
-              aria-label="关闭二维码"
+              aria-label="Close QR code"
             >
               <FaTimes />
             </button>
-            <h3>微信扫码分享</h3>
+            <h3>Scan WeChat QR Code to Share</h3>
             <div className={styles.qrCode}>
               <QRCodeCanvas value={shareUrl} size={200} />
             </div>
             <p className={styles.qrInstructions}>
-              请使用微信扫一扫功能扫描上方二维码
+              Please use WeChat's scan feature to scan the QR code above
             </p>
           </div>
         </div>

@@ -1,28 +1,28 @@
-"use client"; // 这个标记表明这是一个客户端组件
+"use client"; // This tag indicates that this is a client component
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 
-// 在客户端组件中动态导入EnhancedSidebar
+// Dynamically import EnhancedSidebar in the client component
 const EnhancedSidebar = dynamic(() => import("./EnhancedSidebar"), {
   ssr: false,
-  loading: () => <div className="sidebar-loading">加载中...</div>,
+  loading: () => <div className="sidebar-loading">Loading...</div>,
 });
 
 /**
- * 客户端侧边栏容器
- * 这个组件存在的目的是将动态导入逻辑移到客户端组件中，
- * 因为在服务器组件中不允许使用 `ssr: false` 选项
+ * Client-side sidebar container
+ * The purpose of this component is to move the dynamic import logic to a client component,
+ * as the `ssr: false` option is not allowed in server components
  */
 export default function SidebarContainer() {
-  // 可以在这里添加任何客户端逻辑，比如状态管理
+  // Can add any client-side logic here, such as state management
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // 确认我们现在在客户端环境
+    // Confirm that we are now in a client environment
     setIsClient(true);
   }, []);
 
-  // 渲染增强的侧边栏
+  // Render the enhanced sidebar
   return <EnhancedSidebar />;
 }

@@ -1,37 +1,80 @@
 "use client";
 
-import { useEffect } from "react";
-import { trackPostView, trackExternalLinkClick } from "@/lib/analytics";
+import { useEffect, useState } from "react";
+import { trackPostView } from "@/lib/analytics";
 
 /**
- * 客户端组件，用于跟踪文章阅读事件和外部链接点击
+ * 组件用于追踪文章浏览量
+ * 在客户端组件中使用useEffect钩子追踪浏览量
+ * 每当组件加载（即用户访问文章）时，发送一个API请求增加浏览量
  */
-export default function PostViewTracker({ post }) {
+export default function PostViewTracker({ postId, slug }) {
+  const [hasTracked, setHasTracked] = useState(false);
+  const [viewCount, setViewCount] = useState(null);
+
   useEffect(() => {
-    if (post?._id) {
-      // 文章加载完成后，跟踪阅读事件
-      trackPostView(post);
+    if (!postId || hasTracked) return;
 
-      // 添加外部链接点击跟踪
-      const trackExternalLinks = () => {
-        const links = document.querySelectorAll(
-          '.post-content a[href^="http"], .post-references a[href^="http"]'
-        );
-        links.forEach((link) => {
-          if (!link.getAttribute("data-tracked")) {
-            link.setAttribute("data-tracked", "true");
-            link.addEventListener("click", () => {
-              trackExternalLinkClick(link.href, link.textContent);
-            });
-          }
-        });
-      };
+    const sessionKey = `viewed-${postId}`;
+    const hasViewedInSession = sessionStorage.getItem(sessionKey);
 
-      // 页面完全加载后跟踪外部链接
-      setTimeout(trackExternalLinks, 1000);
+    if (hasViewedInSession) {
+      // 获取当前文章的浏览量但不递增
+      fetchViewCount();
+      return;
     }
-  }, [post]);
 
-  // 这个组件不需要渲染任何内容
-  return null;
+    // 设置一个合理的延迟来确保用户真的在阅读文章
+    const timer = setTimeout(() => {
+      incrementViewCount();
+    }, 5000); // 5秒后认为用户真正阅读
+
+    return () => clearTimeout(timer);
+  }, [postId, hasTracked]);
+
+  // 获取当前浏览量
+  const fetchViewCount = async () => {
+    try {
+      const response = await fetch(`/api/views?id=${postId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setViewCount(data.views);
+      }
+    } catch (error) {
+      console.error("Failed to fetch view count:", error);
+    }
+  };
+
+  // 递增浏览量
+  const incrementViewCount = async () => {
+    try {
+      const response = await fetch("/api/views/increment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ postId, slug }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setViewCount(data.views);
+
+        // 在会话中标记该文章已被浏览
+        sessionStorage.setItem(`viewed-${postId}`, "true");
+        setHasTracked(true);
+      }
+    } catch (error) {
+      console.error("Failed to increment view count:", error);
+    }
+  };
+
+  return (
+    <>
+      {/* 这是一个不可见的组件，仅用于跟踪浏览量 */}
+      {viewCount !== null && (
+        <div className="hidden">{`Article views: ${viewCount}`}</div>
+      )}
+    </>
+  );
 }

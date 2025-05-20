@@ -4,37 +4,69 @@ import Link from "next/link";
 import Image from "next/image";
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
-import TagTracker from "@/app/posts/[date]/[slug]/TagTracker";
 import FallbackCover from "./FallbackCover";
 import styles from "./PostCard.module.css";
 import { getTagTextById } from "@/lib/tags";
 
-// 估算阅读时间（每分钟200字）
-function calculateReadTime(content) {
-  if (!content) return 1;
-  const words = content.trim().split(/\s+/).length;
-  const minutes = Math.ceil(words / 200);
-  return Math.max(1, minutes); // 最少1分钟
+// 添加标题翻译映射
+const titleTranslations = {
+  网红经济赋能者佳品: "Creator Economy Empowerment",
+  现象与营销新纪元: "Phenomenon and New Era of Marketing",
+  "网红经济赋能者佳品：Valeria Marquez现象与营销新纪元":
+    "Creator Economy Empowerment: Valeria Marquez Phenomenon and New Era of Marketing",
+};
+
+// 翻译中文标题为英文
+function translateTitle(title) {
+  // 检查完整标题是否有翻译
+  if (titleTranslations[title]) {
+    return titleTranslations[title];
+  }
+
+  // 检查是否是带冒号的格式，分别翻译两部分
+  if (title.includes("：") || title.includes(":")) {
+    const separator = title.includes("：") ? "：" : ":";
+    const parts = title.split(separator);
+
+    const translatedParts = parts.map((part) => {
+      const trimmedPart = part.trim();
+      return titleTranslations[trimmedPart] || trimmedPart;
+    });
+
+    return translatedParts.join(": ");
+  }
+
+  return title;
 }
 
-// 生成文章封面图片
+// Estimate reading time (200 words per minute)
+function calculateReadTime(content) {
+  if (!content) return 1;
+  // 确保内容是字符串类型
+  const contentStr = String(content);
+  const words = contentStr.trim().split(/\s+/).length;
+  const minutes = Math.ceil(words / 200);
+  return Math.max(1, minutes); // Minimum 1 minute
+}
+
+// Generate article cover image
 function getCoverImage(post) {
-  // 如果文章有指定封面图，使用它
+  // If the article has a specified cover image, use it
   if (post.coverImage) {
     return post.coverImage;
   }
 
-  // 根据标签或标题选择默认封面
+  // Choose default cover based on tags or title
   const defaultImages = {
-    政治: "/images/covers/politics.svg",
-    经济: "/images/covers/economy.svg",
-    科技: "/images/covers/tech.svg",
-    国际: "/images/covers/international.svg",
-    社会: "/images/covers/society.svg",
+    Politics: "/images/covers/politics.svg",
+    Economy: "/images/covers/economy.svg",
+    Technology: "/images/covers/tech.svg",
+    International: "/images/covers/international.svg",
+    Society: "/images/covers/society.svg",
     default: "/images/covers/default.svg",
   };
 
-  // 查找匹配的标签
+  // Find matching tags
   if (post.tagIds && post.tagIds.length > 0) {
     for (const tagId of post.tagIds) {
       const tagText = getTagTextById(tagId);
@@ -46,56 +78,70 @@ function getCoverImage(post) {
     }
   }
 
-  // 查找标题中的关键词
+  // Find keywords in the title
   for (const [key, url] of Object.entries(defaultImages)) {
     if (post.title.includes(key)) {
       return url;
     }
   }
 
-  // 如果没有匹配，使用默认封面
+  // If no match, use default cover
   return defaultImages.default;
 }
 
 export default function PostCard({ post, showImage = true }) {
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(0); // 初始值设为0，在useEffect中更新
+  const [likeCount, setLikeCount] = useState(0);
   const [isClient, setIsClient] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const [useFallbackFormat, setUseFallbackFormat] = useState(false); // 添加状态控制是否使用备用格式
+  const [useFallbackFormat, setUseFallbackFormat] = useState(false);
 
-  // 在客户端初始化状态
+  // 初始化状态
   useEffect(() => {
     setIsClient(true);
-    // 从localStorage获取点赞状态
+
+    // 检查当前用户是否已点赞过该文章
     const cachedLiked = localStorage.getItem(`liked_${post._id}`);
     if (cachedLiked === "true") {
       setLiked(true);
     }
 
-    // 设置初始点赞数
-    const initialLikes = post.likes || 10; // 使用固定值替代随机数
-    setLikeCount(initialLikes);
+    // 从API获取文章点赞数据
+    async function fetchLikes() {
+      try {
+        const response = await fetch(`/api/likes?id=${post._id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setLikeCount(data.likes);
+        }
+      } catch (error) {
+        console.error("Failed to fetch likes:", error);
+        // 如果获取失败，使用文章中的likes属性，如果没有则为0
+        setLikeCount(post.likes || 0);
+      }
+    }
+
+    fetchLikes();
   }, [post._id, post.likes]);
 
-  // 处理图片加载错误
+  // Handle image loading error
   const handleImageError = () => {
     if (!useFallbackFormat) {
-      // 如果SVG加载失败，尝试使用JPG
+      // If SVG fails to load, try JPG
       setUseFallbackFormat(true);
     } else {
-      // 如果JPG也失败，设置错误状态
+      // If JPG also fails, set error state
       setImageError(true);
     }
   };
 
-  // 获取图片URL，根据需要尝试JPG格式
+  // Get image URL, try JPG format if needed
   const getImageUrl = () => {
     let url = imageError
-      ? getCoverImage({ ...post, title: "失败" })
+      ? getCoverImage({ ...post, title: "Failed" })
       : getCoverImage(post);
 
-    // 如果需要使用备用格式，将SVG替换为JPG
+    // If fallback format is needed, replace SVG with JPG
     if (useFallbackFormat && url.endsWith(".svg")) {
       return url.replace(".svg", ".jpg");
     }
@@ -103,7 +149,7 @@ export default function PostCard({ post, showImage = true }) {
     return url;
   };
 
-  // 格式化日期和URL
+  // Format date and URL
   const formatDateToYYYYMMDD = (dateString) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -127,35 +173,46 @@ export default function PostCard({ post, showImage = true }) {
   const formattedDate = dayjs(post.createdAt).format("YYYY-MM-DD");
   const readTime = calculateReadTime(post.content);
 
-  // 处理赞操作
-  const handleLike = (e) => {
+  // 处理点赞操作
+  const handleLike = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (!liked) {
-      setLiked(true);
-      setLikeCount(likeCount + 1);
-
-      // 记录点赞操作
       try {
-        // 实际项目中可以调用API记录点赞
-        localStorage.setItem(`liked_${post._id}`, "true");
+        // 发送请求到点赞API
+        const response = await fetch("/api/likes/increment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ postId: post._id, slug: post.slug }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          // 更新UI状态
+          setLiked(true);
+          setLikeCount(data.likes);
+          // 在localStorage中记录已点赞状态
+          localStorage.setItem(`liked_${post._id}`, "true");
+        }
       } catch (error) {
-        console.error("Error saving like:", error);
+        console.error("Failed to like post:", error);
       }
     }
   };
 
-  // 处理标题，确保标题不会太长
+  // Handle title, ensure title is not too long
   const formatTitle = (title) => {
-    // 如果标题超过50个字符，截断并添加省略号
+    // If title is longer than 50 characters, truncate and add ellipsis
     if (title && title.length > 70) {
       return `${title.substring(0, 70)}...`;
     }
     return title;
   };
 
-  // 仅在客户端渲染完整内容
+  // Only render full content on client
   if (!isClient) {
     return <div className={styles.loading}>Loading...</div>;
   }
@@ -166,7 +223,7 @@ export default function PostCard({ post, showImage = true }) {
         <div className={styles.imageContainer}>
           <Link href={postUrl} className={styles.imageLink}>
             {imageError ? (
-              // 当所有图片加载失败时，使用备用封面
+              // When all image loading fails, use fallback cover
               <FallbackCover
                 title={post.title}
                 category={post.tags?.[0] || "default"}
@@ -193,7 +250,7 @@ export default function PostCard({ post, showImage = true }) {
       <div className={styles.content}>
         <Link href={postUrl}>
           <h2 className={styles.title} title={post.title}>
-            {formatTitle(post.title)}
+            {formatTitle(translateTitle(post.title))}
           </h2>
         </Link>
 
@@ -207,40 +264,34 @@ export default function PostCard({ post, showImage = true }) {
 
           <div className={styles.readTime}>
             <span className={styles.icon}>⏱️</span>
-            <span>{readTime} 分钟阅读</span>
+            <span>{readTime} min read</span>
           </div>
 
           {post.views && (
             <div className={styles.views}>
               <span className={styles.icon}>👁️</span>
-              <span>{post.views} 阅读</span>
+              <span>{post.views} views</span>
             </div>
           )}
         </div>
 
-        {post.tagIds && post.tagIds.length > 0 && (
-          <div className={styles.tags}>
-            {post.tagIds.slice(0, 3).map((tagId, index) => (
-              <TagTracker key={index} tagId={tagId} className={styles.tag} />
-            ))}
-          </div>
-        )}
-
         <p className={styles.summary}>
           {post.summary ||
-            post.content?.substring(0, 150) + "..." ||
+            (post.content
+              ? String(post.content).substring(0, 150) + "..."
+              : "") ||
             "No summary available for this article."}
         </p>
 
         <div className={styles.footer}>
           <Link href={postUrl} className={styles.readMore}>
-            继续阅读 →
+            Continue Reading →
           </Link>
 
           <button
             onClick={handleLike}
             className={`${styles.likeButton} ${liked ? styles.liked : ""}`}
-            aria-label="点赞"
+            aria-label="Like"
           >
             <span className={styles.likeIcon}>{liked ? "❤️" : "🤍"}</span>
             <span className={styles.likeCount}>{likeCount}</span>

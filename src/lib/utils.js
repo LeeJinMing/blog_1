@@ -58,7 +58,7 @@ export function formatDate(dateString, format = "medium") {
       long: { month: "long", day: "numeric", year: "numeric" },
     };
 
-    return new Intl.DateTimeFormat("zh-CN", options[format]).format(date);
+    return new Intl.DateTimeFormat("en-US", options[format]).format(date);
   } catch (e) {
     console.error("Error formatting date:", e);
     return dateString;
@@ -88,28 +88,28 @@ export function timeAgo(date) {
 
   let interval = seconds / 31536000;
   if (interval > 1) {
-    return Math.floor(interval) + " 年前";
+    return Math.floor(interval) + " years ago";
   }
 
   interval = seconds / 2592000;
   if (interval > 1) {
-    return Math.floor(interval) + " 个月前";
+    return Math.floor(interval) + " months ago";
   }
 
   interval = seconds / 86400;
   if (interval > 1) {
-    return Math.floor(interval) + " 天前";
+    return Math.floor(interval) + " days ago";
   }
 
   interval = seconds / 3600;
   if (interval > 1) {
-    return Math.floor(interval) + " 小时前";
+    return Math.floor(interval) + " hours ago";
   }
 
   interval = seconds / 60;
   if (interval > 1) {
-    return Math.floor(interval) + " 分钟前";
+    return Math.floor(interval) + " minutes ago";
   }
 
-  return "刚刚";
+  return "just now";
 }

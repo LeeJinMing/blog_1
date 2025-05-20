@@ -1,0 +1,498 @@
+.settingsContainer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  color: #292929;
+}
+
+.settingsHeader {
+  margin-bottom: 40px;
+  border-bottom: 1px solid #f2f2f2;
+  padding-bottom: 24px;
+}
+
+.settingsTitle {
+  font-family: "Merriweather", serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.settingsDescription {
+  color: #757575;
+  font-size: 1.125rem;
+  font-weight: 400;
+}
+
+.settingsSections {
+  display: flex;
+  gap: 32px;
+}
+
+.sideNav {
+  flex: 0 0 220px;
+  position: sticky;
+  top: 80px;
+  align-self: flex-start;
+}
+
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navItem {
+  margin-bottom: 8px;
+}
+
+.navButton {
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #757575;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.navButton:hover {
+  background-color: #f2f2f2;
+  color: #292929;
+}
+
+.navItem.active .navButton {
+  background-color: #f2f2f2;
+  color: #292929;
+  font-weight: 600;
+}
+
+.settingsContent {
+  flex: 1;
+  max-width: 640px;
+}
+
+.settingsSection {
+  margin-bottom: 48px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.settingsSection:last-child {
+  border-bottom: none;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  font-family: "Inter", sans-serif;
+}
+
+.formGroup {
+  margin-bottom: 24px;
+}
+
+.formLabel {
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #292929;
+}
+
+.formInput,
+.formTextarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #292929;
+  background-color: white;
+  transition: border-color 0.2s ease;
+}
+
+.formInput:focus,
+.formTextarea:focus {
+  border-color: #292929;
+  outline: none;
+}
+
+.formHelper {
+  margin-top: 6px;
+  font-size: 0.875rem;
+  color: #757575;
+}
+
+.saveButton {
+  background-color: #1a8917;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.saveButton:hover {
+  background-color: #0f730d;
+}
+
+.profileSection {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.profileImageContainer {
+  position: relative;
+  margin-right: 24px;
+}
+
+.profileImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #1a8917;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.changeImageButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #e6e6e6;
+  border-radius: 20px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #292929;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.changeImageButton:hover {
+  background-color: #f2f2f2;
+}
+
+.userName {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.userEmail {
+  font-size: 0.875rem;
+  color: #757575;
+  margin: 0;
+}
+
+.cardOption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  transition: box-shadow 0.2s ease;
+}
+
+.cardOption:hover {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.cardTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.cardDescription {
+  font-size: 0.875rem;
+  color: #757575;
+  margin: 0;
+}
+
+.actionButton {
+  padding: 8px 16px;
+  border: 1px solid #757575;
+  border-radius: 24px;
+  background-color: transparent;
+  color: #292929;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background-color: #f2f2f2;
+  border-color: #292929;
+}
+
+/* 会员与付款样式 */
+.membershipInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.currentPlan {
+  margin-bottom: 24px;
+}
+
+.planTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.planCard {
+  padding: 24px;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+  background-color: #fafafa;
+}
+
+.planHeader {
+  margin-bottom: 16px;
+}
+
+.planHeader h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.planHeader p {
+  font-size: 0.875rem;
+  color: #757575;
+  margin: 0;
+}
+
+.upgradeButton {
+  background-color: #1a8917;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.upgradeButton:hover {
+  background-color: #0f730d;
+}
+
+.benefitsTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.benefitsList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.benefitsList li {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.benefitsList li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #1a8917;
+  font-weight: bold;
+}
+
+/* 阅读偏好样式 */
+.preferenceGroup {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.preferenceTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.preferenceOption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.optionLabel {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.toggleSwitch {
+  position: relative;
+  width: 50px;
+  height: 26px;
+}
+
+.toggleInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleLabel {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e6e6e6;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.toggleLabel:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.toggleInput:checked + .toggleLabel {
+  background-color: #1a8917;
+}
+
+.toggleInput:checked + .toggleLabel:before {
+  transform: translateX(24px);
+}
+
+.fontSizeOptions {
+  display: flex;
+  gap: 8px;
+}
+
+.fontSizeButton {
+  padding: 6px 12px;
+  border: 1px solid #e6e6e6;
+  border-radius: 20px;
+  background-color: white;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fontSizeButton:hover {
+  background-color: #f2f2f2;
+}
+
+.fontSizeButton.active {
+  background-color: #292929;
+  color: white;
+  border-color: #292929;
+}
+
+.tagSelection {
+  margin-top: 16px;
+}
+
+.tagHelper {
+  font-size: 0.875rem;
+  color: #757575;
+  margin-bottom: 12px;
+}
+
+.tagContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 6px 12px;
+  border: 1px solid #e6e6e6;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tag:hover {
+  background-color: #f2f2f2;
+}
+
+.tag.selected {
+  background-color: #e6f3e6;
+  color: #1a8917;
+  border-color: #1a8917;
+}
+
+.placeholderSection {
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #757575;
+  background-color: #fafafa;
+  border-radius: 4px;
+  padding: 40px 20px;
+}
+
+@media (max-width: 768px) {
+  .settingsSections {
+    flex-direction: column;
+  }
+
+  .sideNav {
+    position: relative;
+    top: 0;
+    flex: 0 0 auto;
+    margin-bottom: 32px;
+  }
+
+  .navList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .navItem {
+    margin-bottom: 0;
+  }
+
+  .settingsContent {
+    max-width: 100%;
+  }
+}

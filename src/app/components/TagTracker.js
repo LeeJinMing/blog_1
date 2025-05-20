@@ -5,6 +5,47 @@ import { trackTagClick } from "@/lib/analytics";
 import { getTagTextById } from "@/lib/tags";
 import styles from "./TagTracker.module.css";
 
+// 额外的标签文本翻译（如果某些标签ID不在标准映射中）
+const extraTagTranslations = {
+  "valeria-marquez": "Valeria Marquez",
+  kol: "Key Opinion Leader",
+  "creator-economy": "Creator Economy",
+  "influencer-marketing": "Influencer Marketing",
+};
+
+// 中英文双语显示的标签
+const bilingualTags = {
+  tech: "Technology 技术",
+  ai: "AI 人工智能",
+  "future-trends": "Future Trends 未来趋势",
+  politics: "Politics 政治",
+  economy: "Economy 经济",
+  business: "Business 商业",
+  finance: "Finance 金融",
+  market: "Market 市场",
+  trade: "Trade 贸易",
+  enterprise: "Enterprise 企业",
+  international: "International 国际",
+  global: "Global 全球",
+  diplomacy: "Diplomacy 外交",
+  geopolitics: "Geopolitics 地缘政治",
+  culture: "Culture 文化",
+  society: "Society 社会",
+  arts: "Arts 艺术",
+  education: "Education 教育",
+  lifestyle: "Lifestyle 生活方式",
+  innovation: "Innovation 创新",
+  technology: "Technology 技术",
+  digital: "Digital 数字",
+  government: "Government 政府",
+  election: "Election 选举",
+  policy: "Policy 政策",
+  "valeria-marquez": "Valeria Marquez",
+  kol: "Key Opinion Leader KOL",
+  "creator-economy": "Creator Economy 创作者经济",
+  "influencer-marketing": "Influencer Marketing 网红营销",
+};
+
 // 标签到分类的映射关系
 const tagToCategory = {
   // 可以根据实际情况添加更多映射
@@ -39,6 +80,33 @@ const tagToCategory = {
   lifestyle: "culture-society",
 };
 
+// 获取标签显示文本 - 同时支持中英文
+function getTranslatedTagText(tagId) {
+  // 首先尝试从双语映射获取
+  if (bilingualTags[tagId]) {
+    return bilingualTags[tagId];
+  }
+
+  // 尝试从标准映射获取
+  const standardText = getTagTextById(tagId);
+
+  // 如果标准文本不是标签ID本身，说明在标签映射中找到了对应文本
+  if (standardText !== tagId) {
+    return standardText;
+  }
+
+  // 如果在额外翻译中有对应，使用额外翻译
+  if (extraTagTranslations[tagId]) {
+    return extraTagTranslations[tagId];
+  }
+
+  // 尝试格式化标签ID作为显示文本
+  return tagId
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 // 根据标签ID获取适当的分类
 function getCategorySlugForTag(tagId) {
   return tagToCategory[tagId] || "culture-society";
@@ -54,7 +122,7 @@ function getCategorySlugForTag(tagId) {
  */
 const TagTracker = ({ tagId, className = "", showCount = false, count }) => {
   const router = useRouter();
-  const tagText = getTagTextById(tagId);
+  const tagText = getTranslatedTagText(tagId);
   const categorySlug = getCategorySlugForTag(tagId);
 
   // 处理标签点击

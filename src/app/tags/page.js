@@ -4,8 +4,8 @@ import { getAllTags } from "@/lib/tags";
 import styles from "./tags.module.css";
 
 export const metadata = {
-  title: "标签云 - 博客标签导航",
-  description: "浏览所有文章标签，发现更多感兴趣的内容",
+  title: "Tag Cloud - Blog Tag Navigation",
+  description: "Browse all article tags to discover more interesting content",
 };
 
 // 设置页面重新验证间隔 - 2小时
@@ -23,13 +23,13 @@ export default function TagsPage() {
       </div>
 
       <header className={styles.pageHeader}>
-        <h1>标签云</h1>
-        <p className={styles.subtitle}>按照主题浏览文章</p>
+        <h1>Tag Cloud</h1>
+        <p className={styles.subtitle}>Browse articles by topic</p>
       </header>
 
       <div className={styles.tagCloudContainer}>
         {tags.length === 0 ? (
-          <p className={styles.noTags}>暂无标签数据</p>
+          <p className={styles.noTags}>No tag data available</p>
         ) : (
           <div className={styles.tagCloud}>
             {tags.map((tag) => (
@@ -52,29 +52,29 @@ export default function TagsPage() {
 
       {/* 底部链接区域 */}
       <div className={styles.bottomLinks}>
-        <h2>探索更多内容</h2>
+        <h2>Explore More Content</h2>
         <div className={styles.linksGrid}>
           <Link href="/" className={styles.featureLink}>
             <span className={styles.linkIcon}>📰</span>
             <div className={styles.linkText}>
-              <h3>最新文章</h3>
-              <p>查看最新发布的内容</p>
+              <h3>Latest Articles</h3>
+              <p>View newly published content</p>
             </div>
           </Link>
 
           <Link href="/categories" className={styles.featureLink}>
             <span className={styles.linkIcon}>📂</span>
             <div className={styles.linkText}>
-              <h3>内容分类</h3>
-              <p>按主题分类浏览</p>
+              <h3>Categories</h3>
+              <p>Browse by topic</p>
             </div>
           </Link>
 
           <Link href="/about" className={styles.featureLink}>
             <span className={styles.linkIcon}>ℹ️</span>
             <div className={styles.linkText}>
-              <h3>关于我们</h3>
-              <p>了解更多</p>
+              <h3>About Us</h3>
+              <p>Learn more</p>
             </div>
           </Link>
         </div>

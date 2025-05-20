@@ -11,11 +11,11 @@ export default function FallbackCover({
 }) {
   // Color mapping for different categories
   const colorMap = {
-    政治: "#4a6da7", // Blue
-    经济: "#4caf50", // Green
-    科技: "#2196f3", // Light Blue
-    国际: "#1a237e", // Dark Blue
-    社会: "#9c27b0", // Purple
+    Politics: "#4a6da7", // Blue
+    Economy: "#4caf50", // Green
+    Technology: "#2196f3", // Light Blue
+    International: "#1a237e", // Dark Blue
+    Society: "#9c27b0", // Purple
     default: "#607d8b", // Gray Blue
   };
 
@@ -49,7 +49,7 @@ export default function FallbackCover({
   const displayTitle =
     title && title.length > 50
       ? title.substring(0, 50) + "..."
-      : title || "文章";
+      : title || "Article";
 
   return (
     <div style={style}>
@@ -63,7 +63,7 @@ export default function FallbackCover({
         {displayTitle}
       </div>
       <div style={{ fontSize: "calc(0.7rem + 0.5vw)" }}>
-        {category !== "default" ? category : "博客文章"}
+        {category !== "default" ? category : "Blog Post"}
       </div>
     </div>
   );

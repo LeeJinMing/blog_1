@@ -131,7 +131,10 @@ function SearchResults() {
                         </time>
                       </div>
                       <p className="post-summary">
-                        {post.summary || post.content.substring(0, 150) + "..."}
+                        {post.summary ||
+                          (post.content
+                            ? String(post.content).substring(0, 150) + "..."
+                            : "No summary available.")}
                       </p>
                       <Link href={postUrl} className="read-more">
                         Read Article →
@@ -150,7 +153,7 @@ function SearchResults() {
 
 // 加载中的占位组件
 function SearchLoading() {
-  return <p className="loading">正在加载搜索结果...</p>;
+  return <p className="loading">Loading search results...</p>;
 }
 
 // 主页面组件，使用 Suspense 包装

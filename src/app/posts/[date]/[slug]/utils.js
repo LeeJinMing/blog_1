@@ -5,7 +5,24 @@
  * @returns {string} - 处理后的内容
  */
 export function removeRepeatedTitle(content, title) {
-  if (!content || !title) return content;
+  if (!content || !title) return content || "";
+
+  // 确保content和title是字符串
+  if (typeof content !== "string") {
+    console.error(
+      "Error: Content is not a string type in removeRepeatedTitle:",
+      typeof content
+    );
+    content = String(content || "");
+  }
+
+  if (typeof title !== "string") {
+    console.error(
+      "Error: Title is not a string type in removeRepeatedTitle:",
+      typeof title
+    );
+    title = String(title || "");
+  }
 
   try {
     // 准备标题的不同变体进行匹配
@@ -90,25 +107,25 @@ export function removeRepeatedTitle(content, title) {
 
     // 4.2 处理"腐败迷雾"等格式
     if (
-      title.includes("迷雾") ||
-      title.includes("挑战") ||
-      title.includes("困境")
+      title.includes("corruption") ||
+      title.includes("challenges") ||
+      title.includes("dilemma")
     ) {
       // 尝试找到标题的关键部分
       const keyWords = [
-        "腐败",
-        "迷雾",
-        "挑战",
-        "困境",
-        "危机",
-        "问题",
-        "风险",
-        "争议",
-        "争端",
-        "案例",
-        "调查",
-        "分析",
-        "研究",
+        "corruption",
+        "fog",
+        "challenges",
+        "dilemma",
+        "crisis",
+        "problems",
+        "risks",
+        "controversy",
+        "dispute",
+        "case",
+        "investigation",
+        "analysis",
+        "research",
       ];
 
       const titleKeywordsMatch = keyWords.filter((word) =>
@@ -185,26 +202,26 @@ export function removeRepeatedTitle(content, title) {
     // 6. 移除引言部分的重复标题
     // "引言："、"摘要："等开头的部分如果包含标题，也应该检查
     const introPatterns = [
-      new RegExp(`引言[：:] *${escapedTitle}`, "gi"),
-      new RegExp(`摘要[：:] *${escapedTitle}`, "gi"),
-      new RegExp(`简介[：:] *${escapedTitle}`, "gi"),
-      new RegExp(`案例[：:] *${escapedTitle}`, "gi"),
+      new RegExp(`Quote[：:] *${escapedTitle}`, "gi"),
+      new RegExp(`Summary[：:] *${escapedTitle}`, "gi"),
+      new RegExp(`Introduction[：:] *${escapedTitle}`, "gi"),
+      new RegExp(`Case[：:] *${escapedTitle}`, "gi"),
     ];
 
     // 6.1 针对主标题的引言模式
     if (mainTitle.length > 3) {
       introPatterns.push(
-        new RegExp(`引言[：:] *${escapedMainTitle}`, "gi"),
-        new RegExp(`摘要[：:] *${escapedMainTitle}`, "gi"),
-        new RegExp(`简介[：:] *${escapedMainTitle}`, "gi"),
-        new RegExp(`案例[：:] *${escapedMainTitle}`, "gi")
+        new RegExp(`Quote[：:] *${escapedMainTitle}`, "gi"),
+        new RegExp(`Summary[：:] *${escapedMainTitle}`, "gi"),
+        new RegExp(`Introduction[：:] *${escapedMainTitle}`, "gi"),
+        new RegExp(`Case[：:] *${escapedMainTitle}`, "gi")
       );
     }
 
     for (const pattern of introPatterns) {
       processedContent = processedContent.replace(pattern, (match) => {
         // 保留"引言："等部分，只移除标题
-        return match.split(/[：:]/)[0] + "：";
+        return match.split(/[：:]/)[0] + ": ";
       });
     }
 
@@ -326,6 +343,10 @@ export function removeRepeatedTitle(content, title) {
 function calculateSimilarity(str1, str2) {
   if (!str1 || !str2) return 0;
 
+  // 确保参数是字符串
+  if (typeof str1 !== "string") str1 = String(str1 || "");
+  if (typeof str2 !== "string") str2 = String(str2 || "");
+
   // 如果字符串完全相同
   if (str1 === str2) return 1;
 
@@ -361,6 +382,19 @@ function calculateSimilarity(str1, str2) {
  */
 export function normalizeContent(content, title) {
   if (!content) return "";
+
+  // 确保content和title是字符串
+  if (typeof content !== "string") {
+    console.error(
+      "Content is not a string type in normalizeContent:",
+      typeof content
+    );
+    content = String(content || "");
+  }
+
+  if (typeof title !== "string") {
+    title = String(title || "");
+  }
 
   try {
     let normalizedContent = content;
@@ -466,19 +500,19 @@ export function normalizeContent(content, title) {
     // 3. 处理特殊的引言格式
     // 3.1 "引言：幽灵"这种格式
     const titleEscaped = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const quotePattern = new RegExp(`引言[：:] *${titleEscaped}`, "gi");
-    normalizedContent = normalizedContent.replace(quotePattern, "引言：");
+    const quotePattern = new RegExp(`Quote[：:] *${titleEscaped}`, "gi");
+    normalizedContent = normalizedContent.replace(quotePattern, "Quote: ");
 
     // 3.2 "引言：主标题"格式
     if (mainTitle.length > 3) {
       const mainTitleEscaped = mainTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const mainTitleQuotePattern = new RegExp(
-        `引言[：:] *${mainTitleEscaped}`,
+        `Quote[：:] *${mainTitleEscaped}`,
         "gi"
       );
       normalizedContent = normalizedContent.replace(
         mainTitleQuotePattern,
-        "引言："
+        "Quote: "
       );
     }
 
@@ -528,18 +562,18 @@ export function normalizeContent(content, title) {
         `${mainTitle.replace(
           /[.*+?^${}()|[\]\\]/g,
           "\\$&"
-        )}的困境与曙光.*?投资逻辑`,
+        )}.*?dilemma and dawn.*?investment logic`,
         "gi"
       ),
       new RegExp(
         `${mainTitle.replace(
           /[.*+?^${}()|[\]\\]/g,
           "\\$&"
-        )}腐败迷雾.*?投资逻辑`,
+        )}.*?corruption fog.*?investment logic`,
         "gi"
       ),
       new RegExp(
-        `${mainTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}的.*?挑战`,
+        `${mainTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}.*?challenges`,
         "gi"
       ),
     ];
@@ -568,7 +602,14 @@ export function normalizeContent(content, title) {
  * @returns {string} - 处理后的内容
  */
 export function processHtmlContent(content) {
-  if (!content) return "";
+  // 确保content是字符串
+  if (typeof content !== "string") {
+    console.error(
+      "Content is not a string type in processHtmlContent:",
+      typeof content
+    );
+    content = String(content || "");
+  }
 
   let processedContent = content;
 

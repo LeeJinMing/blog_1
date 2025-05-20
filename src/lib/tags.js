@@ -1,64 +1,64 @@
 /**
- * 标签系统模块
- * 提供标签ID和文本之间的映射关系以及相关的工具函数
+ * Tag system module
+ * Provides mapping between tag IDs and text, and related utility functions
  */
 
-// 标签映射表 - ID 到文本
+// Tag mapping table - ID to text
 const tagMap = {
-  tech: "科技",
+  tech: "Technology",
   ai: "AI",
-  "future-trends": "未来趋势",
-  politics: "政治",
-  economy: "经济",
-  business: "商业",
-  finance: "金融",
-  market: "市场",
-  trade: "贸易",
-  enterprise: "企业",
-  international: "国际",
-  global: "全球",
-  diplomacy: "外交",
-  geopolitics: "地缘政治",
-  culture: "文化",
-  society: "社会",
-  arts: "艺术",
-  education: "教育",
-  lifestyle: "生活方式",
-  innovation: "创新",
-  technology: "技术",
-  digital: "数字",
-  government: "政府",
-  election: "选举",
-  policy: "政策",
+  "future-trends": "Future Trends",
+  politics: "Politics",
+  economy: "Economy",
+  business: "Business",
+  finance: "Finance",
+  market: "Market",
+  trade: "Trade",
+  enterprise: "Enterprise",
+  international: "International",
+  global: "Global",
+  diplomacy: "Diplomacy",
+  geopolitics: "Geopolitics",
+  culture: "Culture",
+  society: "Society",
+  arts: "Arts",
+  education: "Education",
+  lifestyle: "Lifestyle",
+  innovation: "Innovation",
+  technology: "Technology",
+  digital: "Digital",
+  government: "Government",
+  election: "Election",
+  policy: "Policy",
 };
 
-// 反向映射表 - 文本到ID
+// Reverse mapping table - text to ID
 const reverseTagMap = Object.entries(tagMap).reduce((acc, [id, text]) => {
   acc[text] = id;
   return acc;
 }, {});
 
 /**
- * 根据标签ID获取标签文本
- * @param {string} tagId - 标签ID
- * @returns {string} - 标签文本，如果不存在则返回原ID
+ * Get tag text by tag ID
+ * @param {string} tagId - Tag ID
+ * @returns {string} - Tag text, or original ID if not found
  */
 export function getTagTextById(tagId) {
   return tagMap[tagId] || tagId;
 }
 
 /**
- * 根据标签文本获取标签ID
- * @param {string} tagText - 标签文本
- * @returns {string} - 标签ID，如果不存在则生成一个基于文本的ID
+ * Get tag ID by tag text
+ * @param {string} tagText - Tag text
+ * @returns {string} - Tag ID, or generate one based on text if not found
  */
 export function getTagIdByText(tagText) {
-  // 如果在映射表中存在，直接返回
+  // If exists in mapping table, return directly
   if (reverseTagMap[tagText]) {
     return reverseTagMap[tagText];
   }
 
-  // 否则，生成一个基于文本的ID (将文本转换为小写，并替换非字母数字字符为连字符)
+  // Otherwise, generate an ID based on text (convert to lowercase, replace non-alphanumeric chars with hyphens)
   return tagText
     .toLowerCase()
     .trim()
@@ -68,9 +68,9 @@ export function getTagIdByText(tagText) {
 }
 
 /**
- * 将标签ID数组转换为标签文本数组
- * @param {string[]} tagIds - 标签ID数组
- * @returns {string[]} - 标签文本数组
+ * Convert an array of tag IDs to an array of tag texts
+ * @param {string[]} tagIds - Array of tag IDs
+ * @returns {string[]} - Array of tag texts
  */
 export function convertTagIdsToTexts(tagIds) {
   if (!tagIds || !Array.isArray(tagIds)) return [];
@@ -78,9 +78,9 @@ export function convertTagIdsToTexts(tagIds) {
 }
 
 /**
- * 将标签文本数组转换为标签ID数组
- * @param {string[]} tagTexts - 标签文本数组
- * @returns {string[]} - 标签ID数组
+ * Convert an array of tag texts to an array of tag IDs
+ * @param {string[]} tagTexts - Array of tag texts
+ * @returns {string[]} - Array of tag IDs
  */
 export function convertTagTextsToIds(tagTexts) {
   if (!tagTexts || !Array.isArray(tagTexts)) return [];
@@ -88,8 +88,8 @@ export function convertTagTextsToIds(tagTexts) {
 }
 
 /**
- * 获取所有可用的标签
- * @returns {Array<{id: string, text: string}>} - 标签数组
+ * Get all available tags
+ * @returns {Array<{id: string, text: string}>} - Array of tags
  */
 export function getAllTags() {
   return Object.entries(tagMap).map(([id, text]) => ({

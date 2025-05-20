@@ -1,72 +1,118 @@
 /**
- * db.js - 简化的数据库交互模块
- * 使用全局缓存机制，减少数据库访问
+ * db.js - Simplified database interaction module
+ * Uses global cache mechanism to reduce database access
  */
 
-// 检查是否在服务器端环境
+// Check if in server-side environment
 const isServer = typeof window === "undefined";
 
-// MongoDB客户端和ObjectId - 仅在服务器端导入
+// MongoDB client and ObjectId - only import in server-side
 let MongoClient;
 let ObjectId;
+let mongoImport = null;
+let cachedClient = null;
 
 if (isServer) {
   try {
+    // Try direct import first
     const mongodb = require("mongodb");
     MongoClient = mongodb.MongoClient;
     ObjectId = mongodb.ObjectId;
   } catch (error) {
-    console.log("MongoDB模块导入失败，将使用模拟数据");
+    console.log("MongoDB module import failed, will use mock data");
+    // Will attempt dynamic import later in getMongoClient
   }
 }
 
-// MongoDB连接URI - 只在服务器端获取
-const MONGODB_URI = isServer ? process.env.MONGO_REMOTE_URL : null;
+// MongoDB connection URI - only get on server-side
+const MONGODB_URI = isServer ? process.env.MONGODB_URI : null;
 
-// 全局缓存 - 存储所有博客文章
+// Global cache - store all blog posts
 let blogCache = {
   posts: [],
   lastUpdated: 0,
   isLoading: false,
 };
 
-// 缓存有效期 - 1小时
+// Cache validity period - 1 hour
 const CACHE_TTL = 60 * 60 * 1000;
 
 import { convertTagTextsToIds, convertTagIdsToTexts } from "./tags";
 import { migratePostsToTagIds } from "./migration";
 
+// If in non-browser environment, try to import MongoDB and connect
+if (typeof window === "undefined") {
+  try {
+    // Dynamically import MongoDB module (allows compiling in browser environment)
+    mongoImport = import("mongodb");
+  } catch (e) {
+    console.log("MongoDB module import failed, will use mock data");
+  }
+}
+
 /**
- * 获取MongoDB客户端连接
+ * Get MongoDB client instance
  */
 async function getMongoClient() {
-  if (!isServer) return null;
+  // If we already have MongoClient from direct import, use it
+  if (MongoClient) {
+    try {
+      if (cachedClient) return cachedClient;
+
+      const uri = process.env.MONGODB_URI || process.env.MONGO_REMOTE_URL;
+
+      if (!uri) {
+        console.log("MongoDB URI not found in environment variables");
+        return null;
+      }
+
+      const client = new MongoClient(uri);
+      await client.connect();
+      cachedClient = client;
+      return client;
+    } catch (error) {
+      console.error("Database connection failed:", error);
+      return null;
+    }
+  }
+
+  // If direct import failed, try dynamic import
+  if (!mongoImport) return null;
 
   try {
-    // 使用简单的连接配置，不使用已弃用的选项
-    const client = await MongoClient.connect(MONGODB_URI);
+    const { MongoClient: DynamicMongoClient } = await mongoImport;
+    const uri = process.env.MONGODB_URI || process.env.MONGO_REMOTE_URL;
+
+    if (!uri) {
+      console.log("MongoDB URI not found in environment variables");
+      return null;
+    }
+
+    const client = new DynamicMongoClient(uri);
+    await client.connect();
+    cachedClient = client;
     return client;
   } catch (error) {
-    console.error("数据库连接失败:", error);
+    console.error("Database connection failed:", error);
     return null;
   }
 }
 
 /**
- * 加载所有文章到全局缓存
- * 如果缓存较新，直接返回缓存的文章
+ * Load all posts to global cache
+ * If cache is fresh, return cached posts directly
  */
 async function loadAllPosts() {
-  // 如果已经在加载中，等待加载完成
+  // If already loading, wait for completion
   if (blogCache.isLoading) {
-    // 简单延迟并再次检查
+    // Simple delay and check again
     await new Promise((resolve) => setTimeout(resolve, 500));
     if (blogCache.posts.length > 0) {
       return blogCache.posts;
     }
   }
 
-  // 缓存仍然有效，直接返回
+  // Cache still valid, return directly
   if (
     Date.now() - blogCache.lastUpdated < CACHE_TTL &&
     blogCache.posts.length > 0
@@ -74,43 +120,43 @@ async function loadAllPosts() {
     return blogCache.posts;
   }
 
-  // 标记为加载中，防止并发请求
+  // Mark as loading to prevent concurrent requests
   blogCache.isLoading = true;
 
   try {
     const client = await getMongoClient();
     if (!client) {
       blogCache.isLoading = false;
-      return getMockPosts(50); // 使用模拟数据
+      return getMockPosts(50); // Use mock data
     }
 
     const db = client.db();
 
-    // 一次性获取所有文章（或限制数量）
+    // Get all posts at once (or limit quantity)
     const posts = await db
       .collection("posts")
       .find({})
       .sort({ createdAt: -1 })
-      .limit(500) // 限制数量，避免内存问题
+      .limit(500) // Limit quantity to avoid memory issues
       .toArray();
 
-    // 关闭连接
+    // Close connection
     client.close();
 
-    // 序列化文档
+    // Serialize documents
     let serializedPosts = posts.map(serializeDocument);
 
-    // 迁移标签
+    // Migrate tags
     serializedPosts = migratePostsToTagIds(serializedPosts);
 
-    // 更新缓存
+    // Update cache
     blogCache.posts = serializedPosts;
     blogCache.lastUpdated = Date.now();
 
-    console.log(`已加载 ${blogCache.posts.length} 篇文章到缓存`);
+    console.log(`Server loaded ${blogCache.posts.length} articles to cache`);
   } catch (error) {
-    console.error("加载文章到缓存失败:", error);
-    // 错误时返回模拟数据
+    console.error("Failed to load articles to cache:", error);
+    // Return mock data on error
     if (blogCache.posts.length === 0) {
       blogCache.posts = getMockPosts(50);
     }
@@ -122,16 +168,16 @@ async function loadAllPosts() {
 }
 
 /**
- * 获取多篇文章
- * @param {number} limit - 限制返回的文章数量
- * @param {Object} query - 查询条件（仅用于过滤缓存）
+ * Get multiple posts
+ * @param {number} limit - Limit the number of returned posts
+ * @param {Object} query - Query conditions (only for filtering cache)
  */
-export async function getPosts(limit = 10, query = {}) {
+export async function getPosts(limit = 500, query = {}) {
   await loadAllPosts();
 
   let filteredPosts = blogCache.posts;
 
-  // 如果有标签查询，进行过滤
+  // If there's a tag query, filter
   if (query.tags) {
     const tagIds = Array.isArray(query.tags) ? query.tags : [query.tags];
     filteredPosts = filteredPosts.filter(
@@ -139,22 +185,22 @@ export async function getPosts(limit = 10, query = {}) {
     );
   }
 
-  // 返回限制数量的文章
+  // Return limited number of posts
   return filteredPosts.slice(0, limit);
 }
 
 /**
- * 根据slug获取单篇文章
+ * Get a single post by slug
  */
 export async function getPostBySlug(slug) {
   if (!slug) return null;
 
   await loadAllPosts();
 
-  // 尝试查找精确匹配
+  // Try to find exact match
   let post = blogCache.posts.find((p) => p.slug === slug);
 
-  // 如果没找到，尝试URL解码后再查找
+  // If not found, try URL-decoded version
   if (!post && slug !== decodeURIComponent(slug)) {
     const decodedSlug = decodeURIComponent(slug);
     post = blogCache.posts.find((p) => p.slug === decodedSlug);
@@ -164,7 +210,7 @@ export async function getPostBySlug(slug) {
 }
 
 /**
- * 获取相关文章
+ * Get related posts
  */
 export async function getRelatedPosts(
   tagIds = [],
@@ -181,7 +227,7 @@ export async function getRelatedPosts(
       (post) => post.tagIds && post.tagIds.some((id) => tagIds.includes(id))
     )
     .sort((a, b) => {
-      // 计算匹配标签数量
+      // Calculate matching tag count
       const aMatchCount = a.tagIds
         ? a.tagIds.filter((id) => tagIds.includes(id)).length
         : 0;
@@ -189,31 +235,31 @@ export async function getRelatedPosts(
         ? b.tagIds.filter((id) => tagIds.includes(id)).length
         : 0;
 
-      // 优先按匹配标签数量排序
+      // Sort by matching tag count first
       if (aMatchCount !== bMatchCount) {
         return bMatchCount - aMatchCount;
       }
 
-      // 然后按创建时间排序
+      // Then by creation time
       return new Date(b.createdAt) - new Date(a.createdAt);
     })
     .slice(0, limit);
 }
 
 /**
- * 序列化MongoDB文档，处理ObjectId等特殊类型
+ * Serialize MongoDB document, handle ObjectId and other special types
  */
 function serializeDocument(doc) {
   if (!doc) return null;
 
   const serialized = { ...doc };
 
-  // 转换ObjectId为字符串
+  // Convert ObjectId to string
   if (doc._id) {
     serialized._id = doc._id.toString();
   }
 
-  // 转换日期
+  // Convert date
   if (doc.createdAt instanceof Date) {
     serialized.createdAt = doc.createdAt.toISOString();
   }
@@ -222,7 +268,7 @@ function serializeDocument(doc) {
 }
 
 /**
- * 格式化日期为URL友好的格式
+ * Format date to URL-friendly format
  */
 export function formatDateForUrl(dateStr) {
   const date = new Date(dateStr);
@@ -233,7 +279,7 @@ export function formatDateForUrl(dateStr) {
 }
 
 /**
- * 确保slug对URL友好
+ * Ensure slug is URL-friendly
  */
 export function getUrlSafeSlug(slug) {
   if (!slug) return "";
@@ -241,37 +287,154 @@ export function getUrlSafeSlug(slug) {
   try {
     return slug.replace(/[^\w-]/g, (char) => encodeURIComponent(char));
   } catch (e) {
-    console.error("Slug编码失败:", e);
+    console.error("Slug encoding failed:", e);
     return slug;
   }
 }
 
-// ========== 模拟数据 ==========
+// ========== Mock Data ==========
 
 /**
- * 获取模拟文章数据
+ * Get mock post data
  */
 function getMockPosts(limit = 10) {
-  // 转换原来的标签文本为标签ID
+  // Convert original tag text to tag IDs
   const mockPosts = [
     {
       _id: "mock1",
-      title: "人工智能如何改变我们的未来",
+      title: "How AI Will Change Our Future",
       slug: "how-ai-will-change-our-future",
-      summary: "探索AI技术对各行各业的深远影响",
+      summary:
+        "Exploring the profound impact of AI technology across industries",
       content:
-        "# 人工智能如何改变我们的未来\n\n人工智能技术正在以前所未有的速度发展...",
-      tagIds: convertTagTextsToIds(["科技", "AI", "未来趋势"]),
-      tags: ["科技", "AI", "未来趋势"], // 保留原始标签文本以兼容旧代码
+        "# How AI Will Change Our Future\n\nAI technology is developing at an unprecedented pace...",
+      tagIds: convertTagTextsToIds(["Technology", "AI", "Future Trends"]),
+      tags: ["Technology", "AI", "Future Trends"], // Keep original tag text for backward compatibility
       createdAt: new Date("2023-08-01").toISOString(),
     },
-    // 其他模拟文章...
+    {
+      _id: "mock2",
+      title: "Global Economic Trends Analysis: 2023 Second Half Outlook",
+      slug: "global-economy-trends-outlook-2023",
+      summary:
+        "A detailed analysis of global economic trends for the second half of 2023",
+      content:
+        "# Global Economic Trends Analysis: 2023 Second Half Outlook\n\nThe global economy continues to face significant challenges...",
+      tagIds: convertTagTextsToIds(["Economy", "Global", "Finance"]),
+      tags: ["Economy", "Global", "Finance"],
+      createdAt: new Date("2023-07-15").toISOString(),
+    },
+    {
+      _id: "mock3",
+      title: "Sustainable Development in Corporate Strategy",
+      slug: "sustainable-development-corporate-strategy",
+      summary:
+        "How businesses are integrating sustainability into their core strategies",
+      content:
+        "# Sustainable Development in Corporate Strategy\n\nSustainability has become a central concern for businesses worldwide...",
+      tagIds: convertTagTextsToIds(["Business", "Innovation", "Society"]),
+      tags: ["Business", "Innovation", "Society"],
+      createdAt: new Date("2023-06-20").toISOString(),
+    },
+    {
+      _id: "mock4",
+      title: "The Future of Remote Work Post-Pandemic",
+      slug: "future-remote-work-post-pandemic",
+      summary:
+        "Analyzing how work culture has permanently changed after the global pandemic",
+      content:
+        "# The Future of Remote Work Post-Pandemic\n\nAs the world recovers from the pandemic, many organizations are reevaluating their work models...",
+      tagIds: convertTagTextsToIds(["Business", "Society", "Future Trends"]),
+      tags: ["Business", "Society", "Future Trends"],
+      createdAt: new Date("2023-06-05").toISOString(),
+    },
+    {
+      _id: "mock5",
+      title:
+        "Advances in Quantum Computing: Current State and Future Prospects",
+      slug: "quantum-computing-advances-future",
+      summary:
+        "A comprehensive look at recent breakthroughs in quantum computing",
+      content:
+        "# Advances in Quantum Computing: Current State and Future Prospects\n\nQuantum computing has seen remarkable progress in recent years...",
+      tagIds: convertTagTextsToIds([
+        "Technology",
+        "Innovation",
+        "Future Trends",
+      ]),
+      tags: ["Technology", "Innovation", "Future Trends"],
+      createdAt: new Date("2023-05-22").toISOString(),
+    },
+    {
+      _id: "mock6",
+      title: "Geopolitical Shifts in the Indo-Pacific Region",
+      slug: "geopolitical-shifts-indo-pacific",
+      summary:
+        "Examining changing power dynamics and strategic relationships in the Indo-Pacific",
+      content:
+        "# Geopolitical Shifts in the Indo-Pacific Region\n\nThe Indo-Pacific region has become a focal point of international relations...",
+      tagIds: convertTagTextsToIds([
+        "Geopolitics",
+        "International",
+        "Politics",
+      ]),
+      tags: ["Geopolitics", "International", "Politics"],
+      createdAt: new Date("2023-05-10").toISOString(),
+    },
+    {
+      _id: "mock7",
+      title: "The Rise of Digital Currencies and Central Bank Initiatives",
+      slug: "digital-currencies-central-bank-initiatives",
+      summary:
+        "How central banks worldwide are responding to the cryptocurrency revolution",
+      content:
+        "# The Rise of Digital Currencies and Central Bank Initiatives\n\nAs cryptocurrencies gain mainstream attention, central banks are developing their own digital alternatives...",
+      tagIds: convertTagTextsToIds(["Finance", "Digital", "Economy"]),
+      tags: ["Finance", "Digital", "Economy"],
+      createdAt: new Date("2023-04-28").toISOString(),
+    },
+    {
+      _id: "mock8",
+      title: "Climate Change Adaptation Strategies for Urban Areas",
+      slug: "climate-change-adaptation-urban-areas",
+      summary:
+        "Innovative approaches cities are taking to adapt to climate change challenges",
+      content:
+        "# Climate Change Adaptation Strategies for Urban Areas\n\nUrban areas face unique challenges from climate change that require tailored solutions...",
+      tagIds: convertTagTextsToIds(["Society", "Innovation", "Culture"]),
+      tags: ["Society", "Innovation", "Culture"],
+      createdAt: new Date("2023-04-15").toISOString(),
+    },
+    {
+      _id: "mock9",
+      title: "The Evolution of E-commerce in the Post-COVID Era",
+      slug: "evolution-ecommerce-post-covid",
+      summary:
+        "How consumer shopping habits and e-commerce platforms have transformed",
+      content:
+        "# The Evolution of E-commerce in the Post-COVID Era\n\nThe COVID-19 pandemic accelerated the growth of e-commerce by years...",
+      tagIds: convertTagTextsToIds(["Business", "Digital", "Market"]),
+      tags: ["Business", "Digital", "Market"],
+      createdAt: new Date("2023-03-30").toISOString(),
+    },
+    {
+      _id: "mock10",
+      title: "Emerging Technologies in Healthcare Delivery",
+      slug: "emerging-technologies-healthcare-delivery",
+      summary:
+        "How AI, robotics, and telemedicine are revolutionizing healthcare services",
+      content:
+        "# Emerging Technologies in Healthcare Delivery\n\nThe healthcare industry is undergoing a technological transformation...",
+      tagIds: convertTagTextsToIds(["Technology", "Innovation", "AI"]),
+      tags: ["Technology", "Innovation", "AI"],
+      createdAt: new Date("2023-03-15").toISOString(),
+    },
   ];
 
   return mockPosts.slice(0, limit);
 }
 
-// 导出默认对象
+// Export default object
 export default {
   getPosts,
   getPostBySlug,

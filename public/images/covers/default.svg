@@ -37,6 +37,7 @@
 
   <!-- 标题文字 -->
   <text x="400" y="180" font-family="Arial, sans-serif" font-size="56" font-weight="bold" text-anchor="middle"
-    fill="white">Insights 博客</text>
-  <text x="400" y="230" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="white">深度洞察与分析</text>
+    fill="white">Insights Blog</text>
+  <text x="400" y="230" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="white">Deep Analysis &
+    Insights</text>
 </svg>

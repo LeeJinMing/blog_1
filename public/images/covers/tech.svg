@@ -37,7 +37,7 @@
 
   <!-- 标题文字 -->
   <text x="400" y="200" font-family="Arial, sans-serif" font-size="56" font-weight="bold" text-anchor="middle"
-    fill="white">科技创新</text>
-  <text x="400" y="240" font-family="Arial, sans-serif" font-size="24" text-anchor="middle"
-    fill="white">探索未来的前沿科技</text>
+    fill="white">Technology</text>
+  <text x="400" y="240" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="white">Exploring
+    Future Innovation</text>
 </svg>

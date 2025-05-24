@@ -6,7 +6,9 @@ import { getPosts } from "@/lib/db";
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap
  */
 export default async function sitemap() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001";
+  const baseUrl = (
+    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001"
+  ).replace(/\/$/, "");
 
   // 获取所有文章
   const posts = await getPosts(500);
@@ -100,7 +102,7 @@ export default async function sitemap() {
     {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
+      changeFrequency: "weekly",
       priority: 0.5,
     },
   ];

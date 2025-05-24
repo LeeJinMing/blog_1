@@ -10,6 +10,21 @@ import GlobalLayout from "./components/GlobalLayout";
 // Originally set to 1 week (604800), now changed to 30 minutes for more frequent data refresh
 export const revalidate = 1800; // 30 minutes (60 * 30 seconds)
 
+// 添加首页的SEO元数据
+export const metadata = {
+  title: "Business Analysis, Tech Insights & Global Affairs | Insights Blog",
+  description:
+    "Discover expert analysis on AI technology, sustainable business practices, emerging markets, and investment strategies. Stay ahead with our in-depth insights on global economic trends and digital transformation.",
+  keywords:
+    "business analysis, AI technology, sustainable development, investment strategies, market trends, global economics, tech innovation, emerging markets",
+  openGraph: {
+    title: "Business Analysis, Tech Insights & Global Affairs | Insights Blog",
+    description:
+      "Discover expert analysis on AI technology, sustainable business practices, emerging markets, and investment strategies.",
+    type: "website",
+  },
+};
+
 export default async function HomePage({ searchParams }) {
   // Get the current page from URL query parameters, default to page 1
   const resolvedSearchParams = await searchParams;
@@ -30,10 +45,11 @@ export default async function HomePage({ searchParams }) {
   return (
     <GlobalLayout>
       <section className="hero">
-        <h1>Insights and Analysis</h1>
+        <h1>Expert Business Analysis & Technology Insights</h1>
         <p className="subtitle">
-          Thoughtful perspectives on global affairs, business trends, and
-          emerging technologies.
+          Discover cutting-edge analysis on AI technology, sustainable business
+          practices, emerging markets, and investment strategies. Stay ahead of
+          global trends with our expert insights and in-depth research.
         </p>
       </section>
 

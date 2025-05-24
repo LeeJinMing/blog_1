@@ -514,7 +514,7 @@ export async function generateMetadata({ params }) {
 
   if (!post) {
     return {
-      title: "Article Not Found",
+      title: "Article Not Found | Insights Blog",
       description: "The requested article could not be found.",
     };
   }
@@ -522,19 +522,25 @@ export async function generateMetadata({ params }) {
   // 获取上一篇和下一篇文章
   const { prevPost, nextPost } = await getAdjacentPosts(post);
 
-  // 获取文章标题的英文版本
-  const title = translateTitle(post.title);
+  // 使用原始标题
+  const title = post.title;
 
   // 创建摘要
   let description = post.summary;
   if (!description && post.content) {
-    // 如果没有摘要，从内容中提取前150个字符
-    description = String(post.content).substring(0, 150).trim() + "...";
+    // 如果没有摘要，从内容中提取前160个字符
+    const cleanContent = String(post.content)
+      .replace(/#{1,6}\s+/g, "") // Remove headers
+      .replace(/\*\*(.*?)\*\*/g, "$1") // Remove bold
+      .replace(/\*(.*?)\*/g, "$1") // Remove italic
+      .replace(/\[(.*?)\]\(.*?\)/g, "$1") // Remove links
+      .trim();
+    description = cleanContent.substring(0, 160).trim() + "...";
   }
 
   // 提取标签作为关键词
   const keywords = post.tagIds
-    ? post.tagIds.map(getTagTextById).join(", ")
+    ? post.tagIds.map(getTagTextById).filter(Boolean).join(", ")
     : "";
 
   // 生成URL
@@ -572,7 +578,7 @@ export async function generateMetadata({ params }) {
     title: `${title} | Insights Blog`,
     description,
     keywords,
-    author: post.author || "Insights Blog Team",
+    authors: [{ name: post.author || "Insights Blog Team" }],
     openGraph: {
       title: title,
       description: description,
@@ -589,20 +595,36 @@ export async function generateMetadata({ params }) {
         },
       ],
       authors: [post.author || "Insights Blog Team"],
-      tags: post.tagIds ? post.tagIds.map(getTagTextById) : [],
+      tags: post.tagIds ? post.tagIds.map(getTagTextById).filter(Boolean) : [],
+      siteName: "Insights Blog",
+      locale: "en_US",
     },
     twitter: {
       card: "summary_large_image",
       title: title,
       description: description,
       images: [`${baseUrl}/api/og?title=${encodeURIComponent(title)}`],
+      creator: "@insightsblog",
     },
     alternates: {
       canonical: url,
     },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
     other: {
       "article:published_time": publishedTime,
       "article:modified_time": modifiedTime,
+      "article:author": post.author || "Insights Blog Team",
+      "article:section": "Business Analysis",
+      "article:tag": keywords,
     },
     // 添加上一页下一页链接
     ...(links.length > 0 ? { links } : {}),

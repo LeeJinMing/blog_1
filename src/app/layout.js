@@ -4,6 +4,7 @@ import Link from "next/link";
 import EnhancedSearch from "./components/EnhancedSearch";
 import NavMenu from "./components/NavMenu";
 import AnalyticsWrapper from "./components/AnalyticsWrapper";
+import StructuredData from "./components/StructuredData";
 import Script from "next/script";
 
 /**
@@ -16,12 +17,13 @@ export const metadata = {
   ),
   title: {
     template: "%s | Insights Blog",
-    default: "Insights Blog | Thoughtful Analysis on Global Affairs",
+    default:
+      "Insights Blog | Business Analysis, Tech Insights & Global Affairs",
   },
   description:
-    "In-depth analysis and thoughtful perspectives on business, technology, and global affairs.",
+    "Expert analysis on business trends, AI technology, sustainable development, and global markets. In-depth insights on emerging technologies, investment strategies, and economic developments.",
   keywords:
-    "insights, analysis, business, technology, politics, economy, global affairs",
+    "business analysis, technology insights, AI artificial intelligence, sustainable development, investment analysis, market trends, global affairs, economic analysis, tech innovation, business strategy, emerging markets, digital transformation",
   authors: [{ name: "Insights Blog Team" }],
   creator: "Insights Blog",
   publisher: "Insights Blog",
@@ -34,15 +36,15 @@ export const metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Insights Blog",
-    title: "Insights Blog | Thoughtful Analysis on Global Affairs",
+    title: "Insights Blog | Business Analysis, Tech Insights & Global Affairs",
     description:
-      "In-depth analysis and thoughtful perspectives on business, technology, and global affairs.",
+      "Expert analysis on business trends, AI technology, sustainable development, and global markets. In-depth insights on emerging technologies, investment strategies, and economic developments.",
     images: [
       {
         url: "/images/og-default.jpg", // 默认OG图片路径
         width: 1200,
         height: 630,
-        alt: "Insights Blog",
+        alt: "Insights Blog - Business Analysis and Tech Insights",
       },
     ],
   },
@@ -50,7 +52,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Insights Blog",
     description:
-      "In-depth analysis and thoughtful perspectives on business, technology, and global affairs.",
+      "Expert analysis on business trends, AI technology, sustainable development, and global markets.",
     images: ["/images/og-default.jpg"],
     creator: "@insightsblog",
   },
@@ -72,6 +74,11 @@ export const metadata = {
   other: {
     "msapplication-TileColor": "#ffffff",
     "theme-color": "#ffffff",
+  },
+  verification: {
+    google: "abXQ2USdjbtZwnUfWLfMhxIZUNAvm0kh80juVuGfDRM", // 替换为你的Google Search Console验证码
+    yandex: "your-yandex-verification-code", // 如果需要
+    bing: "your-bing-verification-code", // 如果需要
   },
 };
 
@@ -98,6 +105,9 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap"
           rel="stylesheet"
         />
+
+        {/* 添加网站级别的结构化数据 */}
+        <StructuredData type="website" />
       </head>
       <body>
         <header className="header">

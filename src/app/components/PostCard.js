@@ -8,37 +8,6 @@ import FallbackCover from "./FallbackCover";
 import styles from "./PostCard.module.css";
 import { getTagTextById } from "@/lib/tags";
 
-// 添加标题翻译映射
-const titleTranslations = {
-  网红经济赋能者佳品: "Creator Economy Empowerment",
-  现象与营销新纪元: "Phenomenon and New Era of Marketing",
-  "网红经济赋能者佳品：Valeria Marquez现象与营销新纪元":
-    "Creator Economy Empowerment: Valeria Marquez Phenomenon and New Era of Marketing",
-};
-
-// 翻译中文标题为英文
-function translateTitle(title) {
-  // 检查完整标题是否有翻译
-  if (titleTranslations[title]) {
-    return titleTranslations[title];
-  }
-
-  // 检查是否是带冒号的格式，分别翻译两部分
-  if (title.includes("：") || title.includes(":")) {
-    const separator = title.includes("：") ? "：" : ":";
-    const parts = title.split(separator);
-
-    const translatedParts = parts.map((part) => {
-      const trimmedPart = part.trim();
-      return titleTranslations[trimmedPart] || trimmedPart;
-    });
-
-    return translatedParts.join(": ");
-  }
-
-  return title;
-}
-
 // Estimate reading time (200 words per minute)
 function calculateReadTime(content) {
   if (!content) return 1;
@@ -49,20 +18,25 @@ function calculateReadTime(content) {
   return Math.max(1, minutes); // Minimum 1 minute
 }
 
-// Generate article cover image
+// Generate article cover image based on content
 function getCoverImage(post) {
   // If the article has a specified cover image, use it
   if (post.coverImage) {
     return post.coverImage;
   }
 
-  // Choose default cover based on tags or title
+  // Choose default cover based on tags or title keywords
   const defaultImages = {
-    Politics: "/images/covers/politics.svg",
-    Economy: "/images/covers/economy.svg",
+    AI: "/images/covers/ai.svg",
     Technology: "/images/covers/tech.svg",
-    International: "/images/covers/international.svg",
-    Society: "/images/covers/society.svg",
+    Business: "/images/covers/business.svg",
+    Economy: "/images/covers/economy.svg",
+    Healthcare: "/images/covers/healthcare.svg",
+    Fashion: "/images/covers/fashion.svg",
+    Sustainable: "/images/covers/sustainable.svg",
+    Investment: "/images/covers/investment.svg",
+    India: "/images/covers/india.svg",
+    Global: "/images/covers/global.svg",
     default: "/images/covers/default.svg",
   };
 
@@ -71,7 +45,7 @@ function getCoverImage(post) {
     for (const tagId of post.tagIds) {
       const tagText = getTagTextById(tagId);
       for (const [key, url] of Object.entries(defaultImages)) {
-        if (tagText.includes(key)) {
+        if (tagText.toLowerCase().includes(key.toLowerCase())) {
           return url;
         }
       }
@@ -79,14 +53,31 @@ function getCoverImage(post) {
   }
 
   // Find keywords in the title
+  const title = post.title.toLowerCase();
   for (const [key, url] of Object.entries(defaultImages)) {
-    if (post.title.includes(key)) {
+    if (title.includes(key.toLowerCase())) {
       return url;
     }
   }
 
   // If no match, use default cover
   return defaultImages.default;
+}
+
+// Extract excerpt from content
+function getExcerpt(content, maxLength = 150) {
+  if (!content) return "";
+  const contentStr = String(content);
+  // Remove markdown headers and formatting
+  const cleanContent = contentStr
+    .replace(/#{1,6}\s+/g, "") // Remove headers
+    .replace(/\*\*(.*?)\*\*/g, "$1") // Remove bold
+    .replace(/\*(.*?)\*/g, "$1") // Remove italic
+    .replace(/\[(.*?)\]\(.*?\)/g, "$1") // Remove links
+    .trim();
+
+  if (cleanContent.length <= maxLength) return cleanContent;
+  return cleanContent.substring(0, maxLength).trim() + "...";
 }
 
 export default function PostCard({ post, showImage = true }) {
@@ -170,7 +161,7 @@ export default function PostCard({ post, showImage = true }) {
   const yyyymmdd = formatDateToYYYYMMDD(post.createdAt);
   const safeSlug = getUrlSafeSlug(post.slug);
   const postUrl = `/posts/${yyyymmdd}/${safeSlug}`;
-  const formattedDate = dayjs(post.createdAt).format("YYYY-MM-DD");
+  const formattedDate = dayjs(post.createdAt).format("MMMM D, YYYY");
   const readTime = calculateReadTime(post.content);
 
   // 处理点赞操作
@@ -203,101 +194,86 @@ export default function PostCard({ post, showImage = true }) {
     }
   };
 
-  // Handle title, ensure title is not too long
-  const formatTitle = (title) => {
-    // If title is longer than 50 characters, truncate and add ellipsis
-    if (title && title.length > 70) {
-      return `${title.substring(0, 70)}...`;
-    }
-    return title;
-  };
-
-  // Only render full content on client
-  if (!isClient) {
-    return <div className={styles.loading}>Loading...</div>;
-  }
+  // Get excerpt for display
+  const excerpt = post.summary || getExcerpt(post.content);
 
   return (
-    <article className={styles.card}>
-      {showImage && (
-        <div className={styles.imageContainer}>
-          <Link href={postUrl} className={styles.imageLink}>
+    <article
+      className={styles.postCard}
+      itemScope
+      itemType="https://schema.org/Article"
+    >
+      <Link href={postUrl} className={styles.postLink}>
+        {showImage && (
+          <div className={styles.imageContainer}>
             {imageError ? (
-              // When all image loading fails, use fallback cover
-              <FallbackCover
-                title={post.title}
-                category={post.tags?.[0] || "default"}
-                width={800}
-                height={400}
-              />
+              <FallbackCover title={post.title} />
             ) : (
               <Image
                 src={getImageUrl()}
-                alt={post.title}
-                width={800}
-                height={400}
-                className={styles.image}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                alt={`Cover image for ${post.title}`}
+                width={400}
+                height={200}
+                className={styles.coverImage}
                 onError={handleImageError}
-                priority={true}
-                unoptimized={true}
+                loading="lazy"
+                itemProp="image"
               />
             )}
-          </Link>
-        </div>
-      )}
+          </div>
+        )}
 
-      <div className={styles.content}>
-        <Link href={postUrl}>
-          <h2 className={styles.title} title={post.title}>
-            {formatTitle(translateTitle(post.title))}
-          </h2>
-        </Link>
+        <div className={styles.content}>
+          <header className={styles.header}>
+            <h2 className={styles.title} itemProp="headline">
+              {post.title}
+            </h2>
 
-        <div className={styles.meta}>
-          <time
-            dateTime={dayjs(post.createdAt).format("YYYY-MM-DD")}
-            className={styles.date}
-          >
-            {formattedDate}
-          </time>
+            <div className={styles.meta}>
+              <time
+                dateTime={dayjs(post.createdAt).format("YYYY-MM-DD")}
+                className={styles.date}
+                itemProp="datePublished"
+              >
+                {formattedDate}
+              </time>
+              <span className={styles.readTime}>{readTime} min read</span>
+            </div>
+          </header>
 
-          <div className={styles.readTime}>
-            <span className={styles.icon}>⏱️</span>
-            <span>{readTime} min read</span>
+          <div className={styles.excerpt} itemProp="description">
+            {excerpt}
           </div>
 
-          {post.views && (
-            <div className={styles.views}>
-              <span className={styles.icon}>👁️</span>
-              <span>{post.views} views</span>
+          {post.tagIds && post.tagIds.length > 0 && (
+            <div className={styles.tags} itemProp="keywords">
+              {post.tagIds.slice(0, 3).map((tagId) => {
+                const tagText = getTagTextById(tagId);
+                return (
+                  <span key={tagId} className={styles.tag}>
+                    {tagText}
+                  </span>
+                );
+              })}
             </div>
           )}
+
+          <footer className={styles.footer}>
+            <span className={styles.readMore}>Read full article →</span>
+
+            {isClient && (
+              <button
+                onClick={handleLike}
+                className={`${styles.likeButton} ${liked ? styles.liked : ""}`}
+                aria-label={`Like this article. Currently ${likeCount} likes`}
+              >
+                <span className={styles.heartIcon}>{liked ? "❤️" : "🤍"}</span>
+                <span className={styles.likeCount}>{likeCount}</span>
+              </button>
+            )}
+          </footer>
         </div>
-
-        <p className={styles.summary}>
-          {post.summary ||
-            (post.content
-              ? String(post.content).substring(0, 150) + "..."
-              : "") ||
-            "No summary available for this article."}
-        </p>
-
-        <div className={styles.footer}>
-          <Link href={postUrl} className={styles.readMore}>
-            Continue Reading →
-          </Link>
-
-          <button
-            onClick={handleLike}
-            className={`${styles.likeButton} ${liked ? styles.liked : ""}`}
-            aria-label="Like"
-          >
-            <span className={styles.likeIcon}>{liked ? "❤️" : "🤍"}</span>
-            <span className={styles.likeCount}>{likeCount}</span>
-          </button>
-        </div>
-      </div>
+      </Link>
     </article>
   );
 }

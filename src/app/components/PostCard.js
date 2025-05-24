@@ -26,17 +26,22 @@ function getCoverImage(post) {
   }
 
   // Choose default cover based on tags or title keywords
+  // 只使用实际存在的图片文件
   const defaultImages = {
-    AI: "/images/covers/ai.svg",
+    AI: "/images/covers/tech.svg", // AI相关使用tech图片
     Technology: "/images/covers/tech.svg",
-    Business: "/images/covers/business.svg",
+    Business: "/images/covers/economy.svg", // Business使用economy图片
     Economy: "/images/covers/economy.svg",
-    Healthcare: "/images/covers/healthcare.svg",
-    Fashion: "/images/covers/fashion.svg",
-    Sustainable: "/images/covers/sustainable.svg",
-    Investment: "/images/covers/investment.svg",
-    India: "/images/covers/india.svg",
-    Global: "/images/covers/global.svg",
+    Healthcare: "/images/covers/society.svg", // Healthcare使用society图片
+    Fashion: "/images/covers/society.svg", // Fashion使用society图片
+    Sustainable: "/images/covers/society.svg", // Sustainable使用society图片
+    Investment: "/images/covers/economy.svg", // Investment使用economy图片
+    India: "/images/covers/international.svg", // India使用international图片
+    Global: "/images/covers/international.svg", // Global使用international图片
+    Politics: "/images/covers/politics.svg",
+    International: "/images/covers/international.svg",
+    Society: "/images/covers/society.svg",
+    Tech: "/images/covers/tech.svg",
     default: "/images/covers/default.svg",
   };
 

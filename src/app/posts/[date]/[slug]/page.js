@@ -492,10 +492,13 @@ export default async function PostPage({ params }) {
     return (
       <GlobalLayout>
         <div className={styles.article}>
-          <h1>文章加载失败</h1>
-          <p>抱歉，无法加载请求的文章。请返回主页或尝试其他内容。</p>
+          <h1>Article Loading Failed</h1>
+          <p>
+            Sorry, unable to load the requested article. Please return to the
+            homepage or try other content.
+          </p>
           <Link href="/" className={styles.link}>
-            返回首页
+            Back to Home
           </Link>
         </div>
       </GlobalLayout>

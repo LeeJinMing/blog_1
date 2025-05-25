@@ -1,6 +1,6 @@
 /**
- * 结构化数据组件 - 用于SEO优化
- * 添加Schema.org标记帮助搜索引擎更好地理解网站内容
+ * Structured Data Component - for SEO optimization
+ * Adds Schema.org markup to help search engines better understand website content
  */
 
 export default function StructuredData({ type = "website", data = {} }) {

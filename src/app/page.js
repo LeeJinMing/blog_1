@@ -10,7 +10,7 @@ import GlobalLayout from "./components/GlobalLayout";
 // Originally set to 1 week (604800), now changed to 30 minutes for more frequent data refresh
 export const revalidate = 1800; // 30 minutes (60 * 30 seconds)
 
-// 添加首页的SEO元数据
+// Add homepage SEO metadata
 export const metadata = {
   title: "Business Analysis, Tech Insights & Global Affairs | Insights Blog",
   description:

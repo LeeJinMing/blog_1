@@ -11,7 +11,7 @@ import { getTagTextById } from "@/lib/tags";
 // Estimate reading time (200 words per minute)
 function calculateReadTime(content) {
   if (!content) return 1;
-  // 确保内容是字符串类型
+  // Ensure content is string type
   const contentStr = String(content);
   const words = contentStr.trim().split(/\s+/).length;
   const minutes = Math.ceil(words / 200);
@@ -26,18 +26,18 @@ function getCoverImage(post) {
   }
 
   // Choose default cover based on tags or title keywords
-  // 只使用实际存在的图片文件
+  // Only use actually existing image files
   const defaultImages = {
-    AI: "/images/covers/tech.svg", // AI相关使用tech图片
+    AI: "/images/covers/tech.svg", // AI related uses tech image
     Technology: "/images/covers/tech.svg",
-    Business: "/images/covers/economy.svg", // Business使用economy图片
+    Business: "/images/covers/economy.svg", // Business uses economy image
     Economy: "/images/covers/economy.svg",
-    Healthcare: "/images/covers/society.svg", // Healthcare使用society图片
-    Fashion: "/images/covers/society.svg", // Fashion使用society图片
-    Sustainable: "/images/covers/society.svg", // Sustainable使用society图片
-    Investment: "/images/covers/economy.svg", // Investment使用economy图片
-    India: "/images/covers/international.svg", // India使用international图片
-    Global: "/images/covers/international.svg", // Global使用international图片
+    Healthcare: "/images/covers/society.svg", // Healthcare uses society image
+    Fashion: "/images/covers/society.svg", // Fashion uses society image
+    Sustainable: "/images/covers/society.svg", // Sustainable uses society image
+    Investment: "/images/covers/economy.svg", // Investment uses economy image
+    India: "/images/covers/international.svg", // India uses international image
+    Global: "/images/covers/international.svg", // Global uses international image
     Politics: "/images/covers/politics.svg",
     International: "/images/covers/international.svg",
     Society: "/images/covers/society.svg",
@@ -92,17 +92,17 @@ export default function PostCard({ post, showImage = true }) {
   const [imageError, setImageError] = useState(false);
   const [useFallbackFormat, setUseFallbackFormat] = useState(false);
 
-  // 初始化状态
+  // Initialize state
   useEffect(() => {
     setIsClient(true);
 
-    // 检查当前用户是否已点赞过该文章
+    // Check if current user has already liked this article
     const cachedLiked = localStorage.getItem(`liked_${post._id}`);
     if (cachedLiked === "true") {
       setLiked(true);
     }
 
-    // 从API获取文章点赞数据
+    // Fetch article like data from API
     async function fetchLikes() {
       try {
         const response = await fetch(`/api/likes?id=${post._id}`);
@@ -112,7 +112,7 @@ export default function PostCard({ post, showImage = true }) {
         }
       } catch (error) {
         console.error("Failed to fetch likes:", error);
-        // 如果获取失败，使用文章中的likes属性，如果没有则为0
+        // If fetch fails, use likes property from article, or 0 if none
         setLikeCount(post.likes || 0);
       }
     }
@@ -169,14 +169,14 @@ export default function PostCard({ post, showImage = true }) {
   const formattedDate = dayjs(post.createdAt).format("MMMM D, YYYY");
   const readTime = calculateReadTime(post.content);
 
-  // 处理点赞操作
+  // Handle like operation
   const handleLike = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (!liked) {
       try {
-        // 发送请求到点赞API
+        // Send request to like API
         const response = await fetch("/api/likes/increment", {
           method: "POST",
           headers: {
@@ -187,10 +187,10 @@ export default function PostCard({ post, showImage = true }) {
 
         if (response.ok) {
           const data = await response.json();
-          // 更新UI状态
+          // Update UI state
           setLiked(true);
           setLikeCount(data.likes);
-          // 在localStorage中记录已点赞状态
+          // Record liked state in localStorage
           localStorage.setItem(`liked_${post._id}`, "true");
         }
       } catch (error) {

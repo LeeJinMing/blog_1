@@ -4,7 +4,7 @@ import styles from "./ArticleRenderer.module.css";
 
 const ArticleRenderer = ({ article }) => {
   if (!article) {
-    return <div className={styles.error}>文章数据不可用</div>;
+    return <div className={styles.error}>Article data unavailable</div>;
   }
 
   // 提取文章数据并添加调试信息
@@ -46,13 +46,13 @@ const ArticleRenderer = ({ article }) => {
   if (!validContent) {
     return (
       <div className={styles.articleContainer}>
-        <h1 className={styles.title}>{title || "无标题文章"}</h1>
+        <h1 className={styles.title}>{title || "Untitled Article"}</h1>
         {summary && (
           <div className={styles.summary}>
             <p>{summary}</p>
           </div>
         )}
-        <div className={styles.error}>文章内容不可用</div>
+        <div className={styles.error}>Article content unavailable</div>
       </div>
     );
   }
@@ -510,7 +510,7 @@ const ArticleRenderer = ({ article }) => {
       {/* 链接参考 */}
       {Array.isArray(links) && links.length > 0 && (
         <div className={styles.references}>
-          <h3 className={styles.referencesTitle}>参考链接</h3>
+          <h3 className={styles.referencesTitle}>References</h3>
           <ul className={styles.referencesList}>
             {links
               .filter((link) => link !== null && link !== undefined) // 过滤掉null和undefined
@@ -530,7 +530,7 @@ const ArticleRenderer = ({ article }) => {
                       ? link.text
                       : typeof link === "string"
                       ? link
-                      : "链接"}
+                      : "Link"}
                   </Link>
                 </li>
               ))}

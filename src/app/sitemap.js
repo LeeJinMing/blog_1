@@ -1,15 +1,15 @@
 import { getPosts } from "@/lib/db";
 
 /**
- * 生成网站的动态Sitemap
- * Next.js会自动处理这个文件并在/sitemap.xml端点提供XML格式
+ * Generate dynamic sitemap for the website
+ * Next.js automatically handles this file and provides XML format at /sitemap.xml endpoint
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap
  */
 export default async function sitemap() {
   const baseUrl = "https://blog-1-seven-pi.vercel.app";
 
   try {
-    // 静态页面 - 最重要的页面
+    // Static pages - most important pages
     const staticUrls = [
       {
         url: baseUrl,
@@ -19,10 +19,10 @@ export default async function sitemap() {
       },
     ];
 
-    // 尝试获取文章
+    // Try to get articles
     let postsUrls = [];
     try {
-      const posts = await getPosts(20); // 只获取最新的20篇文章
+      const posts = await getPosts(20); // Only get latest 20 articles
 
       postsUrls = posts
         .filter((post) => post && post.createdAt && post.slug)
@@ -43,7 +43,7 @@ export default async function sitemap() {
         });
     } catch (postsError) {
       console.error("Error fetching posts for sitemap:", postsError);
-      // 如果获取文章失败，继续使用静态页面
+      // If getting articles fails, continue with static pages
     }
 
     const allUrls = [...staticUrls, ...postsUrls];
@@ -52,7 +52,7 @@ export default async function sitemap() {
   } catch (error) {
     console.error("Error generating sitemap:", error);
 
-    // 返回最基本的sitemap
+    // Return most basic sitemap
     return [
       {
         url: baseUrl,

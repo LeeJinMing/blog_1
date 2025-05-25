@@ -8,8 +8,8 @@ import StructuredData from "./components/StructuredData";
 import Script from "next/script";
 
 /**
- * 站点默认全局元数据
- * 这些值将被其他页面的元数据覆盖（如果提供）
+ * Site default global metadata
+ * These values will be overridden by other page metadata (if provided)
  */
 export const metadata = {
   metadataBase: new URL(
@@ -41,7 +41,7 @@ export const metadata = {
       "Expert analysis on business trends, AI technology, sustainable development, and global markets. In-depth insights on emerging technologies, investment strategies, and economic developments.",
     images: [
       {
-        url: "/images/og-default.jpg", // 默认OG图片路径
+        url: "/images/og-default.jpg", // Default OG image path
         width: 1200,
         height: 630,
         alt: "Insights Blog - Business Analysis and Tech Insights",
@@ -76,9 +76,9 @@ export const metadata = {
     "theme-color": "#ffffff",
   },
   verification: {
-    google: "abXQ2USdjbtZwnUfWLfMhxIZUNAvm0kh80juVuGfDRM", // 替换为你的Google Search Console验证码
-    yandex: "your-yandex-verification-code", // 如果需要
-    bing: "your-bing-verification-code", // 如果需要
+    google: "abXQ2USdjbtZwnUfWLfMhxIZUNAvm0kh80juVuGfDRM", // Replace with your Google Search Console verification code
+    yandex: "your-yandex-verification-code", // If needed
+    bing: "your-bing-verification-code", // If needed
   },
 };
 
@@ -86,7 +86,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* Google AdSense 代码 - 使用标准方式添加，便于Google验证 */}
+        {/* Google AdSense code - using standard method for easy Google verification */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1911238866563211"
@@ -106,7 +106,7 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
 
-        {/* 添加网站级别的结构化数据 */}
+        {/* Add website-level structured data */}
         <StructuredData type="website" />
       </head>
       <body>

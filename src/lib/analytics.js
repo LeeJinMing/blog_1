@@ -1,13 +1,13 @@
 import { track } from "@vercel/analytics";
 
 /**
- * 跟踪文章阅读事件
- * @param {Object} post - 文章对象
+ * Track article reading events
+ * @param {Object} post - Article object
  */
 export function trackPostView(post) {
   if (!post || !post._id) return;
 
-  // 使用Vercel Analytics跟踪
+  // Use Vercel Analytics for tracking
   track("post_view", {
     postId: typeof post._id === "object" ? post._id.toString() : post._id,
     title: post.title,
@@ -15,7 +15,7 @@ export function trackPostView(post) {
     category: post.tags?.[0] || "uncategorized",
   });
 
-  // 同时使用Google Analytics跟踪
+  // Also use Google Analytics for tracking
   if (typeof window !== "undefined" && typeof window.gtag === "function") {
     window.gtag("event", "post_view", {
       event_category: "content",
@@ -27,19 +27,19 @@ export function trackPostView(post) {
 }
 
 /**
- * 跟踪外部链接点击
- * @param {string} url - 外部链接
- * @param {string} text - 链接文本
+ * Track external link clicks
+ * @param {string} url - External link
+ * @param {string} text - Link text
  */
 export function trackExternalLinkClick(url, text) {
-  // 使用Vercel Analytics
+  // Use Vercel Analytics
   track("external_link_click", {
     url,
     text,
     location: typeof window !== "undefined" ? window.location.pathname : "",
   });
 
-  // 使用Google Analytics
+  // Use Google Analytics
   if (typeof window !== "undefined" && typeof window.gtag === "function") {
     window.gtag("event", "click", {
       event_category: "outbound",
@@ -51,19 +51,19 @@ export function trackExternalLinkClick(url, text) {
 }
 
 /**
- * 跟踪标签点击
- * @param {string} tagId - 标签ID
- * @param {string} tagText - 标签文本
+ * Track tag clicks
+ * @param {string} tagId - Tag ID
+ * @param {string} tagText - Tag text
  */
 export function trackTagClick(tagId, tagText) {
-  // 使用Vercel Analytics
+  // Use Vercel Analytics
   track("tag_click", {
     tagId,
     tagText,
     location: typeof window !== "undefined" ? window.location.pathname : "",
   });
 
-  // 使用Google Analytics
+  // Use Google Analytics
   if (typeof window !== "undefined" && typeof window.gtag === "function") {
     window.gtag("event", "tag_click", {
       event_category: "engagement",
@@ -74,38 +74,38 @@ export function trackTagClick(tagId, tagText) {
 }
 
 /**
- * 跟踪搜索操作
- * @param {string} query - 搜索关键词
- * @param {number} resultsCount - 结果数量
+ * Track search operations
+ * @param {string} query - Search keyword
+ * @param {number} resultsCount - Result count
  */
 export function trackSearch(query, resultsCount) {
-  // 使用Vercel Analytics
+  // Use Vercel Analytics
   track("search", {
     query,
     resultsCount,
   });
 
-  // 使用Google Analytics
+  // Use Google Analytics
   if (typeof window !== "undefined" && typeof window.gtag === "function") {
     window.gtag("event", "search", {
       search_term: query,
-      // GA4特定参数
+      // GA4 specific parameter
       search_results_count: resultsCount,
     });
   }
 }
 
 /**
- * 博客分析工具函数集
- * 用于跟踪用户行为、页面浏览、搜索和点击等活动
+ * Blog analytics utility functions
+ * Used to track user behavior, page views, searches, and clicks
  */
 
-// 跟踪页面浏览
+// Track page views
 export function trackPageView(url) {
   if (typeof window === "undefined") return;
 
   try {
-    // 检查是否配置了Google Analytics
+    // Check if Google Analytics is configured
     if (typeof window.gtag === "function") {
       window.gtag("event", "page_view", {
         page_path: url,
@@ -120,12 +120,12 @@ export function trackPageView(url) {
   }
 }
 
-// 跟踪搜索查询
+// Track search queries
 export function trackSearchQuery(query, resultCount) {
   if (typeof window === "undefined") return;
 
   try {
-    // 清理和标准化查询
+    // Clean and standardize query
     const cleanQuery = (query || "").trim();
     if (!cleanQuery) return;
 
@@ -142,7 +142,7 @@ export function trackSearchQuery(query, resultCount) {
   }
 }
 
-// 跟踪社交分享
+// Track social sharing
 export function trackShare(platform, contentTitle) {
   if (typeof window === "undefined") return;
 
@@ -162,7 +162,7 @@ export function trackShare(platform, contentTitle) {
   }
 }
 
-// 跟踪点击事件
+// Track click events
 export function trackClick(elementId, category, label) {
   if (typeof window === "undefined") return;
 
@@ -181,9 +181,9 @@ export function trackClick(elementId, category, label) {
   }
 }
 
-// 内部工具函数: 发送分析数据到API
+// Internal utility function: Send analytics data to API
 function sendToAnalyticsAPI(eventType, data) {
-  // 仅在生产环境发送真实数据
+  // Only send real data in production environment
   if (process.env.NODE_ENV !== "production") {
     console.log("Development environment analytics data:", {
       eventType,
@@ -192,7 +192,7 @@ function sendToAnalyticsAPI(eventType, data) {
     return;
   }
 
-  // 这里可以实现向自定义分析API发送数据的逻辑
+  // Here you can implement the logic to send data to a custom analytics API
   // fetch('/api/analytics', {
   //   method: 'POST',
   //   headers: { 'Content-Type': 'application/json' },

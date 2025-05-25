@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { trackPostView } from "@/lib/analytics";
 
 /**
- * 组件用于追踪文章浏览量
- * 在客户端组件中使用useEffect钩子追踪浏览量
- * 每当组件加载（即用户访问文章）时，发送一个API请求增加浏览量
+ * Component for tracking article view count
+ * Uses useEffect hook in client component to track views
+ * Sends an API request to increment view count whenever component loads (i.e., user visits article)
  */
 export default function PostViewTracker({ postId, slug }) {
   const [hasTracked, setHasTracked] = useState(false);
@@ -19,20 +19,20 @@ export default function PostViewTracker({ postId, slug }) {
     const hasViewedInSession = sessionStorage.getItem(sessionKey);
 
     if (hasViewedInSession) {
-      // 获取当前文章的浏览量但不递增
+      // Get current article view count but don't increment
       fetchViewCount();
       return;
     }
 
-    // 设置一个合理的延迟来确保用户真的在阅读文章
+    // Set a reasonable delay to ensure user is actually reading the article
     const timer = setTimeout(() => {
       incrementViewCount();
-    }, 5000); // 5秒后认为用户真正阅读
+    }, 5000); // Consider user is actually reading after 5 seconds
 
     return () => clearTimeout(timer);
   }, [postId, hasTracked]);
 
-  // 获取当前浏览量
+  // Get current view count
   const fetchViewCount = async () => {
     try {
       const response = await fetch(`/api/views?id=${postId}`);
@@ -45,7 +45,7 @@ export default function PostViewTracker({ postId, slug }) {
     }
   };
 
-  // 递增浏览量
+  // Increment view count
   const incrementViewCount = async () => {
     try {
       const response = await fetch("/api/views/increment", {
@@ -60,7 +60,7 @@ export default function PostViewTracker({ postId, slug }) {
         const data = await response.json();
         setViewCount(data.views);
 
-        // 在会话中标记该文章已被浏览
+        // Mark this article as viewed in session
         sessionStorage.setItem(`viewed-${postId}`, "true");
         setHasTracked(true);
       }
@@ -71,7 +71,7 @@ export default function PostViewTracker({ postId, slug }) {
 
   return (
     <>
-      {/* 这是一个不可见的组件，仅用于跟踪浏览量 */}
+      {/* This is an invisible component, only used for tracking view count */}
       {viewCount !== null && (
         <div className="hidden">{`Article views: ${viewCount}`}</div>
       )}

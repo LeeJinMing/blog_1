@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://blog-1-nine-rho.vercel.app/sitemap.xml
+Sitemap: https://blog-1-seven-pi.vercel.app/sitemap.xml
 
 # Disallow admin and API routes
 Disallow: /api/

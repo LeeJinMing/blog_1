@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://blog-1-nine-rho.vercel.app/sitemap.xml
+
+# Disallow admin and API routes
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+# Allow important pages
+Allow: /posts/
+Allow: /category/
+Allow: /tags/
+Allow: /archives
+Allow: /about 

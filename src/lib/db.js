@@ -54,11 +54,21 @@ if (typeof window === "undefined") {
  * Get MongoDB client instance
  */
 async function getMongoClient() {
-  // If we already have MongoClient from direct import, use it
+  // If we already have a connected client, return it
+  if (cachedClient) {
+    try {
+      // Test if the connection is still alive
+      await cachedClient.db().admin().ping();
+      return cachedClient;
+    } catch (error) {
+      console.log("Cached client connection lost, reconnecting...");
+      cachedClient = null;
+    }
+  }
+
+  // If we have MongoClient from direct import, use it
   if (MongoClient) {
     try {
-      if (cachedClient) return cachedClient;
-
       const uri = process.env.MONGODB_URI || process.env.MONGO_REMOTE_URL;
 
       if (!uri) {
@@ -66,7 +76,12 @@ async function getMongoClient() {
         return null;
       }
 
-      const client = new MongoClient(uri);
+      const client = new MongoClient(uri, {
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 45000,
+      });
+
       await client.connect();
       cachedClient = client;
       return client;
@@ -88,7 +103,12 @@ async function getMongoClient() {
       return null;
     }
 
-    const client = new DynamicMongoClient(uri);
+    const client = new DynamicMongoClient(uri, {
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+
     await client.connect();
     cachedClient = client;
     return client;
@@ -140,8 +160,8 @@ async function loadAllPosts() {
       .limit(500) // Limit quantity to avoid memory issues
       .toArray();
 
-    // Close connection
-    client.close();
+    // Don't close the connection here - keep it for reuse
+    // client.close(); // Removed this line
 
     // Serialize documents
     let serializedPosts = posts.map(serializeDocument);
@@ -156,6 +176,15 @@ async function loadAllPosts() {
     console.log(`Server loaded ${blogCache.posts.length} articles to cache`);
   } catch (error) {
     console.error("Failed to load articles to cache:", error);
+    // Reset cached client on error
+    if (cachedClient) {
+      try {
+        cachedClient.close();
+      } catch (closeError) {
+        console.error("Error closing client:", closeError);
+      }
+      cachedClient = null;
+    }
     // Return mock data on error
     if (blogCache.posts.length === 0) {
       blogCache.posts = getMockPosts(50);
@@ -432,6 +461,38 @@ function getMockPosts(limit = 10) {
   ];
 
   return mockPosts.slice(0, limit);
+}
+
+/**
+ * Gracefully close database connection
+ * Should be called when the application shuts down
+ */
+export async function closeDbConnection() {
+  if (cachedClient) {
+    try {
+      await cachedClient.close();
+      console.log("Database connection closed gracefully");
+    } catch (error) {
+      console.error("Error closing database connection:", error);
+    } finally {
+      cachedClient = null;
+    }
+  }
+}
+
+// Handle process termination
+if (isServer) {
+  process.on("SIGINT", async () => {
+    console.log("Received SIGINT, closing database connection...");
+    await closeDbConnection();
+    process.exit(0);
+  });
+
+  process.on("SIGTERM", async () => {
+    console.log("Received SIGTERM, closing database connection...");
+    await closeDbConnection();
+    process.exit(0);
+  });
 }
 
 // Export default object

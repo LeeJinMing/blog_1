@@ -9,20 +9,26 @@ export default async function sitemap() {
   const baseUrl = "https://blog-1-seven-pi.vercel.app";
 
   try {
-    // 获取所有文章
-    const posts = await getPosts(100); // 减少数量以避免超时
+    // 静态页面 - 最重要的页面
+    const staticUrls = [
+      {
+        url: baseUrl,
+        lastModified: new Date(),
+        changeFrequency: "daily",
+        priority: 1.0,
+      },
+    ];
 
-    // 生成文章URL条目
-    const postsUrls = posts
-      .filter((post) => post && post.createdAt && post.slug)
-      .slice(0, 50) // 限制数量
-      .map((post) => {
-        try {
+    // 尝试获取文章
+    let postsUrls = [];
+    try {
+      const posts = await getPosts(20); // 只获取最新的20篇文章
+
+      postsUrls = posts
+        .filter((post) => post && post.createdAt && post.slug)
+        .slice(0, 20)
+        .map((post) => {
           const date = new Date(post.createdAt);
-          if (isNaN(date.getTime())) {
-            return null;
-          }
-
           const year = date.getFullYear();
           const month = String(date.getMonth() + 1).padStart(2, "0");
           const day = String(date.getDate()).padStart(2, "0");
@@ -34,32 +40,13 @@ export default async function sitemap() {
             changeFrequency: "weekly",
             priority: 0.8,
           };
-        } catch (error) {
-          console.error(`Error processing post ${post.slug}:`, error);
-          return null;
-        }
-      })
-      .filter(Boolean);
+        });
+    } catch (postsError) {
+      console.error("Error fetching posts for sitemap:", postsError);
+      // 如果获取文章失败，继续使用静态页面
+    }
 
-    // 静态页面
-    const staticUrls = [
-      {
-        url: baseUrl,
-        lastModified: new Date(),
-        changeFrequency: "daily",
-        priority: 1.0,
-      },
-      {
-        url: `${baseUrl}/about`,
-        lastModified: new Date(),
-        changeFrequency: "monthly",
-        priority: 0.5,
-      },
-    ];
-
-    // 合并所有URL
     const allUrls = [...staticUrls, ...postsUrls];
-
     console.log(`Generated sitemap with ${allUrls.length} URLs`);
     return allUrls;
   } catch (error) {

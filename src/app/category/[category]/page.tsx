@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { PostCard } from '@/components/PostCard';
+import { PostCard } from '../../../components/PostCard';
 import { BackButton } from '@/components/BackButton';
 import { Breadcrumb, BreadcrumbGenerators } from '@/components/Breadcrumb';
 import { BreadcrumbJsonLd } from '@/components/JsonLd';

@@ -6,6 +6,7 @@ import { Footer } from '@/components/Footer'
 import { Toaster } from 'react-hot-toast'
 import { DefaultSeo } from 'next-seo'
 import { Analytics } from '@vercel/analytics/next'
+import { OrganizationJsonLd, WebsiteJsonLd } from '@/components/JsonLd'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -92,6 +93,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
         <meta name="theme-color" content="#3b82f6" />
         <meta name="google-adsense-account" content="ca-pub-1911238866563211" />
+
+        {/* JSON-LD 结构化数据 */}
+        <OrganizationJsonLd />
+        <WebsiteJsonLd />
 
         {/* Google tag (gtag.js) */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-HLN9BVWLSS"></script>

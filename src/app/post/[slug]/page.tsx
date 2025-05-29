@@ -10,8 +10,14 @@ import rehypeHighlight from 'rehype-highlight';
 import rehypeRaw from 'rehype-raw';
 import 'highlight.js/styles/github-dark.css'; // Code highlighting styles
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { ArticleJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd';
+import { Breadcrumb, BreadcrumbGenerators } from '@/components/Breadcrumb';
+import { PostContent } from './PostContent';
+import connectDB from '@/lib/mongodb';
+import Post from '@/lib/models/Post';
 
-// 硬编码的 Income Streams 文章数据
+// 硬编码的 Income Streams 文章数据（备用方案）
 const incomeStreamArticles = [
   {
     _id: 'dividend-investing-passive-income-2025',
@@ -79,7 +85,7 @@ To generate $3000 monthly ($36,000 annually), you'll need:
 Dividend investing offers a proven path to passive income generation. While building a $3000 monthly income takes time and capital, the strategy provides both income and potential capital appreciation. Start small, stay consistent, and let compound growth work in your favor.`,
     conclusion: 'Dividend investing provides a reliable path to building substantial passive income. Focus on quality companies with sustainable dividend yields, diversify across sectors, and reinvest dividends for compound growth. Start with dividend ETFs for beginners and gradually build individual positions as you gain experience.',
     category: 'Income Streams',
-    difficulty: 'Intermediate',
+    difficulty: 'Intermediate' as const,
     readTime: '8 min read',
     income: '$3000+/month',
     featured: true,

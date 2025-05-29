@@ -45,8 +45,8 @@ export function PostCard({ post, href, className = '' }: PostCardProps) {
             )}
             {post.difficulty && (
               <span className={`px-3 py-1 text-xs font-medium rounded-full ${post.difficulty === 'Beginner' ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300' :
-                  post.difficulty === 'Intermediate' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-300' :
-                    'bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300'
+                post.difficulty === 'Intermediate' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-300' :
+                  'bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300'
                 }`}>
                 {post.difficulty}
               </span>

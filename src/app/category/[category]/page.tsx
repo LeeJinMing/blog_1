@@ -4,7 +4,6 @@ import { BackButton } from '@/components/BackButton';
 import { Breadcrumb, BreadcrumbGenerators } from '@/components/Breadcrumb';
 import { BreadcrumbJsonLd } from '@/components/JsonLd';
 import { incomeStreamArticles } from '@/data/incomeStreamArticles';
-import { IPost } from '@/lib/models/Post';
 
 // 分类映射
 const categoryMap: Record<string, string> = {
@@ -16,7 +15,7 @@ const categoryMap: Record<string, string> = {
 };
 
 // 获取分类文章
-function getCategoryPosts(category: string): IPost[] {
+function getCategoryPosts(category: string): any[] {
   switch (category) {
     case 'income-streams':
       return incomeStreamArticles;
@@ -122,7 +121,7 @@ export default function CategoryPage({
           {/* 文章列表 */}
           {posts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {posts.map((post) => (
+              {posts.map((post: any) => (
                 <PostCard
                   key={post._id}
                   post={post}
@@ -156,7 +155,7 @@ export default function CategoryPage({
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
-                    {posts.filter(p => p.income).length}
+                    {posts.filter((p: any) => p.income).length}
                   </div>
                   <div className="text-gray-600 dark:text-gray-300">
                     Income Opportunities
@@ -164,7 +163,7 @@ export default function CategoryPage({
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
-                    {posts.filter(p => p.difficulty === 'Beginner').length}
+                    {posts.filter((p: any) => p.difficulty === 'Beginner').length}
                   </div>
                   <div className="text-gray-600 dark:text-gray-300">
                     Beginner Friendly

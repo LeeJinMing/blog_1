@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { IPost } from '@/lib/models/Post';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -9,7 +8,7 @@ import rehypeRaw from 'rehype-raw';
 import 'highlight.js/styles/github-dark.css';
 
 interface PostContentProps {
-  post: IPost;
+  post: any;
 }
 
 export function PostContent({ post }: PostContentProps) {
@@ -218,7 +217,7 @@ export function PostContent({ post }: PostContentProps) {
               Additional Resources
             </h3>
             <ul className="space-y-2">
-              {post.links.map((link, index) => (
+              {post.links.map((link: string, index: number) => (
                 <li key={index}>
                   <a
                     href={link}
@@ -239,7 +238,7 @@ export function PostContent({ post }: PostContentProps) {
           <div className="mt-8">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tags</h3>
             <div className="flex flex-wrap gap-2">
-              {post.tags.map((tag, index) => (
+              {post.tags.map((tag: string, index: number) => (
                 <span
                   key={index}
                   className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-colors"

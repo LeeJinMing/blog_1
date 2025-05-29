@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"
+  style="background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 50%, #c7d2fe 100%);">
+
+  <defs>
+    <linearGradient id="robotGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4f46e5;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Robot head -->
+  <rect x="300" y="200" width="200" height="150" rx="20" fill="url(#robotGradient)" stroke="#4f46e5" stroke-width="3" />
+
+  <!-- Eyes -->
+  <circle cx="350" cy="250" r="20" fill="#06b6d4" />
+  <circle cx="450" cy="250" r="20" fill="#06b6d4" />
+  <circle cx="350" cy="250" r="8" fill="white" />
+  <circle cx="450" cy="250" r="8" fill="white" />
+
+  <!-- Mouth -->
+  <rect x="360" y="300" width="80" height="20" rx="10" fill="#1f2937" />
+  <line x1="370" y1="305" x2="370" y2="315" stroke="#06b6d4" stroke-width="2" />
+  <line x1="380" y1="305" x2="380" y2="315" stroke="#06b6d4" stroke-width="2" />
+  <line x1="390" y1="305" x2="390" y2="315" stroke="#06b6d4" stroke-width="2" />
+
+  <!-- Chat bubbles -->
+  <ellipse cx="150" cy="250" rx="60" ry="30" fill="rgba(255,255,255,0.9)" />
+  <text x="150" y="258" font-family="Arial, sans-serif" font-size="14" fill="#1f2937" text-anchor="middle">Hello! How
+    can</text>
+  <text x="150" y="275" font-family="Arial, sans-serif" font-size="14" fill="#1f2937" text-anchor="middle">I help
+    you?</text>
+
+  <ellipse cx="650" cy="300" rx="70" ry="35" fill="rgba(34,197,94,0.9)" />
+  <text x="650" y="305" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">AI Smart
+    Reply</text>
+  <text x="650" y="322" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">24/7 Online
+    Service</text>
+
+  <!-- Connection lines -->
+  <path d="M210 250 Q250 240 300 250" stroke="#06b6d4" stroke-width="2" fill="none" />
+  <path d="M500 270 Q580 280 580 300" stroke="#22c55e" stroke-width="2" fill="none" />
+
+  <!-- Stats -->
+  <rect x="100" y="480" width="600" height="80" rx="15" fill="rgba(255,255,255,0.15)" />
+  <text x="400" y="510" font-family="Arial, sans-serif" font-size="16" fill="white" text-anchor="middle">Response Time:
+    <1 sec</text>
+      <text x="400" y="535" font-family="Arial, sans-serif" font-size="16" fill="white" text-anchor="middle">Customer
+        Satisfaction: 95%+</text>
+
+
+      <!-- Background elements -->
+      <circle cx="100" cy="100" r="60" fill="rgba(255,255,255,0.1)" />
+      <circle cx="700" cy="500" r="80" fill="rgba(255,255,255,0.08)" />
+
+      <!-- Title -->
+      <text x="400" y="80" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="white"
+        text-anchor="middle">AI Chatbot Business</text>
+      <text x="400" y="120" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.9)"
+        text-anchor="middle">Intelligent Customer Service</text>
+</svg>

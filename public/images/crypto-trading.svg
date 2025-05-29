@@ -1,0 +1,146 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tradingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#DC2626;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#tradingGradient)" />
+
+  <!-- Trading screen/monitor -->
+  <rect x="80" y="60" width="240" height="160" rx="12" fill="#111827" />
+  <rect x="90" y="70" width="220" height="140" rx="8" fill="#1F2937" />
+
+  <!-- Price chart -->
+  <rect x="100" y="80" width="200" height="100" rx="4" fill="#374151" />
+
+  <!-- Candlestick chart -->
+  <rect x="110" y="120" width="4" height="30" fill="#10B981" />
+  <rect x="108" y="125" width="8" height="15" fill="#10B981" />
+
+  <rect x="125" y="110" width="4" height="40" fill="#EF4444" />
+  <rect x="123" y="120" width="8" height="20" fill="#EF4444" />
+
+  <rect x="140" y="115" width="4" height="35" fill="#10B981" />
+  <rect x="138" y="125" width="8" height="15" fill="#10B981" />
+
+  <rect x="155" y="105" width="4" height="45" fill="#10B981" />
+  <rect x="153" y="115" width="8" height="25" fill="#10B981" />
+
+  <rect x="170" y="125" width="4" height="25" fill="#EF4444" />
+  <rect x="168" y="130" width="8" height="15" fill="#EF4444" />
+
+  <rect x="185" y="100" width="4" height="50" fill="#10B981" />
+  <rect x="183" y="110" width="8" height="30" fill="#10B981" />
+
+  <rect x="200" y="95" width="4" height="55" fill="#10B981" />
+  <rect x="198" y="105" width="8" height="35" fill="#10B981" />
+
+  <rect x="215" y="110" width="4" height="40" fill="#EF4444" />
+  <rect x="213" y="120" width="8" height="20" fill="#EF4444" />
+
+  <rect x="230" y="105" width="4" height="45" fill="#10B981" />
+  <rect x="228" y="115" width="8" height="25" fill="#10B981" />
+
+  <rect x="245" y="90" width="4" height="60" fill="#10B981" />
+  <rect x="243" y="100" width="8" height="40" fill="#10B981" />
+
+  <rect x="260" y="85" width="4" height="65" fill="#10B981" />
+  <rect x="258" y="95" width="8" height="45" fill="#10B981" />
+
+  <rect x="275" y="80" width="4" height="70" fill="#10B981" />
+  <rect x="273" y="90" width="8" height="50" fill="#10B981" />
+
+  <!-- Price line overlay -->
+  <polyline points="112,135 127,130 142,127 157,125 172,137 187,125 202,120 217,130 232,127 247,115 262,110 277,105"
+    fill="none" stroke="#FBBF24" stroke-width="2" />
+
+  <!-- Trading interface elements -->
+  <rect x="100" y="190" width="90" height="20" rx="4" fill="#10B981" />
+  <text x="145" y="203" text-anchor="middle" fill="white" font-size="12" font-weight="bold">BUY</text>
+
+  <rect x="210" y="190" width="90" height="20" rx="4" fill="#EF4444" />
+  <text x="255" y="203" text-anchor="middle" fill="white" font-size="12" font-weight="bold">SELL</text>
+
+  <!-- Price display -->
+  <rect x="120" y="30" width="160" height="25" rx="12" fill="#FFFFFF" opacity="0.9" />
+  <text x="200" y="42" text-anchor="middle" fill="#DC2626" font-size="12" font-weight="bold">BTC/USD</text>
+  <text x="200" y="52" text-anchor="middle" fill="#10B981" font-size="14" font-weight="bold">$42,350</text>
+
+  <!-- Mobile trading app -->
+  <rect x="50" y="120" width="50" height="80" rx="8" fill="#374151" />
+  <rect x="55" y="125" width="40" height="70" rx="6" fill="#111827" />
+
+  <!-- App interface -->
+  <rect x="60" y="130" width="30" height="15" rx="2" fill="#DC2626" />
+  <text x="75" y="140" text-anchor="middle" fill="white" font-size="6" font-weight="bold">BINANCE</text>
+
+  <rect x="60" y="150" width="30" height="8" rx="2" fill="#10B981" />
+  <text x="75" y="156" text-anchor="middle" fill="white" font-size="6">+5.2%</text>
+
+  <rect x="60" y="165" width="30" height="8" rx="2" fill="#EF4444" />
+  <text x="75" y="171" text-anchor="middle" fill="white" font-size="6">-2.1%</text>
+
+  <rect x="60" y="180" width="30" height="8" rx="2" fill="#FBBF24" />
+  <text x="75" y="186" text-anchor="middle" fill="white" font-size="6">TRADE</text>
+
+  <!-- Laptop for analysis -->
+  <rect x="300" y="150" width="80" height="50" rx="6" fill="#374151" />
+  <rect x="305" y="155" width="70" height="40" rx="4" fill="#111827" />
+
+  <!-- Technical indicators on laptop -->
+  <rect x="310" y="160" width="60" height="3" rx="1" fill="#10B981" />
+  <rect x="310" y="167" width="50" height="3" rx="1" fill="#EF4444" />
+  <rect x="310" y="174" width="55" height="3" rx="1" fill="#FBBF24" />
+  <rect x="310" y="181" width="45" height="3" rx="1" fill="#3B82F6" />
+  <rect x="310" y="188" width="40" height="3" rx="1" fill="#8B5CF6" />
+
+  <!-- Laptop base -->
+  <rect x="295" y="200" width="90" height="8" rx="4" fill="#374151" />
+
+  <!-- Money/profit indicators -->
+  <circle cx="60" cy="60" r="20" fill="#10B981" opacity="0.9" />
+  <text x="60" y="67" text-anchor="middle" fill="white" font-size="16" font-weight="bold">$</text>
+
+  <circle cx="340" cy="60" r="15" fill="#10B981" opacity="0.8" />
+  <text x="340" y="66" text-anchor="middle" fill="white" font-size="12" font-weight="bold">$</text>
+
+  <!-- Risk management -->
+  <rect x="20" y="220" width="100" height="30" rx="8" fill="#FFFFFF" opacity="0.9" />
+  <text x="70" y="232" text-anchor="middle" fill="#DC2626" font-size="10" font-weight="bold">STOP LOSS</text>
+  <text x="70" y="244" text-anchor="middle" fill="#6B7280" font-size="8">Risk Management</text>
+
+  <!-- Profit target -->
+  <rect x="280" y="220" width="100" height="30" rx="8" fill="#FFFFFF" opacity="0.9" />
+  <text x="330" y="232" text-anchor="middle" fill="#10B981" font-size="10" font-weight="bold">TAKE PROFIT</text>
+  <text x="330" y="244" text-anchor="middle" fill="#6B7280" font-size="8">Target: +15%</text>
+
+  <!-- Volume bars -->
+  <g transform="translate(130, 250)">
+    <rect x="0" y="0" width="6" height="15" fill="#6B7280" />
+    <rect x="8" y="-5" width="6" height="20" fill="#6B7280" />
+    <rect x="16" y="2" width="6" height="13" fill="#6B7280" />
+    <rect x="24" y="-8" width="6" height="23" fill="#6B7280" />
+    <rect x="32" y="-3" width="6" height="18" fill="#6B7280" />
+    <rect x="40" y="-10" width="6" height="25" fill="#6B7280" />
+    <rect x="48" y="-5" width="6" height="20" fill="#6B7280" />
+    <rect x="56" y="-12" width="6" height="27" fill="#6B7280" />
+    <rect x="64" y="-7" width="6" height="22" fill="#6B7280" />
+    <rect x="72" y="-15" width="6" height="30" fill="#6B7280" />
+    <text x="36" y="35" text-anchor="middle" fill="#FFFFFF" font-size="8">Volume</text>
+  </g>
+
+  <!-- Trading signals -->
+  <circle cx="350" cy="120" r="8" fill="#10B981" opacity="0.8" />
+  <text x="350" y="125" text-anchor="middle" fill="white" font-size="6" font-weight="bold">BUY</text>
+
+  <!-- Market sentiment -->
+  <rect x="150" y="250" width="100" height="20" rx="10" fill="#FFFFFF" opacity="0.9" />
+  <text x="200" y="258" text-anchor="middle" fill="#DC2626" font-size="8" font-weight="bold">MARKET SENTIMENT</text>
+  <text x="200" y="267" text-anchor="middle" fill="#10B981" font-size="10" font-weight="bold">BULLISH 📈</text>
+
+  <!-- Title -->
+  <text x="200" y="20" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="bold">Crypto Trading</text>
+</svg>

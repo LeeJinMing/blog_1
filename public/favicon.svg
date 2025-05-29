@@ -1,0 +1,32 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="16" cy="16" r="16" fill="url(#gradient1)" />
+
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Dollar Sign -->
+  <g transform="translate(16, 16)">
+    <!-- Vertical Line -->
+    <rect x="-1" y="-10" width="2" height="20" fill="url(#gradient2)" rx="1" />
+
+    <!-- Top S Curve -->
+    <path d="M -6 -5 Q -6 -7 -2 -7 Q 2 -7 4 -5 Q 6 -3 4 -1 Q 2 -0.5 -2 -0.5" stroke="url(#gradient2)" stroke-width="2"
+      fill="none" stroke-linecap="round" />
+
+    <!-- Bottom S Curve -->
+    <path d="M 6 5 Q 6 7 2 7 Q -2 7 -4 5 Q -6 3 -4 1 Q -2 0.5 2 0.5" stroke="url(#gradient2)" stroke-width="2"
+      fill="none" stroke-linecap="round" />
+  </g>
+</svg>

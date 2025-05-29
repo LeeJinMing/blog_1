@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"
+  style="background: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fed7aa 100%);">
+  <defs>
+    <linearGradient id="networkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="commissionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background elements -->
+  <circle cx="100" cy="100" r="60" fill="rgba(255,255,255,0.1)" />
+  <circle cx="700" cy="500" r="80" fill="rgba(255,255,255,0.08)" />
+
+  <!-- Central hub -->
+  <circle cx="400" cy="300" r="60" fill="url(#networkGradient)" stroke="#1d4ed8" stroke-width="4" />
+  <text x="400" y="310" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white"
+    text-anchor="middle">YOU</text>
+
+  <!-- Partner nodes -->
+  <g>
+    <!-- Partner 1 -->
+    <circle cx="200" cy="200" r="40" fill="#f97316" stroke="#ea580c" stroke-width="3" />
+    <text x="200" y="208" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white"
+      text-anchor="middle">Partner A</text>
+    <line x1="240" y1="220" x2="360" y2="280" stroke="#1d4ed8" stroke-width="3" />
+
+    <!-- Partner 2 -->
+    <circle cx="600" cy="200" r="40" fill="#f97316" stroke="#ea580c" stroke-width="3" />
+    <text x="600" y="208" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white"
+      text-anchor="middle">Partner B</text>
+    <line x1="560" y1="220" x2="440" y2="280" stroke="#1d4ed8" stroke-width="3" />
+
+    <!-- Partner 3 -->
+    <circle cx="200" cy="400" r="40" fill="#f97316" stroke="#ea580c" stroke-width="3" />
+    <text x="200" y="408" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white"
+      text-anchor="middle">Partner C</text>
+    <line x1="240" y1="380" x2="360" y2="320" stroke="#1d4ed8" stroke-width="3" />
+
+    <!-- Partner 4 -->
+    <circle cx="600" cy="400" r="40" fill="#f97316" stroke="#ea580c" stroke-width="3" />
+    <text x="600" y="408" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white"
+      text-anchor="middle">Partner D</text>
+    <line x1="560" y1="380" x2="440" y2="320" stroke="#1d4ed8" stroke-width="3" />
+  </g>
+
+  <!-- Commission flow -->
+  <g>
+    <!-- Money flows -->
+    <circle cx="300" cy="180" r="15" fill="url(#commissionGradient)" />
+    <text x="300" y="187" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white"
+      text-anchor="middle">$</text>
+
+    <circle cx="500" cy="180" r="15" fill="url(#commissionGradient)" />
+    <text x="500" y="187" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white"
+      text-anchor="middle">$</text>
+
+    <circle cx="300" cy="420" r="15" fill="url(#commissionGradient)" />
+    <text x="300" y="427" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white"
+      text-anchor="middle">$</text>
+
+    <circle cx="500" cy="420" r="15" fill="url(#commissionGradient)" />
+    <text x="500" y="427" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white"
+      text-anchor="middle">$</text>
+  </g>
+
+  <!-- Customers -->
+  <g>
+    <circle cx="100" cy="300" r="25" fill="#7c3aed" stroke="#6d28d9" stroke-width="2" />
+    <text x="100" y="308" font-family="Arial, sans-serif" font-size="12" fill="white"
+      text-anchor="middle">Customer</text>
+    <path d="M125 300 Q200 250 240 220" stroke="#7c3aed" stroke-width="2" fill="none" stroke-dasharray="5,3" />
+
+    <circle cx="700" cy="300" r="25" fill="#7c3aed" stroke="#6d28d9" stroke-width="2" />
+    <text x="700" y="308" font-family="Arial, sans-serif" font-size="12" fill="white"
+      text-anchor="middle">Customer</text>
+    <path d="M675 300 Q600 250 560 220" stroke="#7c3aed" stroke-width="2" fill="none" stroke-dasharray="5,3" />
+  </g>
+
+  <!-- Link chain -->
+  <g transform="translate(350, 450)">
+    <circle cx="0" cy="0" r="15" fill="none" stroke="#1d4ed8" stroke-width="4" />
+    <circle cx="30" cy="0" r="15" fill="none" stroke="#1d4ed8" stroke-width="4" />
+    <circle cx="60" cy="0" r="15" fill="none" stroke="#1d4ed8" stroke-width="4" />
+    <circle cx="90" cy="0" r="15" fill="none" stroke="#1d4ed8" stroke-width="4" />
+    <line x1="10" y1="0" x2="20" y2="0" stroke="#1d4ed8" stroke-width="4" />
+    <line x1="40" y1="0" x2="50" y2="0" stroke="#1d4ed8" stroke-width="4" />
+    <line x1="70" y1="0" x2="80" y2="0" stroke="#1d4ed8" stroke-width="4" />
+  </g>
+
+  <!-- Title -->
+  <text x="400" y="80" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="white"
+    text-anchor="middle">Affiliate Marketing</text>
+  <text x="400" y="120" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.9)"
+    text-anchor="middle">Performance-Based Marketing</text>
+
+  <!-- Stats -->
+  <rect x="50" y="520" width="700" height="60" rx="15" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)"
+    stroke-width="2" />
+  <text x="200" y="545" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">Commission
+    Rate</text>
+  <text x="200" y="565" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#059669"
+    text-anchor="middle">5-15%</text>
+
+  <text x="400" y="545" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">Monthly
+    Income</text>
+  <text x="400" y="565" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#f59e0b"
+    text-anchor="middle">$1K-10K</text>
+
+  <text x="600" y="545" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">Partners</text>
+  <text x="600" y="565" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2563eb"
+    text-anchor="middle">50+</text>
+</svg>

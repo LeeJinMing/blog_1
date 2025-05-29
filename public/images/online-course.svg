@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"
+  style="background: linear-gradient(135deg, #581c87 0%, #7c3aed 50%, #c4b5fd 100%);">
+  <defs>
+    <linearGradient id="screenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#475569;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#dc2626;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#991b1b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="lightGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background elements -->
+  <circle cx="120" cy="120" r="70" fill="rgba(255,255,255,0.1)" />
+  <circle cx="680" cy="480" r="90" fill="rgba(255,255,255,0.08)" />
+
+  <!-- Computer/Laptop -->
+  <g transform="translate(250, 200)">
+    <!-- Screen -->
+    <rect x="0" y="0" width="300" height="200" rx="15" fill="url(#screenGradient)" stroke="#64748b" stroke-width="3" />
+    <rect x="15" y="15" width="270" height="170" rx="8" fill="#0f172a" />
+
+    <!-- Screen content -->
+    <rect x="30" y="30" width="240" height="30" rx="5" fill="#7c3aed" />
+    <text x="150" y="50" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">Online Course
+      Platform</text>
+
+    <!-- Video player -->
+    <rect x="30" y="70" width="240" height="90" rx="5" fill="#334155" />
+    <circle cx="150" cy="115" r="25" fill="rgba(124,58,237,0.8)" />
+    <path d="M140 105 L140 125 L165 115 Z" fill="white" />
+
+    <!-- Progress bar -->
+    <rect x="30" y="170" width="240" height="8" rx="4" fill="#475569" />
+    <rect x="30" y="170" width="120" height="8" rx="4" fill="#7c3aed" />
+
+    <!-- Laptop base -->
+    <rect x="-20" y="200" width="340" height="20" rx="10" fill="url(#screenGradient)" />
+    <rect x="140" y="210" width="20" height="10" rx="5" fill="#64748b" />
+  </g>
+
+  <!-- Books stack -->
+  <g transform="translate(100, 350)">
+    <rect x="0" y="0" width="80" height="15" rx="3" fill="url(#bookGradient)" />
+    <rect x="5" y="-20" width="80" height="15" rx="3" fill="#2563eb" />
+    <rect x="-5" y="-40" width="80" height="15" rx="3" fill="#059669" />
+    <rect x="10" y="-60" width="80" height="15" rx="3" fill="#dc2626" />
+  </g>
+
+  <!-- Lightbulb (knowledge) -->
+  <g transform="translate(600, 250)">
+    <circle cx="0" cy="0" r="35" fill="url(#lightGradient)" stroke="#f59e0b" stroke-width="3" />
+    <rect x="-8" y="25" width="16" height="20" rx="3" fill="#78716c" />
+    <line x1="-25" y1="-25" x2="-35" y2="-35" stroke="#fbbf24" stroke-width="3" />
+    <line x1="25" y1="-25" x2="35" y2="-35" stroke="#fbbf24" stroke-width="3" />
+    <line x1="0" y1="-45" x2="0" y2="-55" stroke="#fbbf24" stroke-width="3" />
+    <line x1="-35" y1="0" x2="-45" y2="0" stroke="#fbbf24" stroke-width="3" />
+    <line x1="35" y1="0" x2="45" y2="0" stroke="#fbbf24" stroke-width="3" />
+  </g>
+
+  <!-- Knowledge transfer arrows -->
+  <path d="M550 300 Q500 280 450 300" stroke="#fbbf24" stroke-width="3" fill="none" stroke-dasharray="8,4" />
+  <path d="M445 295 L455 300 L445 305 Z" fill="#fbbf24" />
+
+  <!-- Graduation cap -->
+  <g transform="translate(150, 180)">
+    <rect x="0" y="0" width="60" height="4" rx="2" fill="#1f2937" />
+    <circle cx="30" cy="2" r="25" fill="#374151" />
+    <rect x="45" y="-15" width="3" height="30" fill="#6b7280" />
+    <circle cx="46" cy="15" r="4" fill="#fbbf24" />
+  </g>
+
+  <!-- Title -->
+  <text x="400" y="80" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="white"
+    text-anchor="middle">Online Course</text>
+  <text x="400" y="120" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.9)"
+    text-anchor="middle">Digital Education Platform</text>
+
+  <!-- Stats -->
+  <rect x="50" y="480" width="700" height="80" rx="15" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)"
+    stroke-width="2" />
+  <text x="200" y="510" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">Students</text>
+  <text x="200" y="530" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#7c3aed"
+    text-anchor="middle">10K+</text>
+
+  <text x="400" y="510" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">Course
+    Revenue</text>
+  <text x="400" y="530" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#fbbf24"
+    text-anchor="middle">$50K+</text>
+
+  <text x="600" y="510" font-family="Arial, sans-serif" font-size="14" fill="white"
+    text-anchor="middle">Satisfaction</text>
+  <text x="600" y="530" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#10b981"
+    text-anchor="middle">98%</text>
+
+  <!-- Star ratings -->
+  <g transform="translate(550, 540)">
+    <path d="M0 0 L3 6 L9 6 L4 10 L6 16 L0 13 L-6 16 L-4 10 L-9 6 L-3 6 Z" fill="#fbbf24" />
+    <path d="M15 0 L18 6 L24 6 L19 10 L21 16 L15 13 L9 16 L11 10 L6 6 L12 6 Z" fill="#fbbf24" />
+    <path d="M30 0 L33 6 L39 6 L34 10 L36 16 L30 13 L24 16 L26 10 L21 6 L27 6 Z" fill="#fbbf24" />
+    <path d="M45 0 L48 6 L54 6 L49 10 L51 16 L45 13 L39 16 L41 10 L36 6 L42 6 Z" fill="#fbbf24" />
+    <path d="M60 0 L63 6 L69 6 L64 10 L66 16 L60 13 L54 16 L56 10 L51 6 L57 6 Z" fill="#fbbf24" />
+  </g>
+</svg>

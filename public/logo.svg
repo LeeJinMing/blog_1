@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630"
+  style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #93c5fd 100%);">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Main title -->
+  <text x="600" y="200" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="white"
+    text-anchor="middle">Path to Financial Freedom</text>
+  <text x="600" y="260" font-family="Arial, sans-serif" font-size="36" fill="rgba(255,255,255,0.9)"
+    text-anchor="middle">Path to Financial Freedom</text>
+
+  <!-- Logo icon -->
+  <circle cx="600" cy="380" r="80" fill="url(#logoGradient)" stroke="#f59e0b" stroke-width="4" />
+  <text x="600" y="395" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white"
+    text-anchor="middle">$</text>
+
+  <!-- Decorative elements -->
+  <circle cx="200" cy="150" r="60" fill="rgba(255,255,255,0.1)" />
+  <circle cx="1000" cy="480" r="80" fill="rgba(255,255,255,0.08)" />
+  <circle cx="150" cy="500" r="40" fill="rgba(251,191,36,0.3)" />
+  <circle cx="1050" cy="120" r="50" fill="rgba(251,191,36,0.2)" />
+</svg>

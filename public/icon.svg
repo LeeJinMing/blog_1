@@ -1,0 +1,86 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="256" fill="url(#gradient1)" />
+
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Shadow Filter -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="rgba(0,0,0,0.3)" />
+    </filter>
+  </defs>
+
+  <!-- Main Money Symbol Container -->
+  <g transform="translate(256, 256)">
+    <!-- Dollar Sign Background Circle -->
+    <circle cx="0" cy="0" r="120" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="2" />
+
+    <!-- Dollar Sign -->
+    <g filter="url(#shadow)">
+      <!-- Vertical Line -->
+      <rect x="-8" y="-100" width="16" height="200" fill="url(#gradient2)" rx="8" />
+
+      <!-- Top S Curve -->
+      <path d="M -60 -60 Q -60 -80 -20 -80 Q 20 -80 40 -60 Q 60 -40 40 -20 Q 20 -10 -20 -10" stroke="url(#gradient2)"
+        stroke-width="20" fill="none" stroke-linecap="round" />
+
+      <!-- Bottom S Curve -->
+      <path d="M 60 60 Q 60 80 20 80 Q -20 80 -40 60 Q -60 40 -40 20 Q -20 10 20 10" stroke="url(#gradient2)"
+        stroke-width="20" fill="none" stroke-linecap="round" />
+    </g>
+
+    <!-- Decorative Elements -->
+    <!-- Growth Arrow -->
+    <g transform="translate(80, -80)">
+      <path d="M 0 20 L 0 -10 L -10 0 M 0 -10 L 10 0" stroke="url(#gradient3)" stroke-width="6" fill="none"
+        stroke-linecap="round" stroke-linejoin="round" />
+      <circle cx="0" cy="25" r="4" fill="url(#gradient3)" />
+      <circle cx="0" cy="35" r="3" fill="url(#gradient3)" opacity="0.7" />
+      <circle cx="0" cy="43" r="2" fill="url(#gradient3)" opacity="0.5" />
+    </g>
+
+    <!-- Money Coins -->
+    <g transform="translate(-90, 70)">
+      <circle cx="0" cy="0" r="12" fill="url(#gradient2)" opacity="0.8" />
+      <circle cx="0" cy="0" r="8" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1" />
+      <text x="0" y="3" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold"
+        fill="white">$</text>
+    </g>
+
+    <g transform="translate(-70, 90)">
+      <circle cx="0" cy="0" r="10" fill="url(#gradient2)" opacity="0.6" />
+      <circle cx="0" cy="0" r="6" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+      <text x="0" y="2" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="bold"
+        fill="white">$</text>
+    </g>
+
+    <!-- Chart Bars -->
+    <g transform="translate(70, 60)">
+      <rect x="0" y="0" width="8" height="30" fill="url(#gradient3)" rx="4" opacity="0.8" />
+      <rect x="12" y="-10" width="8" height="40" fill="url(#gradient3)" rx="4" opacity="0.9" />
+      <rect x="24" y="-25" width="8" height="55" fill="url(#gradient3)" rx="4" />
+    </g>
+  </g>
+
+  <!-- Brand Text (Optional - can be removed for simpler icon) -->
+  <g transform="translate(256, 420)">
+    <text x="0" y="0" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="bold"
+      fill="white" opacity="0.9">MoneyGuide</text>
+  </g>
+</svg>

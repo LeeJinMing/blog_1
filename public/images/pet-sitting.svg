@@ -1,0 +1,129 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="petGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A855F7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#petGradient)" />
+
+  <!-- Dog -->
+  <ellipse cx="150" cy="180" rx="40" ry="30" fill="#D97706" />
+  <ellipse cx="150" cy="160" rx="25" ry="20" fill="#D97706" />
+
+  <!-- Dog ears -->
+  <ellipse cx="135" cy="150" rx="8" ry="15" fill="#92400E" />
+  <ellipse cx="165" cy="150" rx="8" ry="15" fill="#92400E" />
+
+  <!-- Dog eyes -->
+  <circle cx="145" cy="155" r="3" fill="#374151" />
+  <circle cx="155" cy="155" r="3" fill="#374151" />
+  <circle cx="146" cy="154" r="1" fill="#FFFFFF" />
+  <circle cx="156" cy="154" r="1" fill="#FFFFFF" />
+
+  <!-- Dog nose -->
+  <ellipse cx="150" cy="165" rx="2" ry="1" fill="#374151" />
+
+  <!-- Dog tail -->
+  <ellipse cx="185" cy="175" rx="15" ry="8" fill="#D97706" transform="rotate(30 185 175)" />
+
+  <!-- Dog legs -->
+  <rect x="135" y="200" width="8" height="20" rx="4" fill="#D97706" />
+  <rect x="150" y="200" width="8" height="20" rx="4" fill="#D97706" />
+  <rect x="165" y="200" width="8" height="20" rx="4" fill="#D97706" />
+
+  <!-- Cat -->
+  <ellipse cx="280" cy="170" rx="30" ry="25" fill="#6B7280" />
+  <ellipse cx="280" cy="155" rx="20" ry="15" fill="#6B7280" />
+
+  <!-- Cat ears -->
+  <path d="M 265 145 L 270 135 L 275 145 Z" fill="#6B7280" />
+  <path d="M 285 145 L 290 135 L 295 145 Z" fill="#6B7280" />
+
+  <!-- Cat eyes -->
+  <ellipse cx="275" cy="150" rx="2" ry="3" fill="#10B981" />
+  <ellipse cx="285" cy="150" rx="2" ry="3" fill="#10B981" />
+
+  <!-- Cat nose -->
+  <path d="M 280 155 L 278 157 L 282 157 Z" fill="#EC4899" />
+
+  <!-- Cat tail -->
+  <path d="M 305 165 Q 320 150 315 135" stroke="#6B7280" stroke-width="8" fill="none" />
+
+  <!-- Person/Sitter -->
+  <circle cx="200" cy="100" r="20" fill="#FBBF24" />
+  <rect x="185" y="120" width="30" height="50" rx="15" fill="#3B82F6" />
+  <rect x="180" y="135" width="40" height="20" rx="10" fill="#FFFFFF" />
+
+  <!-- Arms -->
+  <rect x="170" y="130" width="15" height="6" rx="3" fill="#FBBF24" />
+  <rect x="215" y="130" width="15" height="6" rx="3" fill="#FBBF24" />
+
+  <!-- Legs -->
+  <rect x="190" y="170" width="8" height="25" rx="4" fill="#1F2937" />
+  <rect x="202" y="170" width="8" height="25" rx="4" fill="#1F2937" />
+
+  <!-- Heart (love for pets) -->
+  <path
+    d="M 200 80 C 195 75, 185 75, 185 85 C 185 75, 175 75, 180 85 C 180 95, 200 105, 200 105 C 200 105, 220 95, 220 85 C 225 75, 215 75, 215 85 C 215 75, 205 75, 200 80 Z"
+    fill="#EC4899" opacity="0.8" />
+
+  <!-- Leash -->
+  <path d="M 215 135 Q 230 150 240 165" stroke="#8B5CF6" stroke-width="3" fill="none" />
+  <circle cx="240" cy="165" r="3" fill="#8B5CF6" />
+
+  <!-- Food bowl -->
+  <ellipse cx="100" cy="240" rx="25" ry="8" fill="#374151" />
+  <ellipse cx="100" cy="235" rx="20" ry="6" fill="#FBBF24" />
+  <circle cx="95" cy="232" r="3" fill="#DC2626" />
+  <circle cx="105" cy="232" r="3" fill="#DC2626" />
+
+  <!-- Water bowl -->
+  <ellipse cx="320" cy="240" rx="25" ry="8" fill="#374151" />
+  <ellipse cx="320" cy="235" rx="20" ry="6" fill="#3B82F6" />
+
+  <!-- Paw prints -->
+  <g transform="translate(50, 50)">
+    <circle cx="0" cy="0" r="4" fill="#FFFFFF" opacity="0.6" />
+    <circle cx="-3" cy="-8" r="2" fill="#FFFFFF" opacity="0.6" />
+    <circle cx="3" cy="-8" r="2" fill="#FFFFFF" opacity="0.6" />
+    <circle cx="-6" cy="-4" r="2" fill="#FFFFFF" opacity="0.6" />
+    <circle cx="6" cy="-4" r="2" fill="#FFFFFF" opacity="0.6" />
+  </g>
+
+  <g transform="translate(350, 80)">
+    <circle cx="0" cy="0" r="4" fill="#FFFFFF" opacity="0.6" />
+    <circle cx="-3" cy="-8" r="2" fill="#FFFFFF" opacity="0.6" />
+    <circle cx="3" cy="-8" r="2" fill="#FFFFFF" opacity="0.6" />
+    <circle cx="-6" cy="-4" r="2" fill="#FFFFFF" opacity="0.6" />
+    <circle cx="6" cy="-4" r="2" fill="#FFFFFF" opacity="0.6" />
+  </g>
+
+  <!-- Money symbols -->
+  <circle cx="50" cy="120" r="15" fill="#10B981" opacity="0.9" />
+  <text x="50" y="127" text-anchor="middle" fill="white" font-size="12" font-weight="bold">$</text>
+
+  <circle cx="350" cy="180" r="12" fill="#10B981" opacity="0.8" />
+  <text x="350" y="186" text-anchor="middle" fill="white" font-size="10" font-weight="bold">$</text>
+
+  <!-- House -->
+  <rect x="30" y="180" width="50" height="40" rx="4" fill="#FFFFFF" />
+  <path d="M 25 180 L 55 160 L 85 180 Z" fill="#DC2626" />
+  <rect x="40" y="190" width="12" height="20" rx="2" fill="#8B5CF6" />
+  <rect x="60" y="190" width="8" height="8" rx="1" fill="#3B82F6" />
+
+  <!-- Stars (rating) -->
+  <g transform="translate(200, 250)">
+    <path d="M0 0 L2 4 L6 4 L3 7 L4 11 L0 9 L-4 11 L-3 7 L-6 4 L-2 4 Z" fill="#FBBF24" />
+    <path d="M15 0 L17 4 L21 4 L18 7 L19 11 L15 9 L11 11 L12 7 L9 4 L13 4 Z" fill="#FBBF24" />
+    <path d="M30 0 L32 4 L36 4 L33 7 L34 11 L30 9 L26 11 L27 7 L24 4 L28 4 Z" fill="#FBBF24" />
+    <path d="M45 0 L47 4 L51 4 L48 7 L49 11 L45 9 L41 11 L42 7 L39 4 L43 4 Z" fill="#FBBF24" />
+    <path d="M60 0 L62 4 L66 4 L63 7 L64 11 L60 9 L56 11 L57 7 L54 4 L58 4 Z" fill="#FBBF24" />
+  </g>
+
+  <!-- Title -->
+  <text x="200" y="30" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="bold">Pet Sitting Service</text>
+  <text x="200" y="280" text-anchor="middle" fill="#FFFFFF" font-size="12">Loving Care for Your Pets</text>
+</svg>

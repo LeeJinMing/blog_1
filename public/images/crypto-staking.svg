@@ -1,0 +1,139 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="stakingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#stakingGradient)" />
+
+  <!-- Central staking pool -->
+  <circle cx="200" cy="150" r="60" fill="#FFFFFF" stroke="#10B981" stroke-width="4" />
+  <circle cx="200" cy="150" r="45" fill="#F0FDF4" />
+  <text x="200" y="145" text-anchor="middle" fill="#047857" font-size="14" font-weight="bold">STAKING</text>
+  <text x="200" y="160" text-anchor="middle" fill="#047857" font-size="14" font-weight="bold">POOL</text>
+
+  <!-- Staked tokens flowing in -->
+  <circle cx="100" cy="80" r="25" fill="#3B82F6" />
+  <text x="100" y="87" text-anchor="middle" fill="white" font-size="14" font-weight="bold">ETH</text>
+  <path d="M 120 95 L 165 125" stroke="#10B981" stroke-width="4" marker-end="url(#arrowhead)" />
+
+  <circle cx="300" cy="80" r="25" fill="#8B5CF6" />
+  <text x="300" y="87" text-anchor="middle" fill="white" font-size="14" font-weight="bold">ADA</text>
+  <path d="M 280 95 L 235 125" stroke="#10B981" stroke-width="4" marker-end="url(#arrowhead)" />
+
+  <circle cx="100" cy="220" r="25" fill="#F59E0B" />
+  <text x="100" y="227" text-anchor="middle" fill="white" font-size="14" font-weight="bold">DOT</text>
+  <path d="M 120 205 L 165 175" stroke="#10B981" stroke-width="4" marker-end="url(#arrowhead)" />
+
+  <circle cx="300" cy="220" r="25" fill="#EF4444" />
+  <text x="300" y="227" text-anchor="middle" fill="white" font-size="14" font-weight="bold">SOL</text>
+  <path d="M 280 205 L 235 175" stroke="#10B981" stroke-width="4" marker-end="url(#arrowhead)" />
+
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10B981" />
+    </marker>
+  </defs>
+
+  <!-- Rewards flowing out -->
+  <circle cx="350" cy="150" r="20" fill="#FBBF24" />
+  <text x="350" y="156" text-anchor="middle" fill="white" font-size="10" font-weight="bold">REWARDS</text>
+  <path d="M 260 150 L 330 150" stroke="#FBBF24" stroke-width="4" marker-end="url(#arrowhead2)" />
+
+  <defs>
+    <marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#FBBF24" />
+    </marker>
+  </defs>
+
+  <!-- APY indicators -->
+  <rect x="50" y="40" width="70" height="25" rx="12" fill="#FFFFFF" opacity="0.9" />
+  <text x="85" y="50" text-anchor="middle" fill="#059669" font-size="8" font-weight="bold">ETH APY</text>
+  <text x="85" y="60" text-anchor="middle" fill="#10B981" font-size="12" font-weight="bold">5.2%</text>
+
+  <rect x="280" y="40" width="70" height="25" rx="12" fill="#FFFFFF" opacity="0.9" />
+  <text x="315" y="50" text-anchor="middle" fill="#059669" font-size="8" font-weight="bold">ADA APY</text>
+  <text x="315" y="60" text-anchor="middle" fill="#10B981" font-size="12" font-weight="bold">4.8%</text>
+
+  <rect x="50" y="255" width="70" height="25" rx="12" fill="#FFFFFF" opacity="0.9" />
+  <text x="85" y="265" text-anchor="middle" fill="#059669" font-size="8" font-weight="bold">DOT APY</text>
+  <text x="85" y="275" text-anchor="middle" fill="#10B981" font-size="12" font-weight="bold">12.5%</text>
+
+  <rect x="280" y="255" width="70" height="25" rx="12" fill="#FFFFFF" opacity="0.9" />
+  <text x="315" y="265" text-anchor="middle" fill="#059669" font-size="8" font-weight="bold">SOL APY</text>
+  <text x="315" y="275" text-anchor="middle" fill="#10B981" font-size="12" font-weight="bold">7.1%</text>
+
+  <!-- Validator nodes -->
+  <rect x="30" y="130" width="40" height="40" rx="8" fill="#374151" />
+  <rect x="35" y="135" width="30" height="30" rx="6" fill="#4B5563" />
+  <circle cx="50" cy="150" r="8" fill="#10B981" />
+  <text x="50" y="154" text-anchor="middle" fill="white" font-size="6" font-weight="bold">V1</text>
+  <text x="50" y="185" text-anchor="middle" fill="#FFFFFF" font-size="8">Validator</text>
+
+  <rect x="330" y="130" width="40" height="40" rx="8" fill="#374151" />
+  <rect x="335" y="135" width="30" height="30" rx="6" fill="#4B5563" />
+  <circle cx="350" cy="150" r="8" fill="#10B981" />
+  <text x="350" y="154" text-anchor="middle" fill="white" font-size="6" font-weight="bold">V2</text>
+  <text x="350" y="185" text-anchor="middle" fill="#FFFFFF" font-size="8">Validator</text>
+
+  <!-- Lock period indicator -->
+  <rect x="150" y="220" width="100" height="30" rx="15" fill="#FFFFFF" opacity="0.9" />
+  <text x="200" y="232" text-anchor="middle" fill="#059669" font-size="10" font-weight="bold">LOCK PERIOD</text>
+  <text x="200" y="244" text-anchor="middle" fill="#6B7280" font-size="12" font-weight="bold">21 Days</text>
+
+  <!-- Compound rewards visualization -->
+  <g transform="translate(20, 200)">
+    <rect x="0" y="0" width="4" height="10" fill="#10B981" />
+    <rect x="6" y="-2" width="4" height="12" fill="#10B981" />
+    <rect x="12" y="-4" width="4" height="14" fill="#10B981" />
+    <rect x="18" y="-7" width="4" height="17" fill="#10B981" />
+    <rect x="24" y="-10" width="4" height="20" fill="#10B981" />
+    <text x="12" y="25" text-anchor="middle" fill="#FFFFFF" font-size="8">Compound</text>
+  </g>
+
+  <!-- Network security -->
+  <path d="M 200 80 L 190 90 L 200 100 L 210 90 Z" fill="#FBBF24" opacity="0.8" />
+  <circle cx="200" cy="90" r="6" fill="#FFFFFF" />
+  <path d="M 196 87 L 199 90 L 204 85" stroke="#10B981" stroke-width="2" fill="none" />
+  <text x="200" y="75" text-anchor="middle" fill="#FFFFFF" font-size="8">Secure Network</text>
+
+  <!-- Slashing risk warning -->
+  <rect x="150" y="50" width="100" height="20" rx="10" fill="#EF4444" opacity="0.8" />
+  <text x="200" y="58" text-anchor="middle" fill="white" font-size="8" font-weight="bold">⚠️ SLASHING RISK</text>
+  <text x="200" y="67" text-anchor="middle" fill="white" font-size="8">Choose validators carefully</text>
+
+  <!-- Staking rewards calculation -->
+  <rect x="20" y="100" width="80" height="40" rx="8" fill="#FFFFFF" opacity="0.9" />
+  <text x="60" y="112" text-anchor="middle" fill="#059669" font-size="8" font-weight="bold">MONTHLY REWARDS</text>
+  <text x="60" y="124" text-anchor="middle" fill="#10B981" font-size="12" font-weight="bold">$245</text>
+  <text x="60" y="134" text-anchor="middle" fill="#6B7280" font-size="8">on 10 ETH staked</text>
+
+  <!-- Unstaking queue -->
+  <rect x="300" y="100" width="80" height="40" rx="8" fill="#FFFFFF" opacity="0.9" />
+  <text x="340" y="112" text-anchor="middle" fill="#059669" font-size="8" font-weight="bold">UNSTAKING QUEUE</text>
+  <text x="340" y="124" text-anchor="middle" fill="#F59E0B" font-size="12" font-weight="bold">7 Days</text>
+  <text x="340" y="134" text-anchor="middle" fill="#6B7280" font-size="8">withdrawal time</text>
+
+  <!-- Proof of Stake consensus -->
+  <circle cx="50" cy="50" r="15" fill="#FFFFFF" opacity="0.9" />
+  <text x="50" y="52" text-anchor="middle" fill="#059669" font-size="8" font-weight="bold">PoS</text>
+  <text x="50" y="60" text-anchor="middle" fill="#059669" font-size="8" font-weight="bold">2.0</text>
+
+  <!-- Network participation -->
+  <circle cx="350" cy="50" r="15" fill="#FFFFFF" opacity="0.9" />
+  <text x="350" y="48" text-anchor="middle" fill="#059669" font-size="6" font-weight="bold">NETWORK</text>
+  <text x="350" y="56" text-anchor="middle" fill="#059669" font-size="6" font-weight="bold">PARTICIPATION</text>
+
+  <!-- Delegation option -->
+  <rect x="120" y="280" width="160" height="15" rx="7" fill="#FFFFFF" opacity="0.9" />
+  <text x="200" y="290" text-anchor="middle" fill="#059669" font-size="10" font-weight="bold">Delegate to
+    Validators</text>
+
+  <!-- Title -->
+  <text x="200" y="20" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="bold">Crypto Staking
+    Rewards</text>
+</svg>

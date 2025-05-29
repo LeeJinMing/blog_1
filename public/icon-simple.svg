@@ -1,0 +1,61 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="256" fill="url(#gradient1)" />
+
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Shadow Filter -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="3" dy="6" stdDeviation="4" flood-color="rgba(0,0,0,0.4)" />
+    </filter>
+  </defs>
+
+  <!-- Main Money Symbol Container -->
+  <g transform="translate(256, 256)">
+    <!-- Dollar Sign Background Circle -->
+    <circle cx="0" cy="0" r="140" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="3" />
+
+    <!-- Dollar Sign -->
+    <g filter="url(#shadow)">
+      <!-- Vertical Line -->
+      <rect x="-12" y="-120" width="24" height="240" fill="url(#gradient2)" rx="12" />
+
+      <!-- Top S Curve -->
+      <path d="M -70 -70 Q -70 -95 -25 -95 Q 25 -95 50 -70 Q 75 -45 50 -20 Q 25 -10 -25 -10" stroke="url(#gradient2)"
+        stroke-width="28" fill="none" stroke-linecap="round" />
+
+      <!-- Bottom S Curve -->
+      <path d="M 70 70 Q 70 95 25 95 Q -25 95 -50 70 Q -75 45 -50 20 Q -25 10 25 10" stroke="url(#gradient2)"
+        stroke-width="28" fill="none" stroke-linecap="round" />
+    </g>
+
+    <!-- Growth Arrow -->
+    <g transform="translate(100, -100)">
+      <path d="M 0 25 L 0 -15 L -15 0 M 0 -15 L 15 0" stroke="url(#gradient3)" stroke-width="8" fill="none"
+        stroke-linecap="round" stroke-linejoin="round" filter="url(#shadow)" />
+    </g>
+
+    <!-- Chart Bars -->
+    <g transform="translate(85, 80)">
+      <rect x="0" y="0" width="12" height="40" fill="url(#gradient3)" rx="6" opacity="0.9" filter="url(#shadow)" />
+      <rect x="18" y="-15" width="12" height="55" fill="url(#gradient3)" rx="6" opacity="0.95" filter="url(#shadow)" />
+      <rect x="36" y="-35" width="12" height="75" fill="url(#gradient3)" rx="6" filter="url(#shadow)" />
+    </g>
+  </g>
+</svg>

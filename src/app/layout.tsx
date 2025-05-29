@@ -5,6 +5,7 @@ import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { Toaster } from 'react-hot-toast'
 import { DefaultSeo } from 'next-seo'
+import { Analytics } from '@vercel/analytics/next'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -90,6 +91,27 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
         <meta name="theme-color" content="#3b82f6" />
+        <meta name="google-adsense-account" content="ca-pub-1911238866563211" />
+
+        {/* Google tag (gtag.js) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-HLN9BVWLSS"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-HLN9BVWLSS');
+            `,
+          }}
+        />
+
+        {/* Google AdSense */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1911238866563211"
+          crossOrigin="anonymous"
+        ></script>
       </head>
       <body
         className="min-h-screen bg-white dark:bg-gray-900 font-sans antialiased"
@@ -113,6 +135,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             }}
           />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   )

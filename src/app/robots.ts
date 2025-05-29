@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = "https://yoursite.com"; // 替换为实际域名
+  const baseUrl = "https://blog-2-rho.vercel.app";
 
   return {
     rules: [

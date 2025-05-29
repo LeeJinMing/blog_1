@@ -11,7 +11,7 @@ const incomeStreamArticleIds = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://yoursite.com"; // 替换为实际域名
+  const baseUrl = "https://blog-2-rho.vercel.app";
 
   // 静态页面
   const staticPages = [

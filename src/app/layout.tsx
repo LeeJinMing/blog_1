@@ -23,14 +23,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://yoursite.com'),
+  metadataBase: new URL('https://blog-2-rho.vercel.app'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://yoursite.com',
+    url: 'https://blog-2-rho.vercel.app',
     title: 'MoneyGuide - Professional Online Entrepreneurship and Passive Income Blog',
     description: 'Discover the latest online money-making methods, passive income strategies, and entrepreneurial opportunities. Practical guides based on trending topics to help you achieve financial freedom.',
     siteName: 'MoneyGuide',

@@ -13,35 +13,41 @@ const incomeStreamArticleIds = [
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://blog-2-rho.vercel.app";
 
+  // 使用固定日期而不是动态日期
+  const currentDate = new Date("2025-01-09");
+  const articleDate = new Date("2025-01-08");
+
   // 静态页面
-  const staticPages = [
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: "daily" as const,
+      lastModified: currentDate,
+      changeFrequency: "daily",
       priority: 1,
     },
     {
       url: `${baseUrl}/category/money-making`,
-      lastModified: new Date(),
-      changeFrequency: "daily" as const,
+      lastModified: currentDate,
+      changeFrequency: "daily",
       priority: 0.9,
     },
     {
       url: `${baseUrl}/category/income-streams`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
+      lastModified: currentDate,
+      changeFrequency: "weekly",
       priority: 0.9,
     },
   ];
 
   // Income Streams 文章页面
-  const incomeStreamPages = incomeStreamArticleIds.map((id) => ({
-    url: `${baseUrl}/post/${id}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-  }));
+  const incomeStreamPages: MetadataRoute.Sitemap = incomeStreamArticleIds.map(
+    (id) => ({
+      url: `${baseUrl}/post/${id}`,
+      lastModified: articleDate,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    })
+  );
 
   return [...staticPages, ...incomeStreamPages];
 }

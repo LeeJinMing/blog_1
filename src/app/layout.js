@@ -13,7 +13,7 @@ import Script from "next/script";
  */
 export const metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001"
+    process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app"
   ),
   title: {
     template: "%s | Insights Blog",
@@ -39,9 +39,10 @@ export const metadata = {
     title: "Insights Blog | Business Analysis, Tech Insights & Global Affairs",
     description:
       "Expert analysis on business trends, AI technology, sustainable development, and global markets. In-depth insights on emerging technologies, investment strategies, and economic developments.",
+    url: "https://blog-1-seven-pi.vercel.app",
     images: [
       {
-        url: "/images/og-default.jpg", // Default OG image path
+        url: "https://blog-1-seven-pi.vercel.app/images/og-default.jpg",
         width: 1200,
         height: 630,
         alt: "Insights Blog - Business Analysis and Tech Insights",
@@ -53,7 +54,7 @@ export const metadata = {
     title: "Insights Blog",
     description:
       "Expert analysis on business trends, AI technology, sustainable development, and global markets.",
-    images: ["/images/og-default.jpg"],
+    images: ["https://blog-1-seven-pi.vercel.app/images/og-default.jpg"],
     creator: "@insightsblog",
   },
   robots: {
@@ -76,9 +77,12 @@ export const metadata = {
     "theme-color": "#ffffff",
   },
   verification: {
-    google: "abXQ2USdjbtZwnUfWLfMhxIZUNAvm0kh80juVuGfDRM", // Replace with your Google Search Console verification code
+    google: "2151ade26579c19b", // Google Search Console验证码 - 需要在GSC中验证此域名
     yandex: "your-yandex-verification-code", // If needed
     bing: "your-bing-verification-code", // If needed
+  },
+  alternates: {
+    canonical: "https://blog-1-seven-pi.vercel.app",
   },
 };
 
@@ -94,6 +98,9 @@ export default function RootLayout({ children }) {
         />
 
         <meta name="google-adsense-account" content="ca-pub-1911238866563211" />
+
+        {/* Google Search Console验证 */}
+        <meta name="google-site-verification" content="2151ade26579c19b" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

@@ -44,6 +44,6 @@
 
   <!-- 标题文字 -->
   <text x="400" y="80" font-family="Arial, sans-serif" font-size="56" font-weight="bold" text-anchor="middle"
-    fill="white">商业经济</text>
-  <text x="400" y="120" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="white">洞察全球经济趋势</text>
+    fill="white">Business Economy</text>
+  <text x="400" y="120" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="white">Global Economic Trends</text>
 </svg>

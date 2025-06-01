@@ -5,6 +5,9 @@
   padding: 2rem 1rem;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header {
@@ -24,10 +27,14 @@
   align-items: center;
   color: #666;
   font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e5e5;
 }
 
 .date {
   margin-right: 1rem;
+  color: #666;
 }
 
 .postSummary {
@@ -237,55 +244,57 @@
 }
 
 .likeButtonWrapper {
+  margin: 1rem 0;
   display: flex;
   justify-content: center;
-  margin: 2rem 0;
 }
 
 .postNavigation {
   display: flex;
   justify-content: space-between;
-  margin: 3rem 0 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #eaeaea;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e5e5;
+  gap: 1rem;
 }
 
 .prevPostLink,
 .nextPostLink {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
   padding: 1rem;
+  border: 1px solid #e5e5e5;
   border-radius: 8px;
-  transition: background-color 0.2s ease;
   text-decoration: none;
-}
-
-.prevPostLink {
-  margin-right: 0.5rem;
-  text-align: left;
-}
-
-.nextPostLink {
-  margin-left: 0.5rem;
-  text-align: right;
+  color: inherit;
+  flex: 1;
+  min-width: 0;
+  transition: all 0.2s ease;
 }
 
 .prevPostLink:hover,
 .nextPostLink:hover {
-  background-color: #f5f5f5;
+  border-color: #0066cc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nextPostLink {
+  text-align: right;
 }
 
 .navLabel {
-  display: block;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #666;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
 }
 
 .navTitle {
-  display: block;
-  font-size: 1rem;
-  color: #333;
   font-weight: 500;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .loading {
@@ -294,21 +303,264 @@
   color: #666;
 }
 
+/* 新增：两栏布局样式 */
+.postPageWrapper {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  gap: 2rem;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+}
+
+.mainContent {
+  flex: 1;
+  min-width: 0; /* 防止内容溢出 */
+}
+
+.sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 2rem;
+  height: fit-content;
+}
+
+.sidebarContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sidebarAd {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e5e5;
+  animation: fadeInRight 0.6s ease-out;
+}
+
+.quickNav {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+  animation: fadeInRight 0.8s ease-out;
+}
+
+.sidebarTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+  border-bottom: 2px solid #0066cc;
+  padding-bottom: 0.5rem;
+}
+
+.quickNavContent {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.quickNavContent p {
+  margin: 0.5rem 0;
+}
+
+.relatedTopics {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+  animation: fadeInRight 1s ease-out;
+}
+
+.topicTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.topicTag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #f0f9ff;
+  color: #0369a1;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.topicTag:hover {
+  background: #0369a1;
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .postPageWrapper {
+    display: block !important;
+  }
+
+  .sidebar {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(249, 250, 251, 0.8);
+    border-radius: 1rem;
+  }
+
+  .sidebarContent {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .postPageWrapper {
+    padding: 1rem 0.5rem;
+  }
+
   .article {
     padding: 1.5rem 1rem;
   }
 
-  .title {
-    font-size: 2rem;
-  }
-
   .postNavigation {
     flex-direction: column;
+    gap: 1rem;
+  }
+
+  .nextPostLink {
+    text-align: left;
+  }
+
+  .sidebarContent {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    padding: 0 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .postPageWrapper {
+    padding: 0.5rem;
+  }
+
+  .article {
+    padding: 1rem;
+    border-radius: 0;
+    box-shadow: none;
+    border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .navTitle {
+    font-size: 0.9rem;
+    -webkit-line-clamp: 3;
+  }
+
+  .quickNav,
+  .relatedTopics {
+    padding: 1rem;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .article {
+    background: #1a1a1a;
+    color: #e5e5e5;
+  }
+
+  .meta {
+    border-bottom-color: #333;
+  }
+
+  .date {
+    color: #aaa;
   }
 
   .prevPostLink,
   .nextPostLink {
-    margin: 0.5rem 0;
+    background: #1a1a1a;
+    border-color: #333;
+    color: #e5e5e5;
   }
+
+  .prevPostLink:hover,
+  .nextPostLink:hover {
+    border-color: #0099ff;
+  }
+
+  .navLabel {
+    color: #aaa;
+  }
+
+  .quickNav,
+  .relatedTopics,
+  .sidebarAd {
+    background: #1a1a1a;
+    border-color: #333;
+  }
+
+  .sidebarTitle {
+    color: #e5e5e5;
+    border-bottom-color: #0099ff;
+  }
+
+  .quickNavContent {
+    color: #aaa;
+  }
+
+  .topicTag {
+    background: #1e3a8a;
+    color: #93c5fd;
+  }
+
+  .topicTag:hover {
+    background: #1d4ed8;
+    color: white;
+  }
+}
+
+/* 广告容器额外样式 */
+.sidebar .sidebarAd {
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar .sidebarAd:first-child {
+  min-height: 300px;
+}
+
+.sidebar .sidebarAd:last-child {
+  min-height: 280px;
+}
+
+/* 确保广告内容居中 */
+.sidebarAd > div {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: inherit;
 }

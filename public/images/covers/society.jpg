@@ -44,7 +44,7 @@
 
   <!-- 标题文字 -->
   <text x="400" y="80" font-family="Arial, sans-serif" font-size="56" font-weight="bold" text-anchor="middle"
-    fill="white">文化与社会</text>
+    fill="white">Culture & Society</text>
   <text x="400" y="120" font-family="Arial, sans-serif" font-size="24" text-anchor="middle"
-    fill="white">探究社会文化发展与变迁</text>
+    fill="white">Social & Cultural Development</text>
 </svg>

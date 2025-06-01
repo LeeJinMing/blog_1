@@ -21,7 +21,8 @@ import ShareButtonsContainer from "./ShareButtonsContainer";
 import { getTagTextById } from "@/lib/tags";
 import GlobalLayout from "@/app/components/GlobalLayout";
 import LikeButtonWrapper from "./LikeButtonWrapper";
-import ArticleRenderer from "@/app/components/ArticleRenderer";
+import EnhancedArticleRenderer from "@/app/components/EnhancedArticleRenderer";
+import { AdManager } from "@/app/components/AdManager";
 
 // 添加标题翻译映射
 const titleTranslations = {
@@ -198,13 +199,18 @@ function preprocessContent(content, slug, title) {
       // 保留短行
       if (line.trim().length < 10) return true;
 
-      // 计算这一行包含多少个标题关键词
-      const matchCount = titleWords.filter((word) =>
-        line.toLowerCase().includes(word.toLowerCase())
-      ).length;
+      const lowerLine = line.toLowerCase();
+      const matchedWords = titleWords.filter((word) =>
+        lowerLine.includes(word.toLowerCase())
+      );
 
-      // 如果包含超过一半的关键词，可能是标题的变体，删除它
-      return matchCount < titleWords.length / 2;
+      // 如果匹配了太多关键词（可能是重复标题），删除此行
+      if (matchedWords.length >= Math.min(3, titleWords.length * 0.6)) {
+        console.log(`Removing potential duplicate title line: ${line}`);
+        return false;
+      }
+
+      return true;
     });
 
     processedContent = filteredLines.join("\n");
@@ -244,52 +250,36 @@ function splitContentForAds(content) {
 
 // 获取上一篇和下一篇文章的函数
 async function getAdjacentPosts(currentPost) {
-  if (!currentPost) return { prevPost: null, nextPost: null };
-
   try {
-    // 获取所有文章，按创建日期排序
-    const allPosts = await getPosts(500);
-
-    // 确保文章按日期排序（从新到旧）
-    const sortedPosts = allPosts.sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    );
+    const allPosts = await getPosts(100);
 
     // 找到当前文章的索引
-    const currentIndex = sortedPosts.findIndex(
+    const currentIndex = allPosts.findIndex(
       (post) => post._id.toString() === currentPost._id.toString()
     );
 
-    if (currentIndex === -1) {
-      return { prevPost: null, nextPost: null };
-    }
+    if (currentIndex === -1) return { prevPost: null, nextPost: null };
 
-    // 获取相邻文章
-    const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
-    const prevPost =
-      currentIndex < sortedPosts.length - 1
-        ? sortedPosts[currentIndex + 1]
-        : null;
-
-    return { prevPost, nextPost };
+    return {
+      prevPost: currentIndex > 0 ? allPosts[currentIndex - 1] : null,
+      nextPost:
+        currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null,
+    };
   } catch (error) {
-    console.error("Error fetching adjacent posts:", error);
+    console.error("Error getting adjacent posts:", error);
     return { prevPost: null, nextPost: null };
   }
 }
 
 // 从文章内容中提取内容各部分
 function extractArticleParts(content) {
-  if (!content) return { introduction: "", mainContent: "", conclusion: "" };
-
-  // 假设内容结构可能包含Introduction和Conclusion部分
   let introduction = "";
-  let mainContent = content;
+  let mainContent = content || "";
   let conclusion = "";
 
   // 寻找Introduction部分
   const introPattern = /###\s*Introduction\s*\n([^#]*)/i;
-  const introMatch = content.match(introPattern);
+  const introMatch = mainContent.match(introPattern);
 
   if (introMatch && introMatch[1]) {
     introduction = introMatch[1].trim();
@@ -372,7 +362,7 @@ export default async function PostPage({ params }) {
       // 使用默认值继续
     }
 
-    // 准备传递给ArticleRenderer的完整文章对象，确保包含所有必要字段
+    // 准备传递给EnhancedArticleRenderer的完整文章对象，确保包含所有必要字段
     const articleData = {
       title: post.title,
       content: processedContent, // 保留完整内容用于备用
@@ -416,74 +406,143 @@ export default async function PostPage({ params }) {
 
     return (
       <GlobalLayout>
-        <article className={styles.article}>
-          {/* 顶部区域只保留日期，标题由ArticleRenderer渲染 */}
-          <div className={styles.meta}>
-            <time dateTime={post.createdAt} className={styles.date}>
-              {formattedDate}
-            </time>
-          </div>
+        <div className={styles.postPageWrapper}>
+          {/* 左侧主要内容 */}
+          <div className={styles.mainContent}>
+            <article className={styles.article}>
+              {/* 顶部区域只保留日期，标题由EnhancedArticleRenderer渲染 */}
+              <div className={styles.meta}>
+                <time dateTime={post.createdAt} className={styles.date}>
+                  {formattedDate}
+                </time>
+              </div>
 
-          {/* Client-side view tracker */}
-          <PostViewTracker postId={post._id.toString()} slug={post.slug} />
+              {/* Client-side view tracker */}
+              <PostViewTracker postId={post._id.toString()} slug={post.slug} />
 
-          {/* 文章点赞按钮 */}
-          <div className={styles.likeButtonWrapper}>
-            <LikeButtonWrapper postId={post._id.toString()} slug={post.slug} />
-          </div>
+              {/* 文章点赞按钮 */}
+              <div className={styles.likeButtonWrapper}>
+                <LikeButtonWrapper
+                  postId={post._id.toString()}
+                  slug={post.slug}
+                />
+              </div>
 
-          {/* Share buttons */}
-          <Suspense
-            fallback={
-              <div className={styles.loading}>Loading share options...</div>
-            }
-          >
-            <ShareButtonsContainer post={post} />
-          </Suspense>
-
-          {/* 使用新的文章渲染器 */}
-          <ArticleRenderer article={articleData} />
-
-          {/* 添加在文章底部的上一篇/下一篇导航 */}
-          <div className={styles.postNavigation}>
-            {prevPost && (
-              <Link
-                href={`/posts/${formatDateForUrl(
-                  prevPost.createdAt
-                )}/${getUrlSafeSlug(prevPost.slug)}`}
-                className={styles.prevPostLink}
+              {/* Share buttons */}
+              <Suspense
+                fallback={
+                  <div className={styles.loading}>Loading share options...</div>
+                }
               >
-                <span className={styles.navLabel}>← Previous Article</span>
-                <span className={styles.navTitle}>
-                  {translateTitle(prevPost.title)}
-                </span>
-              </Link>
-            )}
+                <ShareButtonsContainer post={post} />
+              </Suspense>
 
-            {nextPost && (
-              <Link
-                href={`/posts/${formatDateForUrl(
-                  nextPost.createdAt
-                )}/${getUrlSafeSlug(nextPost.slug)}`}
-                className={styles.nextPostLink}
+              {/* 使用增强版文章渲染器（包含内置广告） */}
+              <EnhancedArticleRenderer article={articleData} />
+
+              {/* 添加在文章底部的上一篇/下一篇导航 */}
+              <div className={styles.postNavigation}>
+                {prevPost && (
+                  <Link
+                    href={`/posts/${formatDateForUrl(
+                      prevPost.createdAt
+                    )}/${getUrlSafeSlug(prevPost.slug)}`}
+                    className={styles.prevPostLink}
+                  >
+                    <span className={styles.navLabel}>← Previous Article</span>
+                    <span className={styles.navTitle}>
+                      {translateTitle(prevPost.title)}
+                    </span>
+                  </Link>
+                )}
+
+                {nextPost && (
+                  <Link
+                    href={`/posts/${formatDateForUrl(
+                      nextPost.createdAt
+                    )}/${getUrlSafeSlug(nextPost.slug)}`}
+                    className={styles.nextPostLink}
+                  >
+                    <span className={styles.navLabel}>Next Article →</span>
+                    <span className={styles.navTitle}>
+                      {translateTitle(nextPost.title)}
+                    </span>
+                  </Link>
+                )}
+              </div>
+
+              {/* Related posts section */}
+              <Suspense
+                fallback={
+                  <div className={styles.loading}>
+                    Loading related articles...
+                  </div>
+                }
               >
-                <span className={styles.navLabel}>Next Article →</span>
-                <span className={styles.navTitle}>
-                  {translateTitle(nextPost.title)}
-                </span>
-              </Link>
-            )}
+                <ClientRelatedPosts currentPost={post} />
+              </Suspense>
+            </article>
           </div>
 
-          {/* Related posts section */}
-          <Suspense
-            fallback={
-              <div className={styles.loading}>Loading related articles...</div>
-            }
-          >
-            <ClientRelatedPosts currentPost={post} />
-          </Suspense>
-        </article>
+          {/* 右侧边栏广告 */}
+          <aside className={styles.sidebar}>
+            <div className={styles.sidebarContent}>
+              {/* 侧边栏顶部广告 */}
+              <div className={styles.sidebarAd}>
+                <AdManager
+                  adType="native"
+                  position="sidebar"
+                  size="medium"
+                  className="sidebar-top-ad"
+                />
+              </div>
+
+              {/* 快速导航 */}
+              <div className={styles.quickNav}>
+                <h4 className={styles.sidebarTitle}>Quick Navigation</h4>
+                <div className={styles.quickNavContent}>
+                  <p>• Bookmark this article</p>
+                  <p>• Share with friends</p>
+                  <p>• Subscribe for updates</p>
+                </div>
+              </div>
+
+              {/* 侧边栏中部广告 */}
+              <div className={styles.sidebarAd}>
+                <AdManager
+                  adType="native"
+                  position="sidebar"
+                  size="small"
+                  className="sidebar-mid-ad"
+                />
+              </div>
+
+              {/* 相关主题 */}
+              {articleData.tags && articleData.tags.length > 0 && (
+                <div className={styles.relatedTopics}>
+                  <h4 className={styles.sidebarTitle}>Related Topics</h4>
+                  <div className={styles.topicTags}>
+                    {articleData.tags.slice(0, 5).map((tag, index) => (
+                      <span key={index} className={styles.topicTag}>
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 侧边栏底部广告 */}
+              <div className={styles.sidebarAd}>
+                <AdManager
+                  adType="native"
+                  position="sidebar"
+                  size="medium"
+                  className="sidebar-bottom-ad"
+                />
+              </div>
+            </div>
+          </aside>
+        </div>
       </GlobalLayout>
     );
   } catch (error) {
@@ -498,7 +557,7 @@ export default async function PostPage({ params }) {
             homepage or try other content.
           </p>
           <Link href="/" className={styles.link}>
-            Back to Home
+            ← Back to Homepage
           </Link>
         </div>
       </GlobalLayout>

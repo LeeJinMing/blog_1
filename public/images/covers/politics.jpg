@@ -40,7 +40,7 @@
 
   <!-- 标题文字 -->
   <text x="400" y="240" font-family="Arial, sans-serif" font-size="56" font-weight="bold" text-anchor="middle"
-    fill="white">政治与外交</text>
+    fill="white">Politics & Diplomacy</text>
   <text x="400" y="280" font-family="Arial, sans-serif" font-size="24" text-anchor="middle"
-    fill="white">剖析国内外政治格局</text>
+    fill="white">Analyzing Global Political Landscape</text>
 </svg>

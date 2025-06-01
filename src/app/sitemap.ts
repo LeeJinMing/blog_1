@@ -4,6 +4,42 @@ import Post from "@/lib/models/Post";
 
 export const dynamic = "force-dynamic";
 
+// 所有硬编码文章的ID列表
+const hardcodedArticleIds = [
+  // Income Streams 分类
+  "dividend-investing-passive-income-2025",
+  "rental-property-income-guide-2025",
+  "online-course-creation-income-2025",
+  "affiliate-marketing-income-streams-2025",
+  "dropshipping-business-income-2025",
+  "youtube-monetization-income-streams-2025",
+
+  // AI Money 分类
+  "ai-chatbot-business-income-2025",
+  "ai-content-generation-business-2025",
+  "ai-trading-bot-income-2025",
+
+  // Investment 分类
+  "stock-market-investing-beginners-2025",
+  "cryptocurrency-investment-strategy-2025",
+  "index-fund-investing-passive-wealth-2025",
+
+  // E-commerce 分类
+  "amazon-fba-business-guide-2025",
+  "shopify-store-success-2025",
+  "print-on-demand-business-2025",
+
+  // Content Creation 分类
+  "youtube-monetization-complete-guide-2025",
+  "instagram-influencer-income-2025",
+  "podcast-monetization-strategies-2025",
+
+  // Skill Services 分类
+  "freelance-consulting-business-2025",
+  "online-tutoring-income-2025",
+  "virtual-assistant-services-2025",
+];
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://blog-2-rho.vercel.app";
 
@@ -57,48 +93,44 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // 动态获取所有文章页面
-  let articlePages: MetadataRoute.Sitemap = [];
+  // 硬编码文章页面
+  const hardcodedArticlePages: MetadataRoute.Sitemap = hardcodedArticleIds.map(
+    (id) => ({
+      url: `${baseUrl}/post/${id}`,
+      lastModified: articleDate,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })
+  );
+
+  // 动态获取数据库文章页面
+  let databaseArticlePages: MetadataRoute.Sitemap = [];
 
   try {
     await connectDB();
 
-    // 获取所有已发布的文章
-    const posts = await Post.find({})
+    // 获取所有已发布的文章，排除已经在硬编码列表中的文章
+    const posts = await Post.find({
+      slug: { $nin: hardcodedArticleIds }, // 排除硬编码文章，避免重复
+    })
       .select("slug updatedAt createdAt")
       .sort({ createdAt: -1 })
       .exec();
 
-    articlePages = posts.map((post) => ({
+    databaseArticlePages = posts.map((post) => ({
       url: `${baseUrl}/post/${post.slug}`,
       lastModified: post.updatedAt || post.createdAt || articleDate,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     }));
 
-    console.log(`Sitemap generated with ${posts.length} articles`);
+    console.log(
+      `Sitemap generated with ${hardcodedArticleIds.length} hardcoded articles and ${posts.length} database articles`
+    );
   } catch (error) {
     console.error("Error fetching posts for sitemap:", error);
-
-    // 如果数据库连接失败，使用备用的硬编码文章
-    const fallbackArticleIds = [
-      "dividend-investing-passive-income-2025",
-      "rental-property-income-guide-2025",
-      "online-course-creation-income-2025",
-      "affiliate-marketing-income-streams-2025",
-      "dropshipping-business-income-2025",
-      "youtube-monetization-income-streams-2025",
-    ];
-
-    articlePages = fallbackArticleIds.map((id) => ({
-      url: `${baseUrl}/post/${id}`,
-      lastModified: articleDate,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    }));
-
-    console.log("Using fallback articles for sitemap");
+    console.log("Using only hardcoded articles for sitemap");
   }
 
-  return [...staticPages, ...articlePages];
+  return [...staticPages, ...hardcodedArticlePages, ...databaseArticlePages];
 }

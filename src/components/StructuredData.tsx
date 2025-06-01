@@ -20,7 +20,7 @@ interface StructuredDataProps {
   baseUrl?: string;
 }
 
-export function ArticleStructuredData({ article, baseUrl = 'https://yoursite.com' }: StructuredDataProps) {
+export function ArticleStructuredData({ article, baseUrl = 'https://blog-2-rho.vercel.app' }: StructuredDataProps) {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -86,7 +86,7 @@ export function ArticleStructuredData({ article, baseUrl = 'https://yoursite.com
   );
 }
 
-export function WebsiteStructuredData({ baseUrl = 'https://yoursite.com' }: { baseUrl?: string }) {
+export function WebsiteStructuredData({ baseUrl = 'https://blog-2-rho.vercel.app' }: { baseUrl?: string }) {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -127,7 +127,7 @@ export function WebsiteStructuredData({ baseUrl = 'https://yoursite.com' }: { ba
 
 export function BreadcrumbStructuredData({
   items,
-  baseUrl = 'https://yoursite.com'
+  baseUrl = 'https://blog-2-rho.vercel.app'
 }: {
   items: Array<{ name: string; url: string }>;
   baseUrl?: string;

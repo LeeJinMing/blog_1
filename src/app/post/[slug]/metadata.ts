@@ -357,7 +357,7 @@ export async function generateMetadata({
     };
   }
 
-  const baseUrl = "https://yoursite.com"; // 替换为实际域名
+  const baseUrl = "https://blog-2-rho.vercel.app"; // 替换为实际域名
   const articleUrl = `${baseUrl}/post/${slug}`;
 
   return {

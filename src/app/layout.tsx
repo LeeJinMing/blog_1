@@ -93,6 +93,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
         <meta name="theme-color" content="#3b82f6" />
         <meta name="google-adsense-account" content="ca-pub-1911238866563211" />
+        <meta name="google-site-verification" content="your-google-verification-code" />
 
         {/* JSON-LD 结构化数据 */}
         <OrganizationJsonLd />

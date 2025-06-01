@@ -1,43 +1,33 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Income Streams - Build Multiple Revenue Sources | MoneyGuide',
-  description: 'Discover proven income stream strategies including dividend investing, rental properties, online courses, affiliate marketing, and more. Learn how to build multiple revenue sources for financial freedom.',
-  keywords: [
-    'income streams',
-    'passive income',
-    'multiple revenue sources',
-    'dividend investing',
-    'rental property',
-    'online courses',
-    'affiliate marketing',
-    'financial freedom',
-    'wealth building',
-    'investment strategies'
-  ],
+  title: 'Income Streams Guides - Build Multiple Revenue Sources | MoneyGuide',
+  description: 'Learn how to build multiple income streams with our expert guides. Discover passive income opportunities, investment strategies, and business ideas that generate consistent monthly revenue.',
+  keywords: 'income streams,passive income,multiple income sources,revenue diversification,wealth building,financial independence,investment income,business income',
   openGraph: {
-    title: 'Income Streams - Build Multiple Revenue Sources | MoneyGuide',
-    description: 'Expert guides on building multiple income streams. Learn proven strategies that generate $1000-$5000+ monthly income.',
-    url: 'https://yoursite.com/category/income-streams',
+    title: 'Income Streams - Build Multiple Revenue Sources',
+    description: 'Expert guides on building multiple income streams and achieving financial independence through diversified revenue sources.',
+    url: 'https://blog-2-rho.vercel.app/category/income-streams',
     siteName: 'MoneyGuide',
-    type: 'website',
     images: [
       {
-        url: 'https://yoursite.com/og-image.svg',
+        url: 'https://blog-2-rho.vercel.app/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'Income Streams Strategies',
+        alt: 'Income Streams Guides',
       },
     ],
+    locale: 'en_US',
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Income Streams - Build Multiple Revenue Sources',
-    description: 'Expert guides on building multiple income streams that generate real income.',
-    images: ['https://yoursite.com/og-image.svg'],
+    description: 'Expert guides on building multiple income streams and achieving financial independence.',
+    images: ['https://blog-2-rho.vercel.app/og-image.svg'],
   },
   alternates: {
-    canonical: 'https://yoursite.com/category/income-streams',
+    canonical: 'https://blog-2-rho.vercel.app/category/income-streams',
   },
 };
 

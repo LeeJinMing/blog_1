@@ -3,6 +3,7 @@ import { PostCard } from '../../../components/PostCard';
 import { BackButton } from '@/components/BackButton';
 import { Breadcrumb, BreadcrumbGenerators } from '@/components/Breadcrumb';
 import { BreadcrumbJsonLd } from '@/components/JsonLd';
+import { AdManager } from '@/components/AdManager';
 import { incomeStreamArticles } from '@/data/incomeStreamArticles';
 
 // 分类映射
@@ -88,6 +89,9 @@ export default function CategoryPage({
     }))
   ];
 
+  // 计算广告插入位置
+  const midPoint = Math.floor(posts.length / 2);
+
   return (
     <>
       {/* JSON-LD 结构化数据 */}
@@ -105,6 +109,16 @@ export default function CategoryPage({
             <Breadcrumb items={breadcrumbItems} />
           </div>
 
+          {/* 分类顶部广告 */}
+          <div className="mb-8">
+            <AdManager
+              adType="native"
+              position="top"
+              size="large"
+              className="animate-fade-in"
+            />
+          </div>
+
           {/* 分类头部 */}
           <div className="text-center mb-12">
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
@@ -120,57 +134,106 @@ export default function CategoryPage({
 
           {/* 文章列表 */}
           {posts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {posts.map((post: any) => (
-                <PostCard
-                  key={post._id}
-                  post={post}
-                  href={`/post/${post.slug || post._id}`}
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {posts.map((post: any, index: number) => (
+                  <div key={post._id}>
+                    <PostCard
+                      post={post}
+                      href={`/post/${post.slug || post._id}`}
+                    />
+
+                    {/* 在文章列表中间插入广告 */}
+                    {index === midPoint && posts.length > 6 && (
+                      <div className="col-span-full my-8">
+                        <AdManager
+                          adType="native"
+                          position="middle"
+                          size="large"
+                          className="animate-fade-in"
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* 文章列表后广告 */}
+              <div className="mt-12">
+                <AdManager
+                  adType="native"
+                  position="bottom"
+                  size="medium"
+                  className="animate-fade-in"
                 />
-              ))}
-            </div>
+              </div>
+            </>
           ) : (
-            <div className="text-center py-16">
-              <div className="text-6xl mb-4">📝</div>
-              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
-                Coming Soon
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                We're working on adding more content to this category. Check back soon!
-              </p>
-            </div>
+            <>
+              <div className="text-center py-16">
+                <div className="text-6xl mb-4">📝</div>
+                <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+                  Coming Soon
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  We're working on adding more content to this category. Check back soon!
+                </p>
+              </div>
+
+              {/* 空页面广告 */}
+              <div className="mt-8">
+                <AdManager
+                  adType="native"
+                  position="middle"
+                  size="large"
+                  className="animate-fade-in"
+                />
+              </div>
+            </>
           )}
 
           {/* 分类统计 */}
           {posts.length > 0 && (
-            <div className="mt-16 bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                <div>
-                  <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-                    {posts.length}
+            <>
+              <div className="mt-16 bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                  <div>
+                    <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+                      {posts.length}
+                    </div>
+                    <div className="text-gray-600 dark:text-gray-300">
+                      Expert Guides
+                    </div>
                   </div>
-                  <div className="text-gray-600 dark:text-gray-300">
-                    Expert Guides
+                  <div>
+                    <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
+                      {posts.filter((p: any) => p.income).length}
+                    </div>
+                    <div className="text-gray-600 dark:text-gray-300">
+                      Income Opportunities
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
-                    {posts.filter((p: any) => p.income).length}
-                  </div>
-                  <div className="text-gray-600 dark:text-gray-300">
-                    Income Opportunities
-                  </div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
-                    {posts.filter((p: any) => p.difficulty === 'Beginner').length}
-                  </div>
-                  <div className="text-gray-600 dark:text-gray-300">
-                    Beginner Friendly
+                  <div>
+                    <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+                      {posts.filter((p: any) => p.difficulty === 'Beginner').length}
+                    </div>
+                    <div className="text-gray-600 dark:text-gray-300">
+                      Beginner Friendly
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+
+              {/* 统计信息后广告 */}
+              <div className="mt-12">
+                <AdManager
+                  adType="native"
+                  position="footer"
+                  size="large"
+                  className="animate-fade-in"
+                />
+              </div>
+            </>
           )}
         </div>
       </div>

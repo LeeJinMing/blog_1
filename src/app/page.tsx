@@ -3,7 +3,7 @@ import { HeroSection } from '@/components/HeroSection'
 import { FeaturedArticles } from '@/components/FeaturedArticles'
 import { CategoryGrid } from '@/components/CategoryGrid'
 import { Newsletter } from '@/components/Newsletter'
-import { NativeAd } from '@/components/NativeAd'
+import { AdManager } from '@/components/AdManager'
 
 export const metadata: Metadata = {
   title: 'MoneyGuide - Professional Online Entrepreneurship and Passive Income Blog',
@@ -51,6 +51,19 @@ export default function Home() {
 
       {/* Content area - Add top spacing for fixed navbar */}
       <div className="relative bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+
+        {/* Top Ad - After Hero Section */}
+        <section className="py-8 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl">
+            <AdManager
+              adType="native"
+              position="top"
+              size="large"
+              className="animate-fade-in"
+            />
+          </div>
+        </section>
+
         {/* Featured Articles Section */}
         <section className="py-24 px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
@@ -69,6 +82,16 @@ export default function Home() {
 
             <FeaturedArticles />
 
+            {/* Mid-Content Ad */}
+            <div className="my-16">
+              <AdManager
+                adType="native"
+                position="middle"
+                size="medium"
+                className="animate-fade-in"
+              />
+            </div>
+
             {/* View All Button */}
             <div className="text-center mt-16 animate-fade-in">
               <a
@@ -81,13 +104,6 @@ export default function Home() {
                 </svg>
               </a>
             </div>
-          </div>
-        </section>
-
-        {/* Native Advertisement Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl">
-            <NativeAd className="animate-fade-in" />
           </div>
         </section>
 
@@ -108,6 +124,16 @@ export default function Home() {
             </div>
 
             <CategoryGrid />
+
+            {/* Post-Category Ad */}
+            <div className="mt-16">
+              <AdManager
+                adType="native"
+                position="bottom"
+                size="large"
+                className="animate-fade-in"
+              />
+            </div>
           </div>
         </section>
 
@@ -157,6 +183,29 @@ export default function Home() {
                 </div>
               ))}
             </div>
+
+            {/* Bottom Statistics Ad */}
+            <div className="mt-16">
+              <AdManager
+                adType="native"
+                position="bottom"
+                size="medium"
+                className="animate-fade-in"
+                containerClass="bg-white/10 backdrop-blur-xl border-white/20"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Footer Ad Section */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-100 dark:bg-gray-900">
+          <div className="mx-auto max-w-4xl">
+            <AdManager
+              adType="native"
+              position="footer"
+              size="large"
+              className="animate-fade-in"
+            />
           </div>
         </section>
       </div>

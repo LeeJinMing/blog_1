@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { AdManager } from '@/components/AdManager';
 
 export default function AboutPage() {
   return (
@@ -69,6 +70,16 @@ export default function AboutPage() {
               </li>
             </ul>
           </div>
+        </div>
+
+        {/* Mid-page Ad */}
+        <div className="mb-16">
+          <AdManager
+            adType="native"
+            position="middle"
+            size="large"
+            className="animate-fade-in"
+          />
         </div>
 
         {/* What We Cover Section */}
@@ -222,89 +233,37 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Team Section */}
+        {/* Bottom Ad */}
         <div className="mb-16">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Our Expert Team</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              A diverse team of entrepreneurs, investors, and industry experts committed to your success
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-soft p-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-2xl text-white">👨‍💼</span>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Business Strategists</h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
-                Experienced entrepreneurs who have built and scaled multiple successful online businesses.
-              </p>
-              <div className="text-sm text-blue-600 dark:text-blue-400">10+ Years Experience</div>
-            </div>
-
-            <div className="text-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-soft p-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-blue-600 dark:from-green-600 dark:to-blue-700 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-2xl text-white">📊</span>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Financial Analysts</h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
-                Certified financial professionals specializing in investment strategies and wealth building.
-              </p>
-              <div className="text-sm text-green-600 dark:text-green-400">CFA & CFP Certified</div>
-            </div>
-
-            <div className="text-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-soft p-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-600 dark:from-purple-600 dark:to-pink-700 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-2xl text-white">🤖</span>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Tech Innovators</h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
-                AI and technology experts helping you leverage cutting-edge tools for business growth.
-              </p>
-              <div className="text-sm text-purple-600 dark:text-purple-400">AI & ML Specialists</div>
-            </div>
-          </div>
+          <AdManager
+            adType="native"
+            position="bottom"
+            size="large"
+            className="animate-fade-in"
+          />
         </div>
 
-        {/* CTA Section */}
+        {/* Contact CTA */}
         <div className="text-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-soft p-12">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Ready to Start Your Journey?</h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-            Join thousands of readers who are already building their path to financial freedom with MoneyGuide
+            Join thousands of readers who are already building their path to financial freedom with MoneyGuide.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/category/income-streams"
-              className="px-8 py-4 bg-blue-600 dark:bg-blue-500 text-white font-semibold rounded-2xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+              href="/"
+              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-2xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
-              Start Building Income
+              <span className="mr-2">🚀</span>
+              Explore Money Guides
             </Link>
             <Link
-              href="/"
-              className="px-8 py-4 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              href="/contact"
+              className="inline-flex items-center px-8 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-semibold rounded-2xl border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300"
             >
-              Browse All Content
+              <span className="mr-2">💬</span>
+              Get in Touch
             </Link>
-          </div>
-        </div>
-
-        {/* Contact Section */}
-        <div className="mt-16 text-center">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Get in Touch</h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
-            Have questions or suggestions? We'd love to hear from you.
-          </p>
-          <div className="flex justify-center space-x-6">
-            <a href="mailto:contact@moneyguide.com" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
-              📧 contact@moneyguide.com
-            </a>
-            <a href="#" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
-              🐦 @MoneyGuide
-            </a>
-            <a href="#" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
-              💼 LinkedIn
-            </a>
           </div>
         </div>
       </div>

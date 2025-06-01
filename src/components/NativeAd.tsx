@@ -4,9 +4,21 @@ import { useEffect, useState } from 'react'
 
 interface NativeAdProps {
   className?: string
+  adId?: string // 允许传入不同的广告ID
 }
 
-export function NativeAd({ className = '' }: NativeAdProps) {
+// 广告配置 - 从TraverseSeven后台获取
+const AD_CONFIG = {
+  // ✅ 已确认：从后台 "GET CODE" 获取的正确配置
+  // 后台广告单元ID: 26686206 (管理用)
+  // 脚本请求ID: 286b7c3c4b411bead9e284ad6036f16b (实际使用)
+  SCRIPT_URL: '//traverseseven.com/286b7c3c4b411bead9e284ad6036f16b/invoke.js',
+  CONTAINER_ID: 'container-286b7c3c4b411bead9e284ad6036f16b',
+
+  // 配置确认无误 - 问题可能在网络环境（VPN/代理）
+}
+
+export function NativeAd({ className = '', adId }: NativeAdProps) {
   const [isLoaded, setIsLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)
   const [isDevelopment, setIsDevelopment] = useState(false)
@@ -35,7 +47,7 @@ export function NativeAd({ className = '' }: NativeAdProps) {
       script.id = scriptId
       script.async = true
       script.setAttribute('data-cfasync', 'false')
-      script.src = '//traverseseven.com/286b7c3c4b411bead9e284ad6036f16b/invoke.js'
+      script.src = AD_CONFIG.SCRIPT_URL
 
       script.onload = () => {
         setIsLoaded(true)
@@ -45,6 +57,11 @@ export function NativeAd({ className = '' }: NativeAdProps) {
       script.onerror = () => {
         setHasError(true)
         setIsLoaded(false)
+        console.error('广告脚本加载失败 - 可能的原因：')
+        console.error('1. 广告ID不正确（请检查后台配置）')
+        console.error('2. VPN/代理网络干扰')
+        console.error('3. 地理位置限制')
+        console.error('当前配置:', AD_CONFIG)
       }
 
       // Add to head
@@ -61,6 +78,7 @@ export function NativeAd({ className = '' }: NativeAdProps) {
     const timeoutId = setTimeout(() => {
       if (!isLoaded) {
         setHasError(true)
+        console.warn('广告加载超时 - 建议检查网络连接和后台配置')
       }
     }, 10000)
 
@@ -97,9 +115,10 @@ export function NativeAd({ className = '' }: NativeAdProps) {
               Ads are only displayed in production environment. Deploy to Vercel to see the ad effects.
             </p>
             <div className="text-sm text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-800/50 rounded-lg p-3">
-              <p className="font-medium mb-1">Reason: Ad Platform Security Policy</p>
-              <p>• Only allows verified production domains to display ads</p>
-              <p>• Prevents invalid requests from development environment</p>
+              <p className="font-medium mb-1">Current Config Check Required:</p>
+              <p>• Please verify ad ID from TraverseSeven backend</p>
+              <p>• Current ID may not match backend configuration</p>
+              <p>• Check "GET CODE" in Native Banner section</p>
             </div>
           </div>
         </div>
@@ -109,7 +128,29 @@ export function NativeAd({ className = '' }: NativeAdProps) {
 
   // Hide ad area if error occurs (production environment)
   if (hasError) {
-    return null
+    return (
+      <div className={`w-full ${className}`}>
+        <div className="text-center mb-4">
+          <div className="inline-flex items-center px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-700">
+            <span className="text-xs font-medium text-red-600 dark:text-red-400">
+              ⚠️ Ad Loading Error
+            </span>
+          </div>
+        </div>
+        <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-700 shadow-sm p-6">
+          <div className="text-center">
+            <p className="text-sm text-red-700 dark:text-red-300 mb-2">
+              Unable to load sponsored content. Possible reasons:
+            </p>
+            <ul className="text-xs text-red-600 dark:text-red-400 space-y-1">
+              <li>• Incorrect ad ID configuration</li>
+              <li>• VPN/Proxy network interference</li>
+              <li>• Geographic restrictions</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -126,7 +167,7 @@ export function NativeAd({ className = '' }: NativeAdProps) {
       {/* Ad Container */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 transition-all duration-300 hover:shadow-md">
         <div
-          id="container-286b7c3c4b411bead9e284ad6036f16b"
+          id={AD_CONFIG.CONTAINER_ID}
           className="min-h-[200px] w-full"
           style={{
             display: 'block',

@@ -7,13 +7,38 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: "/",
-        disallow: ["/api/", "/admin/", "/_next/", "/private/"],
+        allow: [
+          "/",
+          "/api/posts*",
+          "/api/articles*",
+          "/api/sitemap*",
+          "/api/robots*",
+        ],
+        disallow: [
+          "/api/auth/*",
+          "/api/admin/*",
+          "/api/private/*",
+          "/_next/static/chunks/*",
+          "/admin/*",
+          "/private/*",
+        ],
       },
       {
         userAgent: "Googlebot",
-        allow: "/",
-        disallow: ["/api/", "/admin/", "/private/"],
+        allow: [
+          "/",
+          "/api/posts*",
+          "/api/articles*",
+          "/api/sitemap*",
+          "/api/robots*",
+        ],
+        disallow: [
+          "/api/auth/*",
+          "/api/admin/*",
+          "/api/private/*",
+          "/admin/*",
+          "/private/*",
+        ],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

@@ -1,11 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeHighlight from 'rehype-highlight';
-import rehypeRaw from 'rehype-raw';
 import { AdManager } from '@/components/AdManager';
+import { EnhancedArticleRenderer } from '@/components/EnhancedArticleRenderer';
 import 'highlight.js/styles/github-dark.css';
 
 interface PostContentProps {
@@ -36,15 +33,6 @@ export function PostContent({ post }: PostContentProps) {
 
     updateViews();
   }, [post.slug, post._id]);
-
-  // 分割内容以插入广告
-  const contentParts = post.content ? post.content.split('\n\n') : [];
-  const totalParagraphs = contentParts.length;
-  const adPositions = {
-    first: Math.floor(totalParagraphs * 0.2), // 20%位置
-    second: Math.floor(totalParagraphs * 0.5), // 50%位置
-    third: Math.floor(totalParagraphs * 0.8)   // 80%位置
-  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -83,187 +71,94 @@ export function PostContent({ post }: PostContentProps) {
                   ⭐ Featured
                 </span>
               )}
-              {post.trending && (
-                <span className="px-4 py-2 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300 text-sm font-medium rounded-full">
-                  🔥 Trending
+              {post.income && (
+                <span className="px-4 py-2 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300 text-sm font-medium rounded-full">
+                  💰 {post.income}
                 </span>
               )}
             </div>
 
-            {/* 文章标题 */}
+            {/* 标题 */}
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
               {post.title}
             </h1>
 
-            {/* 文章摘要 */}
-            {post.excerpt && (
-              <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                {post.excerpt}
-              </p>
-            )}
-
-            {/* 收入信息 */}
-            {post.income && (
-              <div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl border border-green-200 dark:border-green-800">
-                <div className="flex items-center space-x-3">
-                  <div className="text-3xl">💰</div>
-                  <div>
-                    <div className="text-sm font-medium text-green-800 dark:text-green-300 mb-1">
-                      Expected Income Potential
-                    </div>
-                    <div className="text-2xl font-bold text-green-900 dark:text-green-100">
-                      {post.income}
-                    </div>
-                  </div>
-                </div>
+            {/* 摘要 */}
+            {post.summary && (
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl p-6 mb-8 border border-blue-100 dark:border-blue-800">
+                <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center">
+                  <span className="mr-2">💡</span>
+                  Key Takeaways
+                </h2>
+                <p className="text-blue-800 dark:text-blue-200 leading-relaxed">
+                  {post.summary}
+                </p>
               </div>
             )}
 
-            {/* 文章元数据 */}
-            <div className="flex flex-wrap items-center gap-6 text-gray-600 dark:text-gray-400 text-sm border-b border-gray-200 dark:border-gray-700 pb-8 mb-8">
-              {post.author && (
-                <div className="flex items-center space-x-2">
-                  <span className="text-lg">👤</span>
-                  <span>{post.author}</span>
-                </div>
-              )}
-              {post.publishedAt && (
-                <div className="flex items-center space-x-2">
-                  <span className="text-lg">📅</span>
-                  <span>{new Date(post.publishedAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}</span>
-                </div>
-              )}
-              {post.readTime && (
-                <div className="flex items-center space-x-2">
-                  <span className="text-lg">⏱️</span>
-                  <span>{post.readTime}</span>
-                </div>
-              )}
-              <div className="flex items-center space-x-2">
-                <span className="text-lg">👁️</span>
+            {/* 文章元信息 */}
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center">
+                <span className="mr-2">👤</span>
+                <span>{post.author || 'MoneyGuide Team'}</span>
+              </div>
+              <div className="flex items-center">
+                <span className="mr-2">📅</span>
+                <span>
+                  {post.publishedAt
+                    ? new Date(post.publishedAt).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })
+                    : 'Recently Published'
+                  }
+                </span>
+              </div>
+              <div className="flex items-center">
+                <span className="mr-2">👁️</span>
                 <span>{views.toLocaleString()} views</span>
               </div>
-            </div>
-
-            {/* 文章图片 */}
-            {post.image && (
-              <div className="mb-8 rounded-2xl overflow-hidden">
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-64 sm:h-80 object-cover"
-                />
+              <div className="flex items-center">
+                <span className="mr-2">⏱️</span>
+                <span>{post.readTime || '5 min read'}</span>
               </div>
-            )}
-          </div>
-
-          {/* 文章内容 - 动态插入广告 */}
-          <div className="px-8 sm:px-12 pb-12">
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeHighlight, rehypeRaw]}
-                components={{
-                  h1: ({ children }) => (
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white mt-12 mb-6 first:mt-0">
-                      {children}
-                    </h1>
-                  ),
-                  h2: ({ children }) => (
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-10 mb-5">
-                      {children}
-                    </h2>
-                  ),
-                  h3: ({ children }) => (
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mt-8 mb-4">
-                      {children}
-                    </h3>
-                  ),
-                  p: ({ children }) => (
-                    <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-                      {children}
-                    </p>
-                  ),
-                  ul: ({ children }) => (
-                    <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-6 space-y-2">
-                      {children}
-                    </ul>
-                  ),
-                  ol: ({ children }) => (
-                    <ol className="list-decimal list-inside text-gray-700 dark:text-gray-300 mb-6 space-y-2">
-                      {children}
-                    </ol>
-                  ),
-                  blockquote: ({ children }) => (
-                    <blockquote className="border-l-4 border-blue-500 pl-6 py-4 bg-blue-50 dark:bg-blue-900/20 text-gray-700 dark:text-gray-300 italic mb-6 rounded-r-lg">
-                      {children}
-                    </blockquote>
-                  ),
-                  code: ({ children }) => (
-                    <code className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-2 py-1 rounded text-sm">
-                      {children}
-                    </code>
-                  ),
-                  pre: ({ children }) => (
-                    <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-6">
-                      {children}
-                    </pre>
-                  ),
-                }}
-              >
-                {post.content}
-              </ReactMarkdown>
             </div>
 
-            {/* 文章中间广告 */}
-            <div className="my-12">
-              <AdManager
-                adType="native"
-                position="middle"
-                size="large"
-                className="animate-fade-in"
+            {/* 使用增强版文章渲染器 - 包含智能广告插入 */}
+            <div className="prose-container">
+              <EnhancedArticleRenderer
+                content={post.content || ''}
+                enableAds={true}
+                adPositions={{
+                  first: 0.25,   // 在文章25%位置插入广告
+                  second: 0.6,   // 在文章60%位置插入广告
+                  third: 0.85    // 在文章85%位置插入广告
+                }}
               />
             </div>
 
             {/* 文章结论部分 */}
             {post.conclusion && (
-              <>
-                <div className="mt-12 p-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl border border-blue-200 dark:border-blue-800">
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                    <span className="text-3xl mr-3">🎯</span>
-                    Conclusion
-                  </h3>
-                  <div className="prose prose-lg dark:prose-invert">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {post.conclusion}
-                    </ReactMarkdown>
-                  </div>
-                </div>
-
-                {/* 结论后广告 */}
-                <div className="my-12">
-                  <AdManager
-                    adType="native"
-                    position="bottom"
-                    size="large"
-                    className="animate-fade-in"
-                  />
-                </div>
-              </>
+              <div className="mt-12 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-2xl p-8 border border-green-200 dark:border-green-800">
+                <h2 className="text-2xl font-bold text-green-900 dark:text-green-100 mb-4 flex items-center">
+                  <span className="mr-3">🎯</span>
+                  Final Thoughts
+                </h2>
+                <p className="text-green-800 dark:text-green-200 text-lg leading-relaxed">
+                  {post.conclusion}
+                </p>
+              </div>
             )}
 
-            {/* 文章标签 */}
+            {/* 标签 */}
             {post.tags && post.tags.length > 0 && (
-              <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tags</h4>
+              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tags</h3>
                 <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag: string, index: number) => (
+                  {post.tags.map((tag: string) => (
                     <span
-                      key={index}
+                      key={tag}
                       className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer"
                     >
                       #{tag}
@@ -307,6 +202,19 @@ export function PostContent({ post }: PostContentProps) {
               <p>• Share with friends who might find this helpful</p>
               <p>• Subscribe to our newsletter for more tips</p>
             </div>
+          </div>
+
+          {/* 广告合规提示 */}
+          <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-4 border border-blue-200 dark:border-blue-800">
+            <div className="flex items-center mb-2">
+              <span className="text-lg mr-2">🛡️</span>
+              <h4 className="font-semibold text-blue-900 dark:text-blue-100 text-sm">
+                Ad Compliance
+              </h4>
+            </div>
+            <p className="text-xs text-blue-700 dark:text-blue-300">
+              Our ads are monitored for compliance with Google AdSense policies.
+            </p>
           </div>
 
           {/* 侧边栏底部广告 */}

@@ -3,6 +3,7 @@ import { HeroSection } from '@/components/HeroSection'
 import { FeaturedArticles } from '@/components/FeaturedArticles'
 import { CategoryGrid } from '@/components/CategoryGrid'
 import { Newsletter } from '@/components/Newsletter'
+import { NativeAd } from '@/components/NativeAd'
 
 export const metadata: Metadata = {
   title: 'MoneyGuide - Professional Online Entrepreneurship and Passive Income Blog',
@@ -80,6 +81,13 @@ export default function Home() {
                 </svg>
               </a>
             </div>
+          </div>
+        </section>
+
+        {/* Native Advertisement Section */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl">
+            <NativeAd className="animate-fade-in" />
           </div>
         </section>
 

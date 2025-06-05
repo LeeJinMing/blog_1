@@ -42,13 +42,13 @@ export function EnhancedArticleRenderer({
       // 添加当前段落
       result.push(paragraph)
 
-      // 在指定位置插入广告
+      // 在指定位置插入广告 - 使用Google AdSense文章内广告
       if (enableAds) {
         if (index === adInsertPoints.first && totalParagraphs > 5) {
           result.push(
             <div key={`ad-first-${index}`} className="my-8">
               <AdManager
-                adType="native"
+                adType="google_inarticle"
                 position="middle"
                 size="large"
                 className="animate-fade-in"
@@ -62,7 +62,7 @@ export function EnhancedArticleRenderer({
           result.push(
             <div key={`ad-second-${index}`} className="my-8">
               <AdManager
-                adType="native"
+                adType="google_inarticle"
                 position="middle"
                 size="medium"
                 className="animate-fade-in"
@@ -76,7 +76,7 @@ export function EnhancedArticleRenderer({
           result.push(
             <div key={`ad-third-${index}`} className="my-8">
               <AdManager
-                adType="native"
+                adType="google_inarticle"
                 position="middle"
                 size="large"
                 className="animate-fade-in"

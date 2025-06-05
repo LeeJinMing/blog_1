@@ -147,7 +147,7 @@ export default function CategoryPage({
                     {index === midPoint && posts.length > 6 && (
                       <div className="col-span-full my-8">
                         <AdManager
-                          adType="native"
+                          adType="google_infeed"
                           position="middle"
                           size="large"
                           className="animate-fade-in"
@@ -161,7 +161,7 @@ export default function CategoryPage({
               {/* 文章列表后广告 */}
               <div className="mt-12">
                 <AdManager
-                  adType="native"
+                  adType="google_display"
                   position="bottom"
                   size="medium"
                   className="animate-fade-in"
@@ -183,7 +183,7 @@ export default function CategoryPage({
               {/* 空页面广告 */}
               <div className="mt-8">
                 <AdManager
-                  adType="native"
+                  adType="google_display"
                   position="middle"
                   size="large"
                   className="animate-fade-in"
@@ -227,7 +227,7 @@ export default function CategoryPage({
               {/* 统计信息后广告 */}
               <div className="mt-12">
                 <AdManager
-                  adType="native"
+                  adType="google_multiplex"
                   position="footer"
                   size="large"
                   className="animate-fade-in"

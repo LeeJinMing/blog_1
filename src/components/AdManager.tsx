@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { shouldShowAd, isDevelopment } from '@/config/ads-config'
+import { GoogleAdsense, GoogleDisplayAd, GoogleInFeedAd, GoogleInArticleAd, GoogleMultiplexAd } from './GoogleAdsense'
 
 // 违规内容关键词列表
 const BLOCKED_KEYWORDS = [
@@ -145,7 +147,7 @@ function monitorAdContent(containerId: string, position: string) {
 }
 
 interface AdManagerProps {
-  adType: 'native' | 'popunder' | 'both'
+  adType: 'native' | 'popunder' | 'both' | 'google_display' | 'google_infeed' | 'google_inarticle' | 'google_multiplex'
   position: 'top' | 'middle' | 'bottom' | 'sidebar' | 'footer'
   className?: string
   containerClass?: string
@@ -154,180 +156,86 @@ interface AdManagerProps {
 }
 
 export function AdManager({
-  adType = 'native',
+  adType = 'google_display',
   position = 'middle',
   className = '',
   containerClass = '',
   showLabel = true,
   size = 'medium'
 }: AdManagerProps) {
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [hasError, setHasError] = useState(false)
-  const [isDevelopment, setIsDevelopment] = useState(false)
-  const [isBlocked, setIsBlocked] = useState(false)
+  const [isDev, setIsDev] = useState(false)
 
   useEffect(() => {
-    // 检查开发环境
-    const isDev = window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1' ||
-      window.location.hostname.includes('localhost')
+    setIsDev(isDevelopment())
+  }, [])
 
-    setIsDevelopment(isDev)
+  // 如果是第三方广告类型，检查是否应该显示
+  const isThirdPartyAd = adType === 'native' || adType === 'popunder' || adType === 'both'
+  const isGoogleAd = adType.startsWith('google_')
 
-    if (isDev) return
-
-    // 加载对应的广告脚本
-    loadAdScript(adType)
-  }, [adType])
-
-  useEffect(() => {
-    // 启动内容监控
-    if (!isDevelopment && adType !== 'popunder') {
-      monitorAdContent(AD_CONFIG.NATIVE.CONTAINER_ID, position)
-    }
-  }, [isDevelopment, adType, position])
-
-  const loadAdScript = (type: 'native' | 'popunder' | 'both') => {
-    if (type === 'native' || type === 'both') {
-      loadScript(AD_CONFIG.NATIVE)
-    }
-    if (type === 'popunder' || type === 'both') {
-      // Popunder 通常自动触发，不需要容器
-      loadScript(AD_CONFIG.POPUNDER)
-    }
-  }
-
-  const loadScript = (config: any) => {
-    const existingScript = document.getElementById(config.SCRIPT_ID)
-
-    if (!existingScript) {
-      const script = document.createElement('script')
-      script.id = config.SCRIPT_ID
-      script.async = true
-      script.setAttribute('data-cfasync', 'false')
-      script.src = config.SCRIPT_URL
-
-      script.onload = () => {
-        setIsLoaded(true)
-        setHasError(false)
-      }
-
-      script.onerror = () => {
-        setHasError(true)
-        setIsLoaded(false)
-      }
-
-      document.head.appendChild(script)
-    } else {
-      setIsLoaded(true)
-    }
-  }
-
-  // 开发环境显示
-  if (isDevelopment) {
-    return (
-      <div className={`w-full ${className}`}>
-        {showLabel && (
-          <div className="text-center mb-4">
-            <div className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
-              <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                💰 Sponsored Content ({adType} - {position}) - 合规监控已启用 🛡️
-              </span>
-            </div>
-          </div>
-        )}
-
-        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-200 dark:border-blue-700 shadow-sm p-6">
-          <div className="text-center">
-            <div className="w-12 h-12 mx-auto mb-3 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center">
-              <span className="text-xl">🛡️</span>
-            </div>
-            <p className="text-sm text-blue-700 dark:text-blue-300">
-              {adType.toUpperCase()} Ad - {position} position
-            </p>
-            <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-              Development Environment - 广告合规系统已激活
-            </p>
-            <div className="mt-3 text-xs text-blue-500 dark:text-blue-400">
-              <p>✓ 实时内容过滤</p>
-              <p>✓ 违规自动屏蔽</p>
-              <p>✓ Google AdSense合规保护</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // 错误处理
-  if (hasError) {
-    return null // 静默失败，不影响用户体验
-  }
-
-  // 如果被合规系统屏蔽
-  if (isBlocked) {
-    return null
-  }
-
-  // 只渲染 Native Banner（Popunder 是自动的）
-  if (adType === 'popunder') {
-    return null // Popunder 不需要容器
-  }
-
-  // 根据尺寸调整样式
-  const sizeClasses = {
-    small: 'min-h-[150px]',
-    medium: 'min-h-[200px]',
-    large: 'min-h-[300px]'
-  }
-
-  const positionClasses = {
-    top: 'mb-8',
-    middle: 'my-8',
-    bottom: 'mt-8',
-    sidebar: 'mb-6',
-    footer: 'mt-6'
-  }
-
-  return (
-    <div className={`w-full ${className} ${positionClasses[position]}`}>
-      {showLabel && (
-        <div className="text-center mb-4">
-          <div className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
-            <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
-              💰 Sponsored Content
-            </span>
-          </div>
-        </div>
-      )}
-
-      <div className={`bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 transition-all duration-300 hover:shadow-md ${containerClass}`}>
-        <div
-          id={AD_CONFIG.NATIVE.CONTAINER_ID}
-          className={`w-full ${sizeClasses[size]}`}
-          style={{
-            display: 'block',
-            minHeight: sizeClasses[size].split('-')[1].replace('[', '').replace(']', ''),
-            textAlign: 'center'
-          }}
-        >
-          {!isLoaded && (
-            <div className="flex items-center justify-center h-full py-16">
-              <div className="text-center">
-                <div className="flex items-center justify-center space-x-2 mb-3">
-                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce"></div>
-                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Loading sponsored content...</p>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">🛡️ 合规检查中...</p>
+  // 第三方广告已禁用，显示替代的Google AdSense
+  if (isThirdPartyAd) {
+    if (!shouldShowAd('third_party')) {
+      // 显示禁用提示（仅开发环境）
+      if (isDev) {
+        return (
+          <div className={`w-full ${className}`}>
+            <div className="text-center mb-4">
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-700">
+                <span className="text-xs font-medium text-red-600 dark:text-red-400">
+                  🔴 Third-party ads disabled
+                </span>
               </div>
             </div>
-          )}
-        </div>
-      </div>
-    </div>
-  )
+
+            <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-700 shadow-sm p-8">
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-800 rounded-full flex items-center justify-center">
+                  <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-red-900 dark:text-red-100 mb-2">
+                  Third-party Ads Disabled
+                </h3>
+                <p className="text-red-700 dark:text-red-300 mb-4">
+                  TraverseSeven ads have been disabled. Using Google AdSense instead for better compliance and revenue.
+                </p>
+                <div className="text-sm text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-800/50 rounded-lg p-3">
+                  <p className="font-medium mb-1">Reason:</p>
+                  <p>• Better compliance with Google AdSense policies</p>
+                  <p>• Improved user experience</p>
+                  <p>• Reduced risk of policy violations</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // 生产环境用Google AdSense替代
+      return <GoogleDisplayAd className={className} position={position} />
+    }
+  }
+
+  // Google AdSense 广告
+  if (isGoogleAd) {
+    switch (adType) {
+      case 'google_display':
+        return <GoogleDisplayAd className={className} position={position} />
+      case 'google_infeed':
+        return <GoogleInFeedAd className={className} position={position} />
+      case 'google_inarticle':
+        return <GoogleInArticleAd className={className} position={position} />
+      case 'google_multiplex':
+        return <GoogleMultiplexAd className={className} position={position} />
+      default:
+        return <GoogleDisplayAd className={className} position={position} />
+    }
+  }
+
+  // 兜底：返回Google Display广告
+  return <GoogleDisplayAd className={className} position={position} />
 }
 
 // 简化版原生广告组件（向后兼容）

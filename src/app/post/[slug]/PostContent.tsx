@@ -173,7 +173,7 @@ export function PostContent({ post }: PostContentProps) {
         {/* 文章底部广告 */}
         <div className="mt-8">
           <AdManager
-            adType="native"
+            adType="google_display"
             position="bottom"
             size="large"
             className="animate-fade-in"
@@ -186,7 +186,7 @@ export function PostContent({ post }: PostContentProps) {
         {/* 侧边栏顶部广告 */}
         <div className="sticky top-24">
           <AdManager
-            adType="native"
+            adType="google_display"
             position="sidebar"
             size="medium"
             className="animate-fade-in mb-6"
@@ -220,7 +220,7 @@ export function PostContent({ post }: PostContentProps) {
           {/* 侧边栏底部广告 */}
           <div className="mt-6">
             <AdManager
-              adType="native"
+              adType="google_display"
               position="sidebar"
               size="small"
               className="animate-fade-in"

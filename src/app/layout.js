@@ -5,7 +5,6 @@ import EnhancedSearch from "./components/EnhancedSearch";
 import NavMenu from "./components/NavMenu";
 import AnalyticsWrapper from "./components/AnalyticsWrapper";
 import StructuredData from "./components/StructuredData";
-import Script from "next/script";
 
 /**
  * Site default global metadata
@@ -27,6 +26,10 @@ export const metadata = {
   authors: [{ name: "Insights Blog Team" }],
   creator: "Insights Blog",
   publisher: "Insights Blog",
+  applicationName: "Insights Blog",
+  referrer: "origin-when-cross-origin",
+  category: "Business",
+  classification: "Business Analysis",
   formatDetection: {
     email: false,
     address: false,
@@ -65,24 +68,34 @@ export const metadata = {
       follow: true,
       "max-image-preview": "large",
       "max-snippet": -1,
+      "max-video-preview": -1,
     },
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico", type: "image/x-icon" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
     shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
   },
+  manifest: "/manifest.json",
   other: {
     "msapplication-TileColor": "#ffffff",
     "theme-color": "#ffffff",
   },
   verification: {
-    google: "2151ade26579c19b", // Google Search Console验证码 - 需要在GSC中验证此域名
-    yandex: "your-yandex-verification-code", // If needed
-    bing: "your-bing-verification-code", // If needed
+    google: "2151ade26579c19b", // Google Search Console验证码
   },
   alternates: {
     canonical: "https://blog-1-seven-pi.vercel.app",
+    languages: {
+      "en-US": "/en-US",
+      "x-default": "/",
+    },
   },
 };
 
@@ -90,7 +103,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* Google AdSense code - using standard method for easy Google verification */}
+        {/* Google AdSense - 智能广告配置 */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1911238866563211"
@@ -98,6 +111,19 @@ export default function RootLayout({ children }) {
         />
 
         <meta name="google-adsense-account" content="ca-pub-1911238866563211" />
+
+        {/* 启用Auto Ads智能广告配置 */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (adsbygoogle = window.adsbygoogle || []).push({
+                google_ad_client: "ca-pub-1911238866563211",
+                enable_page_level_ads: true,
+                overlays: {bottom: true}
+              });
+            `,
+          }}
+        />
 
         {/* Google Search Console验证 */}
         <meta name="google-site-verification" content="2151ade26579c19b" />

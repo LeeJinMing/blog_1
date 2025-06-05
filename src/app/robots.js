@@ -4,14 +4,63 @@
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots
  */
 export default function robots() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
 
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/admin/", "/api/", "/settings/"],
-    },
+    rules: [
+      {
+        userAgent: "*",
+        allow: [
+          "/",
+          "/about",
+          "/posts/*",
+          "/archives",
+          "/categories/*",
+          "/tags/*",
+          "/search",
+          "/api/search*",
+        ],
+        disallow: [
+          "/api/auth/*",
+          "/api/admin/*",
+          "/api/private/*",
+          "/admin/*",
+          "/settings/*",
+          "/_next/static/chunks/*",
+          "/_next/",
+          "/api/db/*",
+        ],
+        crawlDelay: 1,
+      },
+      {
+        userAgent: "Googlebot",
+        allow: [
+          "/",
+          "/about",
+          "/posts/*",
+          "/archives",
+          "/categories/*",
+          "/tags/*",
+          "/search",
+        ],
+        disallow: ["/api/*", "/admin/*", "/settings/*"],
+        crawlDelay: 0.5,
+      },
+      {
+        userAgent: "Bingbot",
+        allow: [
+          "/",
+          "/about",
+          "/posts/*",
+          "/archives",
+          "/categories/*",
+          "/tags/*",
+        ],
+        disallow: ["/api/*", "/admin/*", "/settings/*"],
+        crawlDelay: 1,
+      },
+    ],
     sitemap: `${baseUrl}/sitemap.xml`,
   };
 }

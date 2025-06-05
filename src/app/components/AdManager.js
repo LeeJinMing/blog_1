@@ -2,24 +2,36 @@
 
 import { useEffect, useState } from "react";
 
-// 广告配置 - blog_1专用
+// ==========================================
+// 🚫 第三方广告系统已禁用 - THIRD-PARTY ADS DISABLED
+// ==========================================
+// 注意：以下代码已被注释禁用，仅保留Google AdSense Auto Ads
+// Note: The following code has been commented out, only Google AdSense Auto Ads remain active
+
+/*
+// 广告配置 - blog_1专用 - 已禁用
 export const AD_CONFIG = {
-  // Native Banner 配置
+  // Native Banner 配置 - 已禁用
   NATIVE: {
     SCRIPT_URL:
       "//traverseseven.com/700ea3e86e07b32845dc284c7138afa9/invoke.js",
     CONTAINER_ID: "container-700ea3e86e07b32845dc284c7138afa9",
     SCRIPT_ID: "traverse-seven-native-script-blog1",
   },
-  // Popunder 配置 (从后台获取)
+  // Popunder 配置 (从后台获取) - 已禁用
   POPUNDER: {
     SCRIPT_URL: "//traverseseven.com/POPUNDER_ID/invoke.js", // 需要替换为实际ID
     CONTAINER_ID: "container-POPUNDER_ID",
     SCRIPT_ID: "traverse-seven-popunder-script-blog1",
   },
 };
+*/
 
-// 违规内容关键词检测
+// ==========================================
+// ✅ 仅使用Google AdSense Auto Ads
+// ==========================================
+
+// 违规内容关键词检测 - 保留用于Google AdSense内容合规
 const BLOCKED_KEYWORDS = [
   // 赌博相关
   "casino",
@@ -53,7 +65,7 @@ const BLOCKED_KEYWORDS = [
   "usdt casino",
 ];
 
-// 广告内容监控函数
+// 广告内容监控函数 - 保留用于Google AdSense合规监控
 const monitorAdContent = (containerId) => {
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
@@ -101,7 +113,7 @@ const monitorAdContent = (containerId) => {
 };
 
 export function AdManager({
-  adType = "native",
+  adType = "google_adsense", // 默认使用Google AdSense
   position = "middle",
   className = "",
   containerClass = "",
@@ -124,10 +136,19 @@ export function AdManager({
 
     if (isDev) return;
 
-    // 加载对应的广告脚本
+    // 🚫 第三方广告加载已禁用
+    // ✅ 现在只使用Google AdSense Auto Ads（在layout.js中配置）
+    /*
+    // 加载对应的广告脚本 - 已禁用
     loadAdScript(adType);
+    */
+
+    // ✅ Google AdSense Auto Ads会自动处理广告展示
+    setIsLoaded(true);
   }, [adType]);
 
+  /*
+  // 🚫 第三方广告脚本加载函数 - 已禁用
   const loadAdScript = (type) => {
     if (type === "native" || type === "both") {
       loadScript(AD_CONFIG.NATIVE);
@@ -188,6 +209,7 @@ export function AdManager({
       setIsLoaded(true);
     }
   };
+  */
 
   // 开发环境显示
   if (isDevelopment) {
@@ -197,289 +219,101 @@ export function AdManager({
           <div className="ad-label">
             <div className="ad-label-inner">
               <span className="ad-label-text">
-                💰 Sponsored Content ({adType} - {position}) - DEV MODE
+                💰 Google AdSense Auto Ads ({position}) - DEV MODE
               </span>
             </div>
           </div>
         )}
-
-        <div className="ad-container-dev">
-          <div className="ad-dev-content">
-            <div className="ad-dev-icon">
-              <span>📱</span>
-            </div>
-            <p className="ad-dev-title">
-              {adType.toUpperCase()} Ad - {position} position
-            </p>
-            <p className="ad-dev-subtitle">
-              Development Environment - Content Filtering Active
-            </p>
-          </div>
+        <div
+          className={`ad-placeholder ${containerClass}`}
+          style={{
+            background: "linear-gradient(45deg, #f0f0f0, #e0e0e0)",
+            minHeight: size === "small" ? "100px" : "250px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "2px dashed #ccc",
+            borderRadius: "8px",
+            fontSize: "14px",
+            color: "#666",
+            margin: "20px 0",
+          }}
+        >
+          🚫 Third-party ads disabled | ✅ Google AdSense Auto Ads only
         </div>
       </div>
     );
   }
 
-  // 错误处理
-  if (hasError || isBlocked) {
-    return null; // 静默失败，不影响用户体验
-  }
-
-  // 只渲染 Native Banner（Popunder 是自动的）
-  if (adType === "popunder") {
-    return null; // Popunder 不需要容器
-  }
-
-  // 根据尺寸调整样式类
-  const sizeClass = `ad-size-${size}`;
-  const positionClass = `ad-position-${position}`;
-
+  // 生产环境 - 现在只显示占位符，Google AdSense Auto Ads会自动填充
   return (
-    <div className={`ad-wrapper ${className} ${positionClass}`}>
+    <div className={`ad-wrapper ${className}`} style={{ margin: "20px 0" }}>
       {showLabel && (
-        <div className="ad-label">
-          <div className="ad-label-inner">
-            <span className="ad-label-text">💰 Sponsored Content</span>
-          </div>
+        <div
+          className="ad-label"
+          style={{
+            fontSize: "12px",
+            color: "#666",
+            textAlign: "center",
+            marginBottom: "8px",
+          }}
+        >
+          广告
         </div>
       )}
 
-      <div className={`ad-container ${containerClass} ${sizeClass}`}>
-        <div id={AD_CONFIG.NATIVE.CONTAINER_ID} className="ad-content">
-          {!isLoaded && (
-            <div className="ad-loading">
-              <div className="ad-loading-inner">
-                <div className="ad-loading-dots">
-                  <div className="ad-loading-dot"></div>
-                  <div className="ad-loading-dot"></div>
-                  <div className="ad-loading-dot"></div>
-                </div>
-                <p className="ad-loading-text">Loading sponsored content...</p>
-              </div>
-            </div>
-          )}
+      {/* ✅ Google AdSense Auto Ads占位区域 */}
+      <div
+        className={`google-adsense-placeholder ${containerClass}`}
+        style={{
+          minHeight: size === "small" ? "100px" : "250px",
+          width: "100%",
+          background: "transparent",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {/* Google AdSense Auto Ads会自动在这个区域插入广告 */}
+        <div
+          style={{
+            color: "#ccc",
+            fontSize: "12px",
+            opacity: 0.5,
+          }}
+        >
+          {/* AdSense Auto Ads Space */}
         </div>
       </div>
 
-      <style jsx>{`
-        .ad-wrapper {
-          width: 100%;
-          margin: 0 auto;
-        }
-
-        .ad-position-top {
-          margin-bottom: 2rem;
-        }
-
-        .ad-position-middle {
-          margin: 2rem 0;
-        }
-
-        .ad-position-bottom {
-          margin-top: 2rem;
-        }
-
-        .ad-position-sidebar {
-          margin-bottom: 1.5rem;
-        }
-
-        .ad-position-footer {
-          margin-top: 1.5rem;
-        }
-
-        .ad-label {
-          text-align: center;
-          margin-bottom: 1rem;
-        }
-
-        .ad-label-inner {
-          display: inline-flex;
-          align-items: center;
-          padding: 0.25rem 0.75rem;
-          border-radius: 9999px;
-          background-color: rgba(243, 244, 246, 0.8);
-          border: 1px solid rgba(229, 231, 235, 0.8);
-          backdrop-filter: blur(8px);
-        }
-
-        .ad-label-text {
-          font-size: 0.75rem;
-          font-weight: 500;
-          color: rgba(107, 114, 128, 1);
-        }
-
-        .ad-container {
-          background-color: white;
-          border-radius: 1rem;
-          border: 1px solid rgba(229, 231, 235, 1);
-          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
-            0 1px 2px 0 rgba(0, 0, 0, 0.06);
-          padding: 1.5rem;
-          transition: all 0.3s ease;
-        }
-
-        .ad-container:hover {
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-            0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .ad-content {
-          width: 100%;
-          display: block;
-          text-align: center;
-        }
-
-        .ad-size-small .ad-content {
-          min-height: 150px;
-        }
-
-        .ad-size-medium .ad-content {
-          min-height: 200px;
-        }
-
-        .ad-size-large .ad-content {
-          min-height: 300px;
-        }
-
-        .ad-loading {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100%;
-          padding: 4rem 0;
-        }
-
-        .ad-loading-inner {
-          text-align: center;
-        }
-
-        .ad-loading-dots {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          margin-bottom: 0.75rem;
-        }
-
-        .ad-loading-dot {
-          width: 0.75rem;
-          height: 0.75rem;
-          background-color: rgba(96, 165, 250, 1);
-          border-radius: 50%;
-          animation: bounce 1.4s ease-in-out infinite both;
-        }
-
-        .ad-loading-dot:nth-child(1) {
-          animation-delay: -0.32s;
-        }
-
-        .ad-loading-dot:nth-child(2) {
-          animation-delay: -0.16s;
-        }
-
-        .ad-loading-text {
-          font-size: 0.875rem;
-          color: rgba(107, 114, 128, 1);
-          margin: 0;
-        }
-
-        .ad-container-dev {
-          background-color: rgba(239, 246, 255, 1);
-          border-radius: 1rem;
-          border: 1px solid rgba(191, 219, 254, 1);
-          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-          padding: 1.5rem;
-        }
-
-        .ad-dev-content {
-          text-align: center;
-        }
-
-        .ad-dev-icon {
-          width: 3rem;
-          height: 3rem;
-          margin: 0 auto 0.75rem;
-          background-color: rgba(219, 234, 254, 1);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.25rem;
-        }
-
-        .ad-dev-title {
-          font-size: 0.875rem;
-          color: rgba(29, 78, 216, 1);
-          margin: 0 0 0.25rem 0;
-        }
-
-        .ad-dev-subtitle {
-          font-size: 0.75rem;
-          color: rgba(37, 99, 235, 1);
-          margin: 0;
-        }
-
-        @keyframes bounce {
-          0%,
-          80%,
-          100% {
-            transform: scale(0);
-          }
-          40% {
-            transform: scale(1);
-          }
-        }
-
-        @media (prefers-color-scheme: dark) {
-          .ad-label-inner {
-            background-color: rgba(55, 65, 81, 0.8);
-            border-color: rgba(75, 85, 99, 0.8);
-          }
-
-          .ad-label-text {
-            color: rgba(156, 163, 175, 1);
-          }
-
-          .ad-container {
-            background-color: rgba(31, 41, 55, 1);
-            border-color: rgba(75, 85, 99, 1);
-          }
-
-          .ad-loading-text {
-            color: rgba(156, 163, 175, 1);
-          }
-
-          .ad-container-dev {
-            background-color: rgba(30, 58, 138, 0.2);
-            border-color: rgba(59, 130, 246, 0.5);
-          }
-
-          .ad-dev-icon {
-            background-color: rgba(30, 64, 175, 0.8);
-          }
-
-          .ad-dev-title {
-            color: rgba(96, 165, 250, 1);
-          }
-
-          .ad-dev-subtitle {
-            color: rgba(147, 197, 253, 1);
-          }
-        }
-      `}</style>
+      {/* 🚫 第三方广告容器已禁用 */}
+      {/*
+      <div id={adType === "native" ? AD_CONFIG.NATIVE.CONTAINER_ID : null}>
+        {isBlocked && (
+          <div className="blocked-ad-notice">
+            ⚠️ 广告内容已被过滤 (违反内容政策)
+          </div>
+        )}
+        {hasError && (
+          <div className="ad-error-notice">
+            ❌ 广告加载失败，请刷新页面重试
+          </div>
+        )}
+      </div>
+      */}
     </div>
   );
 }
 
-// 简化版原生广告组件（向后兼容）
+// ✅ 保留原有接口，但改为使用Google AdSense
 export function NativeAd({ className = "" }) {
   return (
     <AdManager
-      adType="native"
-      position="middle"
+      adType="google_adsense"
+      position="content"
+      size="medium"
       className={className}
       showLabel={true}
-      size="medium"
     />
   );
 }

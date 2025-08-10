@@ -10,6 +10,7 @@ import {
   FaLink,
   FaCheckCircle,
   FaCopy,
+  FaTimes,
 } from "react-icons/fa";
 import styles from "./ShareButtons.module.css";
 import { QRCodeCanvas } from "qrcode.react";

@@ -1,9 +1,8 @@
 import Link from "next/link";
-import ClientAdPlaceholder from "@/app/components/ClientAdPlaceholder";
 import { FaCalendarAlt, FaChartBar, FaClock } from "react-icons/fa";
-import GlobalLayout from "@/app/components/GlobalLayout";
+import GlobalLayout from "../components/GlobalLayout";
 import styles from "./archives.module.css";
-import { getPosts } from "@/lib/db";
+import { getPosts } from "../../lib/db";
 import dayjs from "dayjs";
 
 export const metadata = {
@@ -52,7 +51,7 @@ export default async function ArchivesPage() {
       <div className={styles.archivesContainer}>
         {/* 顶部广告 */}
         <div className={styles.topAdContainer}>
-          <ClientAdPlaceholder size="leaderboard" position="header" />
+          {/* Removed ClientAdPlaceholder */}
         </div>
 
         <div className={styles.archiveContent}>
@@ -108,7 +107,7 @@ export default async function ArchivesPage() {
 
         {/* 中间广告 */}
         <div className={styles.midAdContainer}>
-          <ClientAdPlaceholder size="rectangle" position="in-content" />
+          {/* Removed ClientAdPlaceholder */}
         </div>
 
         {/* 底部链接区域 */}
@@ -149,7 +148,7 @@ export default async function ArchivesPage() {
 
         {/* 底部广告 */}
         <div className={styles.bottomAdContainer}>
-          <ClientAdPlaceholder size="leaderboard" position="footer" />
+          {/* Removed ClientAdPlaceholder */}
         </div>
       </div>
     </GlobalLayout>

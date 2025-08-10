@@ -5,7 +5,8 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { trackSearch } from "../../lib/analytics";
-import { getPosts } from "../../lib/db";
+// 移除直接的数据库导入，改为使用API
+// import { getPosts } from "../../lib/db";
 import { getTagTextById } from "../../lib/tags";
 
 // 格式化日期为YYYYMMDD的URL格式

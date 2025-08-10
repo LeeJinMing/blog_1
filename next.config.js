@@ -89,11 +89,25 @@ const nextConfig = {
       // 客户端构建时，用空对象替代 Node.js 模块
       config.resolve.fallback = {
         ...config.resolve.fallback,
+        // MongoDB 兼容性 fallbacks
+        dns: false,
         net: false,
         tls: false,
         fs: false,
         "fs/promises": false,
         child_process: false,
+        "timers/promises": false,
+        // 其他 Node.js 模块 fallbacks
+        os: false,
+        path: false,
+        crypto: false,
+        stream: false,
+        util: false,
+        url: false,
+        querystring: false,
+        http: false,
+        https: false,
+        zlib: false,
       };
     }
     return config;

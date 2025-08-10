@@ -7,9 +7,10 @@ import { getPosts, formatDateForUrl, getUrlSafeSlug } from "../lib/db";
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // 使用环境变量中的域名，确保一致性
-  const baseUrl =
+  // 使用环境变量中的域名，确保一致性，并移除尾随斜杠
+  const rawBaseUrl =
     process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
+  const baseUrl = rawBaseUrl.replace(/\/+$/, "");
   const currentDate = new Date();
 
   // 静态页面URLs

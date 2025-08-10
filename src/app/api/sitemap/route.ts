@@ -7,8 +7,9 @@ import { getPosts, formatDateForUrl, getUrlSafeSlug } from "../../../lib/db";
  */
 export async function GET(request: NextRequest) {
   try {
-    const baseUrl =
+    const rawBaseUrl =
       process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
+    const baseUrl = rawBaseUrl.replace(/\/+$/, "");
     const currentDate = new Date().toISOString();
 
     // 构建XML内容
@@ -77,9 +78,12 @@ ${[...staticUrls, ...postUrls, ...categoryUrls].join("\n")}
     // 返回最小化的sitemap
     const fallbackXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>${
+<url><loc>${(
       process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app"
-    }</loc><lastmod>${new Date().toISOString()}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+    ).replace(
+      /\/+$/,
+      ""
+    )}</loc><lastmod>${new Date().toISOString()}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
 </urlset>`;
 
     return new NextResponse(fallbackXml, {

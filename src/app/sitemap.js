@@ -18,9 +18,11 @@ function isValidUrl(urlString) {
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap
  */
 export default async function sitemap() {
-  // 确保 baseUrl 始终指向生产域名
-  const baseUrl =
+  // 确保 baseUrl 始终指向生产域名，并移除末尾斜杠
+  let baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
+  // 移除末尾的斜杠，避免双斜杠问题
+  baseUrl = baseUrl.replace(/\/+$/, "");
 
   const currentDate = new Date();
 

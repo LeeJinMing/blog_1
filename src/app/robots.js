@@ -4,9 +4,11 @@
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots
  */
 export default function robots() {
-  // 确保与 sitemap.js 使用相同的 baseUrl 逻辑
-  const baseUrl =
+  // 确保与 sitemap.js 使用相同的 baseUrl 逻辑，并移除末尾斜杠
+  let baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
+  // 移除末尾的斜杠，避免双斜杠问题
+  baseUrl = baseUrl.replace(/\/+$/, "");
 
   return {
     rules: [

@@ -1,14 +1,13 @@
+import { MetadataRoute } from "next";
+
 /**
  * Generate robots.txt file for the website
- * Next.js automatically handles this file and provides content at /robots.txt endpoint
+ * Next.js MetadataRoute format
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots
  */
-export default function robots() {
-  // 确保与 sitemap.js 使用相同的 baseUrl 逻辑，并移除末尾斜杠
-  let baseUrl =
+export default function robots(): MetadataRoute.Robots {
+  const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
-  // 移除末尾的斜杠，避免双斜杠问题
-  baseUrl = baseUrl.replace(/\/+$/, "");
 
   return {
     rules: [
@@ -22,7 +21,6 @@ export default function robots() {
           "/categories/*",
           "/tags/*",
           "/search",
-          "/api/search*",
         ],
         disallow: [
           "/api/auth/*",
@@ -30,9 +28,7 @@ export default function robots() {
           "/api/private/*",
           "/admin/*",
           "/settings/*",
-          "/_next/static/chunks/*",
           "/_next/",
-          "/api/db/*",
         ],
         crawlDelay: 1,
       },
@@ -49,19 +45,6 @@ export default function robots() {
         ],
         disallow: ["/api/*", "/admin/*", "/settings/*"],
         crawlDelay: 0.5,
-      },
-      {
-        userAgent: "Bingbot",
-        allow: [
-          "/",
-          "/about",
-          "/posts/*",
-          "/archives",
-          "/categories/*",
-          "/tags/*",
-        ],
-        disallow: ["/api/*", "/admin/*", "/settings/*"],
-        crawlDelay: 1,
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

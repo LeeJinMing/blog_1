@@ -38,6 +38,38 @@ const nextConfig = {
           },
         ],
       },
+      // 站点地图专用headers - 按技术规范要求
+      {
+        source: "/sitemap.xml",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "application/xml; charset=utf-8",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=3600, s-maxage=3600",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+        ],
+      },
+      // robots.txt专用headers
+      {
+        source: "/robots.txt",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "text/plain; charset=utf-8",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, s-maxage=86400",
+          },
+        ],
+      },
       // 静态资源缓存
       {
         source: "/images/(.*)",
@@ -45,34 +77,6 @@ const nextConfig = {
           {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-      // 站点地图缓存 - 减少缓存时间以便更快发现问题
-      {
-        source: "/sitemap.xml",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=1800, s-maxage=1800", // 30分钟缓存
-          },
-          {
-            key: "Content-Type",
-            value: "application/xml; charset=utf-8",
-          },
-        ],
-      },
-      // robots.txt缓存
-      {
-        source: "/robots.txt",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=86400, s-maxage=86400",
-          },
-          {
-            key: "Content-Type",
-            value: "text/plain; charset=utf-8",
           },
         ],
       },

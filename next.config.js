@@ -85,6 +85,33 @@ const nextConfig = {
           },
         ],
       },
+      // 图标路由专用headers - 防止与sitemap冲突
+      {
+        source: "/icon",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "image/png",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, immutable",
+          },
+        ],
+      },
+      {
+        source: "/apple-icon",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "image/png",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, immutable",
+          },
+        ],
+      },
     ];
   },
 

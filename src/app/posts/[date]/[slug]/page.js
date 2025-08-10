@@ -13,7 +13,6 @@ import {
   processHtmlContent,
   normalizeContent,
 } from "./utils";
-import ClientAdPlaceholder from "@/app/components/ClientAdPlaceholder";
 import ClientRelatedPosts from "@/app/components/ClientRelatedPosts";
 import styles from "./article.module.css";
 import { Suspense } from "react";
@@ -22,7 +21,6 @@ import { getTagTextById } from "@/lib/tags";
 import GlobalLayout from "@/app/components/GlobalLayout";
 import LikeButtonWrapper from "./LikeButtonWrapper";
 import EnhancedArticleRenderer from "@/app/components/EnhancedArticleRenderer";
-import { AdManager } from "@/app/components/AdManager";
 
 // 添加标题翻译映射
 const titleTranslations = {
@@ -55,14 +53,15 @@ function translateTitle(title) {
   return title;
 }
 
-// Adjust ISR cache time
-export const revalidate = 3600; // 1 hour
+// Adjust ISR cache time - 优化为30分钟，提高内容更新及时性
+export const revalidate = 1800; // 30 minutes (从1小时优化到30分钟)
 
 // For better performance, use static generation
 export async function generateStaticParams() {
   try {
-    // Get articles from global cache, this will only trigger one database query
-    const recentPosts = await getPosts(50); // 减少预渲染的页面数量，避免构建时间过长
+    // 智能混合策略：只预渲染最新50篇热门文章，其余按需生成
+    // 这样既保证了构建速度，又确保了热门内容的即时可用性
+    const recentPosts = await getPosts(50); // 优化：从200减少到50，预渲染最新热门文章
 
     // 过滤掉可能存在问题的posts
     const validPosts = recentPosts.filter(
@@ -71,6 +70,10 @@ export async function generateStaticParams() {
         post.createdAt &&
         post.slug &&
         typeof post.createdAt === "string"
+    );
+
+    console.log(
+      `🔧 generateStaticParams: 预渲染 ${validPosts.length} 篇最新文章页面 (智能混合策略)`
     );
 
     return validPosts.map((post) => {
@@ -437,7 +440,7 @@ export default async function PostPage({ params }) {
                 <ShareButtonsContainer post={post} />
               </Suspense>
 
-              {/* 使用增强版文章渲染器（包含内置广告） */}
+              {/* 使用增强版文章渲染器 */}
               <EnhancedArticleRenderer article={articleData} />
 
               {/* 添加在文章底部的上一篇/下一篇导航 */}
@@ -484,19 +487,9 @@ export default async function PostPage({ params }) {
             </article>
           </div>
 
-          {/* 右侧边栏广告 */}
+          {/* 右侧边栏 - 保持简洁结构，Google AdSense Auto Ads会自动选择位置 */}
           <aside className={styles.sidebar}>
             <div className={styles.sidebarContent}>
-              {/* 侧边栏顶部广告 */}
-              <div className={styles.sidebarAd}>
-                <AdManager
-                  adType="native"
-                  position="sidebar"
-                  size="medium"
-                  className="sidebar-top-ad"
-                />
-              </div>
-
               {/* 快速导航 */}
               <div className={styles.quickNav}>
                 <h4 className={styles.sidebarTitle}>Quick Navigation</h4>
@@ -505,16 +498,6 @@ export default async function PostPage({ params }) {
                   <p>• Share with friends</p>
                   <p>• Subscribe for updates</p>
                 </div>
-              </div>
-
-              {/* 侧边栏中部广告 */}
-              <div className={styles.sidebarAd}>
-                <AdManager
-                  adType="native"
-                  position="sidebar"
-                  size="small"
-                  className="sidebar-mid-ad"
-                />
               </div>
 
               {/* 相关主题 */}
@@ -530,16 +513,6 @@ export default async function PostPage({ params }) {
                   </div>
                 </div>
               )}
-
-              {/* 侧边栏底部广告 */}
-              <div className={styles.sidebarAd}>
-                <AdManager
-                  adType="native"
-                  position="sidebar"
-                  size="medium"
-                  className="sidebar-bottom-ad"
-                />
-              </div>
             </div>
           </aside>
         </div>

@@ -5,12 +5,11 @@ import { trackSearch } from "@/lib/analytics";
 import PostCard from "./components/PostCard";
 import Pagination from "./components/Pagination";
 import GlobalLayout from "./components/GlobalLayout";
-import { AdManager } from "./components/AdManager";
 import styles from "./page.module.css";
 
 // Modify ISR cache strategy, use a shorter cache time
-// Originally set to 1 week (604800), now changed to 30 minutes for more frequent data refresh
-export const revalidate = 1800; // 30 minutes (60 * 30 seconds)
+// 首页采用更频繁的更新策略，确保新文章及时显示
+export const revalidate = 900; // 15 minutes (从30分钟优化到15分钟)
 
 // Add homepage SEO metadata
 export const metadata = {
@@ -44,76 +43,44 @@ export default async function HomePage({ searchParams }) {
   const startIndex = (currentPage - 1) * pageSize;
   const postsToDisplay = allPosts.slice(startIndex, startIndex + pageSize);
 
-  // Calculate ad insertion point for posts
-  const midPoint = Math.floor(postsToDisplay.length / 2);
-
   return (
-    <GlobalLayout>
-      <section className="hero">
-        <h1>Expert Business Analysis & Technology Insights</h1>
-        <p className="subtitle">
-          Discover cutting-edge analysis on AI technology, sustainable business
-          practices, emerging markets, and investment strategies. Stay ahead of
-          global trends with our expert insights and in-depth research.
-        </p>
-      </section>
+    <div className={styles.container}>
+      <GlobalLayout>
+        <section className={styles.hero}>
+          <h1>Expert Business Analysis & Technology Insights</h1>
+          <p className={styles.subtitle}>
+            Discover cutting-edge analysis on AI technology, sustainable
+            business practices, emerging markets, and investment strategies.
+            Stay ahead of global trends with our expert insights and in-depth
+            research.
+          </p>
+        </section>
 
-      {/* Top Ad - After Hero Section */}
-      <section className={styles.adSection}>
-        <AdManager
-          adType="native"
-          position="top"
-          size="large"
-          className={styles.homepageTopAd}
-        />
-      </section>
+        <section className={styles.postList}>
+          {postsToDisplay && postsToDisplay.length > 0 ? (
+            <>
+              {postsToDisplay.map((post, index) => (
+                <PostCard key={post._id} post={post} />
+              ))}
 
-      <section className="post-list">
-        {postsToDisplay.map((post, index) => (
-          <div key={post._id}>
-            <PostCard post={post} />
-
-            {/* Mid-content Ad - Insert after middle post */}
-            {index === midPoint && postsToDisplay.length > 4 && (
-              <div className={styles.adSectionInline}>
-                <AdManager
-                  adType="native"
-                  position="middle"
-                  size="medium"
-                  className={styles.homepageMidAd}
-                />
-              </div>
-            )}
-          </div>
-        ))}
-
-        {/* Post-content Ad - After article list */}
-        <div className={styles.adSection}>
-          <AdManager
-            adType="native"
-            position="bottom"
-            size="large"
-            className={styles.homepageBottomAd}
-          />
-        </div>
-
-        {/* Pagination component */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          basePath="/"
-        />
-
-        {/* Footer Ad - After pagination */}
-        <div className={styles.adSection}>
-          <AdManager
-            adType="native"
-            position="footer"
-            size="medium"
-            className={styles.homepageFooterAd}
-          />
-        </div>
-      </section>
-    </GlobalLayout>
+              {/* Pagination component */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                basePath="/"
+              />
+            </>
+          ) : (
+            <div className={styles.emptyState}>
+              <h3>No Articles Found</h3>
+              <p>
+                We're working on bringing you the latest insights. Please check
+                back soon!
+              </p>
+            </div>
+          )}
+        </section>
+      </GlobalLayout>
+    </div>
   );
 }

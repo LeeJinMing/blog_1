@@ -58,13 +58,13 @@ export default function AdCompliancePage() {
   const getViolationTypeLabel = (type) => {
     switch (type) {
       case "gambling":
-        return "🎰 赌博内容";
+        return "🎰 Gambling Content";
       case "adult_dating":
-        return "💋 成人约会";
+        return "💋 Adult Dating";
       case "illegal_streaming":
-        return "📺 非法流媒体";
+        return "📺 Illegal Streaming";
       default:
-        return "⚠️ 其他违规";
+        return "⚠️ Other Violations";
     }
   };
 
@@ -72,7 +72,7 @@ export default function AdCompliancePage() {
     <GlobalLayout>
       <div style={{ padding: "2rem", maxWidth: "1200px", margin: "0 auto" }}>
         <h1 style={{ marginBottom: "2rem", color: "#dc3545" }}>
-          🛡️ 广告合规监控中心
+          🛡️ Ad Compliance Monitoring Center
         </h1>
 
         {/* 统计卡片 */}
@@ -94,7 +94,7 @@ export default function AdCompliancePage() {
             }}
           >
             <h3 style={{ margin: "0 0 0.5rem 0", color: "#495057" }}>
-              总广告数
+              Total Ads
             </h3>
             <p
               style={{
@@ -118,7 +118,7 @@ export default function AdCompliancePage() {
             }}
           >
             <h3 style={{ margin: "0 0 0.5rem 0", color: "#495057" }}>
-              违规被屏蔽
+              Blocked Ads
             </h3>
             <p
               style={{
@@ -141,7 +141,9 @@ export default function AdCompliancePage() {
               border: "1px solid #e9ecef",
             }}
           >
-            <h3 style={{ margin: "0 0 0.5rem 0", color: "#495057" }}>合规率</h3>
+            <h3 style={{ margin: "0 0 0.5rem 0", color: "#495057" }}>
+              Compliance Rate
+            </h3>
             <p
               style={{
                 fontSize: "2rem",
@@ -166,11 +168,13 @@ export default function AdCompliancePage() {
           }}
         >
           <h4 style={{ margin: "0 0 0.5rem 0", color: "#856404" }}>
-            ⚠️ Google AdSense 合规警告
+            ⚠️ Google AdSense Compliance Warning
           </h4>
           <p style={{ margin: 0, color: "#856404" }}>
-            检测到违规广告内容。建议立即联系TraverseSeven调整广告过滤设置，避免影响Google
-            AdSense账户状态。
+            Project has fully switched to Google AdSense Auto Ads, all
+            third-party ad platforms have been removed. Please ensure your
+            website content continues to meet Google AdSense policy
+            requirements.
           </p>
         </div>
 
@@ -190,7 +194,9 @@ export default function AdCompliancePage() {
               borderBottom: "1px solid #dee2e6",
             }}
           >
-            <h3 style={{ margin: 0, color: "#495057" }}>违规事件记录</h3>
+            <h3 style={{ margin: 0, color: "#495057" }}>
+              Violation Event Records
+            </h3>
           </div>
 
           <div style={{ padding: "1rem" }}>
@@ -202,7 +208,7 @@ export default function AdCompliancePage() {
                   margin: "2rem 0",
                 }}
               >
-                暂无违规事件记录
+                No compliance violations recorded
               </p>
             ) : (
               violations.map((violation) => (
@@ -269,7 +275,7 @@ export default function AdCompliancePage() {
                           color: "#6c757d",
                         }}
                       >
-                        容器: {violation.adContainer}
+                        Container: {violation.adContainer}
                       </p>
                     </div>
                     <div style={{ textAlign: "right" }}>
@@ -294,7 +300,9 @@ export default function AdCompliancePage() {
                           fontSize: "0.8rem",
                         }}
                       >
-                        {violation.status === "blocked" ? "已屏蔽" : "已处理"}
+                        {violation.status === "blocked"
+                          ? "Blocked"
+                          : "Processed"}
                       </span>
                     </div>
                   </div>
@@ -315,14 +323,19 @@ export default function AdCompliancePage() {
           }}
         >
           <h4 style={{ margin: "0 0 1rem 0", color: "#0c5460" }}>
-            🔧 推荐解决方案
+            🔧 Google AdSense Optimization Suggestions
           </h4>
           <ol style={{ margin: 0, paddingLeft: "1.5rem", color: "#0c5460" }}>
-            <li>立即联系TraverseSeven客服，要求加强内容过滤</li>
-            <li>要求提供"Google AdSense友好"的广告类别设置</li>
-            <li>考虑暂时禁用赌博和成人内容类别</li>
-            <li>监控广告收益，如有下降及时调整策略</li>
-            <li>保持与Google AdSense政策的严格合规</li>
+            <li>
+              Regularly check Google AdSense console for policy compliance
+              status
+            </li>
+            <li>
+              Ensure website content meets Google AdSense content policies
+            </li>
+            <li>Monitor ad performance and revenue performance</li>
+            <li>Optimize page load speed for better ad display</li>
+            <li>Maintain strict compliance with Google AdSense policies</li>
           </ol>
         </div>
       </div>

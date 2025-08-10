@@ -146,8 +146,12 @@ async function loadAllPosts() {
   try {
     const client = await getMongoClient();
     if (!client) {
+      console.warn("MongoDB client not available, using mock data for sitemap");
       blogCache.isLoading = false;
-      return getMockPosts(50); // Use mock data
+      const mockData = getMockPosts(50);
+      blogCache.posts = mockData;
+      blogCache.lastUpdated = Date.now();
+      return mockData;
     }
 
     const db = client.db();
@@ -160,6 +164,8 @@ async function loadAllPosts() {
       .limit(500) // Limit quantity to avoid memory issues
       .toArray();
 
+    console.log(`Successfully fetched ${posts.length} posts from database`);
+
     // Don't close the connection here - keep it for reuse
     // client.close(); // Removed this line
 
@@ -169,13 +175,32 @@ async function loadAllPosts() {
     // Migrate tags
     serializedPosts = migratePostsToTagIds(serializedPosts);
 
+    // Validate posts data
+    serializedPosts = serializedPosts.filter((post) => {
+      return (
+        post &&
+        post.slug &&
+        post.createdAt &&
+        typeof post.slug === "string" &&
+        post.slug.trim().length > 0
+      );
+    });
+
     // Update cache
     blogCache.posts = serializedPosts;
     blogCache.lastUpdated = Date.now();
 
-    console.log(`Server loaded ${blogCache.posts.length} articles to cache`);
+    console.log(
+      `Server loaded ${blogCache.posts.length} valid articles to cache`
+    );
   } catch (error) {
     console.error("Failed to load articles to cache:", error);
+    console.error("Database error details:", {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+    });
+
     // Reset cached client on error
     if (cachedClient) {
       try {
@@ -185,9 +210,13 @@ async function loadAllPosts() {
       }
       cachedClient = null;
     }
-    // Return mock data on error
+
+    // Return mock data on error, but ensure cache is populated
     if (blogCache.posts.length === 0) {
-      blogCache.posts = getMockPosts(50);
+      console.warn("Using mock data due to database connection failure");
+      const mockData = getMockPosts(50);
+      blogCache.posts = mockData;
+      blogCache.lastUpdated = Date.now();
     }
   } finally {
     blogCache.isLoading = false;

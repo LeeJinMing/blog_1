@@ -48,13 +48,17 @@ const nextConfig = {
           },
         ],
       },
-      // 站点地图缓存
+      // 站点地图缓存 - 减少缓存时间以便更快发现问题
       {
         source: "/sitemap.xml",
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=3600, s-maxage=3600",
+            value: "public, max-age=1800, s-maxage=1800", // 30分钟缓存
+          },
+          {
+            key: "Content-Type",
+            value: "application/xml; charset=utf-8",
           },
         ],
       },
@@ -66,12 +70,16 @@ const nextConfig = {
             key: "Cache-Control",
             value: "public, max-age=86400, s-maxage=86400",
           },
+          {
+            key: "Content-Type",
+            value: "text/plain; charset=utf-8",
+          },
         ],
       },
     ];
   },
 
-  // 添加 webpack 配置，处理 MongoDB 模块依赖
+  // 简化的 webpack 配置
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // 客户端构建时，用空对象替代 Node.js 模块
@@ -91,16 +99,6 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
-
-  // 压缩配置
-  compress: true,
-
-  // PoweredBy头移除
-  poweredByHeader: false,
-
-  // 使用正确格式的Turbopack配置
-  // 在Turbopack中，我们不使用alias禁用模块
-  // 而是依赖于webpack配置处理这些Node.js模块
 };
 
 module.exports = nextConfig;

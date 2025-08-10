@@ -1,11 +1,14 @@
 /**
- * 生成网站的robots.txt文件
- * Next.js会自动处理这个文件并在/robots.txt端点提供内容
+ * Generate robots.txt file for the website
+ * Next.js automatically handles this file and provides content at /robots.txt endpoint
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots
  */
 export default function robots() {
+  // 确保与 sitemap.js 使用相同的 baseUrl 逻辑
   const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
+    process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "https://blog-1-seven-pi.vercel.app";
 
   return {
     rules: [

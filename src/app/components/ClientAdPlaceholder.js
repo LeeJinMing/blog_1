@@ -5,22 +5,16 @@ import { useEffect } from "react";
 /**
  * 简化的Google AdSense广告组件
  * 只用于展示Google AdSense Auto Ads
+ * 注意：不调用adsbygoogle.push({})，因为layout中已有enable_page_level_ads配置
  */
 export default function ClientAdPlaceholder({
   size = "leaderboard",
   position = "header",
   showLabel = true,
 }) {
-  useEffect(() => {
-    // 在客户端加载AdSense广告
-    if (typeof window !== "undefined" && window.adsbygoogle) {
-      try {
-        window.adsbygoogle.push({});
-      } catch (err) {
-        console.error("AdSense error:", err);
-      }
-    }
-  }, []);
+  // 移除useEffect中的adsbygoogle.push调用
+  // 因为在layout.js中已经有enable_page_level_ads配置
+  // Google AdSense Auto Ads会自动处理广告展示
 
   // 根据尺寸设置广告单元的样式
   const adSizes = {
@@ -45,7 +39,7 @@ export default function ClientAdPlaceholder({
             marginBottom: "8px",
           }}
         >
-          广告
+          Advertisement
         </div>
       )}
       <ins

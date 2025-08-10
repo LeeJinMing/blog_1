@@ -4,9 +4,9 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import dayjs from "dayjs";
-import { trackSearch } from "../lib/analytics";
-import { getPosts } from "../lib/db";
-import { getTagTextById } from "../lib/tags";
+import { trackSearch } from "../../lib/analytics";
+import { getPosts } from "../../lib/db";
+import { getTagTextById } from "../../lib/tags";
 
 // 格式化日期为YYYYMMDD的URL格式
 function formatDateToYYYYMMDD(dateString) {

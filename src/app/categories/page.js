@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { FaTag, FaNewspaper, FaChartLine } from "react-icons/fa";
-import ClientAdPlaceholder from "@/app/components/ClientAdPlaceholder";
-import CategoryStyles from "@/app/components/CategoryStyles";
-import GlobalLayout from "@/app/components/GlobalLayout";
+import GlobalLayout from "../components/GlobalLayout";
 
 // Predefined categories
 const categories = [
@@ -87,7 +85,7 @@ export default function CategoriesPage() {
 
         {/* Middle ad */}
         <div className="mid-content-ad">
-          <ClientAdPlaceholder size="banner" position="in-article" />
+          {/* ClientAdPlaceholder removed */}
         </div>
 
         <div className="other-pages">
@@ -126,7 +124,7 @@ export default function CategoriesPage() {
       </div>
 
       {/* Include client-side style component */}
-      <CategoryStyles />
+      {/* CategoryStyles removed */}
     </GlobalLayout>
   );
 }

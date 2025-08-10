@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import Link from "next/link";
-import { getPosts, formatDateForUrl, getUrlSafeSlug } from "@/lib/db";
-import { trackSearch } from "@/lib/analytics";
+import { getPosts, formatDateForUrl, getUrlSafeSlug } from "../lib/db";
+import { trackSearch } from "../lib/analytics";
 import PostCard from "./components/PostCard";
 import Pagination from "./components/Pagination";
 import GlobalLayout from "./components/GlobalLayout";

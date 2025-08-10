@@ -5,6 +5,7 @@ import EnhancedSearch from "./components/EnhancedSearch";
 import NavMenu from "./components/NavMenu";
 import AnalyticsWrapper from "./components/AnalyticsWrapper";
 import StructuredData from "./components/StructuredData";
+import SVGBlocker from "./components/SVGBlocker";
 
 /**
  * Site default global metadata
@@ -141,8 +142,52 @@ export default function RootLayout({ children }) {
 
         {/* Add website-level structured data */}
         <StructuredData type="website" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // 阻止data URL SVG请求
+              (function() {
+                if (typeof window !== 'undefined') {
+                  const originalFetch = window.fetch;
+                  window.fetch = function(...args) {
+                    const url = args[0];
+                    if (typeof url === 'string' && url.startsWith('data:image/svg+xml')) {
+                      console.log('阻止了 SVG data URL 请求:', url);
+                      return Promise.reject(new Error('SVG data URL 请求被阻止'));
+                    }
+                    return originalFetch.apply(this, args);
+                  };
+
+                  // 阻止通过Image对象加载data URL SVG
+                  const originalImage = window.Image;
+                  window.Image = function() {
+                    const img = new originalImage();
+                    const originalSetSrc = function(src) {
+                      if (typeof src === 'string' && src.startsWith('data:image/svg+xml')) {
+                        console.log('阻止了 Image SVG data URL:', src);
+                        return;
+                      }
+                      img.src = src;
+                    };
+                    Object.defineProperty(img, 'src', {
+                      set: originalSetSrc,
+                      get: function() { return img.getAttribute('src'); }
+                    });
+                    return img;
+                  };
+                }
+              })();
+            `,
+          }}
+        />
       </head>
       <body>
+        {/* SVG阻止器 - 监控和阻止问题SVG */}
+        <SVGBlocker />
+
+        {/* 分析包装器 */}
+        <AnalyticsWrapper />
+
         <header className="header">
           <div className="container header-inner">
             <Link href="/" className="site-title">

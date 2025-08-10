@@ -36,6 +36,11 @@ const nextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
+          {
+            key: "Content-Security-Policy",
+            value:
+              "img-src 'self' https: data: blob:; default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; font-src 'self' https:; connect-src 'self' https:;",
+          },
         ],
       },
       // 站点地图专用headers - 按技术规范要求

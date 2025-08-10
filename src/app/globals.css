@@ -910,3 +910,91 @@ pre code {
     padding: 0;
   }
 }
+
+/* 精确禁用可能产生问题的下拉箭头 SVG */
+/* 禁用可能由浏览器自动生成的下拉箭头 */
+select,
+details,
+summary {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* 禁用可能的自动生成 SVG 图标 */
+*[data-icon]::after,
+*[data-arrow]::after {
+  display: none !important;
+}
+
+/* 确保我们的自定义箭头不会被覆盖 */
+.arrow {
+  background-image: none !important;
+  font-family: inherit !important;
+}
+
+/* 强制禁用所有可能的背景SVG */
+*::before,
+*::after {
+  background-image: none !important;
+}
+
+/* 禁用可能的自动生成的下拉指示器 */
+button::after,
+.dropdown::after,
+[aria-expanded]::after,
+[role="button"]::after,
+summary::after {
+  content: none !important;
+  display: none !important;
+  background-image: none !important;
+}
+
+/* 禁用可能的CSS生成的三角形 */
+*[data-svg]::before,
+*[data-svg]::after,
+*.triangle::before,
+*.triangle::after,
+*.arrow-down::before,
+*.arrow-down::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* 明确允许我们自己的内容 */
+.arrow {
+  content: "▼" !important;
+  background: none !important;
+}
+
+/* 禁用所有可能的伪元素内容，但保留我们明确设置的 */
+*:not(.arrow):not(.arrow *)::before,
+*:not(.arrow):not(.arrow *)::after {
+  content: none !important;
+  background-image: none !important;
+}
+
+/* 彻底阻止任何可能的data URL SVG */
+*[src^="data:image/svg+xml"],
+*[background-image^="data:image/svg+xml"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* 阻止可能的CSS生成的小图标 */
+*::before[content*="svg"],
+*::after[content*="svg"] {
+  display: none !important;
+}
+
+/* 确保下拉菜单正常工作但不显示异常图标 */
+.dropdown[aria-expanded="true"] .arrow {
+  transform: rotate(180deg);
+  content: "▲" !important;
+}
+
+.dropdown[aria-expanded="false"] .arrow,
+.dropdown:not([aria-expanded]) .arrow {
+  content: "▼" !important;
+}

@@ -1,0 +1,67 @@
+# Cursor Rules for Blog Project
+
+## 项目概述
+这是一个基于 Next.js 的博客应用，专注于商业分析、技术洞察和全球事务。
+
+## 最新问题解决方案 (SVG阻止机制)
+
+### 问题描述
+发现浏览器自动生成可疑的SVG data URL请求：
+```
+data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='%23909090' width='10' height='10'><path d='M0 0 L8 0 L4 7 Z'/></svg>
+```
+
+### 解决方案
+1. **CSS层面阻止**：在 `globals.css` 中添加了多层CSS规则来禁用自动生成的SVG
+2. **JavaScript层面拦截**：在 `layout.js` 中添加脚本拦截 fetch 和 Image 请求
+3. **React组件监控**：创建 `SVGBlocker.js` 组件使用 MutationObserver 监控DOM变化
+4. **Next.js配置**：在 `next.config.js` 中添加CSP头来限制外部资源
+
+### 涉及文件
+- `src/app/globals.css` - CSS阻止规则
+- `src/app/layout.js` - JavaScript拦截脚本 + SVGBlocker组件
+- `src/app/components/SVGBlocker.js` - DOM监控组件
+- `next.config.js` - 安全头配置
+
+## 项目结构
+
+### 核心组件
+- `src/app/components/NavMenu.js` - 导航菜单（包含下拉功能）
+- `src/app/components/EnhancedSearch.js` - 搜索功能
+- `src/app/components/EnhancedSidebar.js` - 侧边栏
+- `src/app/components/SVGBlocker.js` - SVG阻止器
+
+### 数据管理
+- `src/lib/db.js` - 数据库连接和查询
+- `src/lib/migration.js` - 数据迁移
+- `src/lib/tags.js` - 标签管理
+
+### 样式规范
+- 使用CSS模块化 (*.module.css)
+- 全局样式在 `globals.css`
+- 响应式设计优先
+- 深色/浅色主题支持
+
+## 开发注意事项
+
+### 代码风格
+- 组件使用函数式声明
+- 优先使用 "use client" 对于交互组件
+- 保持最简单、最可靠、最优雅的代码
+- 所有注释使用中文
+
+### 安全措施
+- CSP头配置阻止不安全资源
+- SVG data URL 自动拦截和清理
+- XSS和点击劫持防护
+
+### 性能优化
+- 图片优化和懒加载
+- 代码分割和动态导入
+- 缓存策略配置
+
+## 更新规则
+1. 当有结构性变更时及时更新此文档
+2. 新增组件需要添加到核心组件列表
+3. 安全相关更改需要在安全措施部分记录
+4. 性能优化措施需要在对应部分更新 

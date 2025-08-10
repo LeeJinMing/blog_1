@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 
 // 在客户端组件中动态导入ShareButtons
-const ShareButtons = dynamic(() => import("@/app/components/ShareButtons"), {
+const ShareButtons = dynamic(() => import("../../../components/ShareButtons"), {
   ssr: false,
   loading: () => <div>加载分享选项...</div>,
 });

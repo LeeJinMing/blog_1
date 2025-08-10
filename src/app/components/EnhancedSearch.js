@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { trackSearch } from "@/lib/analytics";
+import { trackSearch } from "../../lib/analytics";
 import styles from "./EnhancedSearch.module.css";
 
 export default function EnhancedSearch() {

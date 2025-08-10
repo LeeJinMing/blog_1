@@ -5,8 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import dayjs from "dayjs";
 import styles from "./EnhancedSidebar.module.css";
-import { trackClick } from "@/lib/analytics";
-import { getAllTags, getTagTextById } from "@/lib/tags";
+import { trackClick } from "../../lib/analytics";
+import { getAllTags, getTagTextById } from "../../lib/tags";
 import SearchBar from "./SearchBar";
 
 // Tag data, using ID instead of text

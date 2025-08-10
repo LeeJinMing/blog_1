@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { trackPostView } from "@/lib/analytics";
+import { trackPostView } from "../../../../lib/analytics";
 
 /**
  * Component for tracking article view count

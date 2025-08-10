@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 // 导入新的数据库模块
-import { getPosts } from "@/lib/db";
-import { getTagTextById } from "@/lib/tags";
+import { getPosts } from "../../../lib/db";
+import { getTagTextById } from "../../../lib/tags";
 
 export async function GET(request) {
   // 解析请求URL，获取查询参数

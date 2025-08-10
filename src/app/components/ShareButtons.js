@@ -8,12 +8,12 @@ import {
   FaTwitter,
   FaFacebook,
   FaLink,
-  FaQrcode,
-  FaTimes,
+  FaCheckCircle,
+  FaCopy,
 } from "react-icons/fa";
 import styles from "./ShareButtons.module.css";
 import { QRCodeCanvas } from "qrcode.react";
-import { trackShare } from "@/lib/analytics";
+import { trackShare } from "../../lib/analytics";
 
 const ShareButtons = ({ title, summary }) => {
   const [showQR, setShowQR] = useState(false);

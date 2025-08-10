@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-import dayjs from "dayjs";
-import { trackSearch } from "@/lib/analytics";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+import { trackSearch } from "../lib/analytics";
+import { getPosts } from "../lib/db";
+import { getTagTextById } from "../lib/tags";
+import styles from "./page.module.css";
 
 // 格式化日期为YYYYMMDD的URL格式
 function formatDateToYYYYMMDD(dateString) {

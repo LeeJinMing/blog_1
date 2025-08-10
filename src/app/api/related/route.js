@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getRelatedPosts } from "@/lib/db";
-import { getTagIdByText } from "@/lib/tags";
+import { getRelatedPosts } from "../../../lib/db";
+import { getTagIdByText } from "../../../lib/tags";
 
 export async function GET(request) {
   // 解析请求URL，获取查询参数

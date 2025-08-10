@@ -18,11 +18,9 @@ function isValidUrl(urlString) {
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap
  */
 export default async function sitemap() {
-  // 确保 baseUrl 始终有效
+  // 确保 baseUrl 始终指向生产域名
   const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : "https://blog-1-seven-pi.vercel.app";
+    process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
 
   const currentDate = new Date();
 

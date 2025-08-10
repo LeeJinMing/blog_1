@@ -6,9 +6,7 @@
 export default function robots() {
   // 确保与 sitemap.js 使用相同的 baseUrl 逻辑
   const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : "https://blog-1-seven-pi.vercel.app";
+    process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
 
   return {
     rules: [

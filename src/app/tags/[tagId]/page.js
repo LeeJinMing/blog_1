@@ -1,11 +1,10 @@
 import { Suspense } from "react";
-import { getPosts } from "@/lib/db";
+import { getPosts } from "../../../lib/db";
 import Link from "next/link";
-import PostCard from "@/app/components/PostCard";
-import ClientAdPlaceholder from "@/app/components/ClientAdPlaceholder";
-import { getTagTextById } from "@/lib/tags";
-import GlobalLayout from "@/app/components/GlobalLayout";
-import Pagination from "@/app/components/Pagination";
+import PostCard from "../../components/PostCard";
+import GlobalLayout from "../../components/GlobalLayout";
+import Pagination from "../../components/Pagination";
+import { getTagTextById } from "../../../lib/tags";
 
 // 修改ISR缓存时间为20分钟，以便更及时地获取新数据
 export const revalidate = 1200; // 20 分钟

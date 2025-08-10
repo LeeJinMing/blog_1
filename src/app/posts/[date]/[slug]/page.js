@@ -6,21 +6,21 @@ import {
   getPosts,
   formatDateForUrl,
   getUrlSafeSlug,
-} from "@/lib/db";
+} from "../../../../lib/db";
 import PostViewTracker from "./PostViewTracker";
 import {
   removeRepeatedTitle,
   processHtmlContent,
   normalizeContent,
 } from "./utils";
-import ClientRelatedPosts from "@/app/components/ClientRelatedPosts";
+import ClientRelatedPosts from "../../../components/ClientRelatedPosts";
 import styles from "./article.module.css";
 import { Suspense } from "react";
 import ShareButtonsContainer from "./ShareButtonsContainer";
-import { getTagTextById } from "@/lib/tags";
-import GlobalLayout from "@/app/components/GlobalLayout";
+import { getTagTextById } from "../../../../lib/tags";
+import GlobalLayout from "../../../components/GlobalLayout";
 import LikeButtonWrapper from "./LikeButtonWrapper";
-import EnhancedArticleRenderer from "@/app/components/EnhancedArticleRenderer";
+import EnhancedArticleRenderer from "../../../components/EnhancedArticleRenderer";
 
 // 添加标题翻译映射
 const titleTranslations = {

@@ -1,11 +1,10 @@
 import { Suspense } from "react";
-import { getPosts } from "@/lib/db";
+import { getPosts } from "../../../lib/db";
 import Link from "next/link";
-import PostCard from "@/app/components/PostCard";
-import ClientAdPlaceholder from "@/app/components/ClientAdPlaceholder";
-import { getTagTextById } from "@/lib/tags";
-import GlobalLayout from "@/app/components/GlobalLayout";
-import Pagination from "@/app/components/Pagination";
+import PostCard from "../../components/PostCard";
+import { getTagTextById } from "../../../lib/tags";
+import GlobalLayout from "../../components/GlobalLayout";
+import Pagination from "../../components/Pagination";
 
 // Predefined categories
 const categories = {

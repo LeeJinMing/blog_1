@@ -1,6 +1,6 @@
 import Link from "next/link";
-import ClientAdPlaceholder from "@/app/components/ClientAdPlaceholder";
-import { getAllTags } from "@/lib/tags";
+import { FaTag, FaHashtag, FaNewspaper } from "react-icons/fa";
+import { getAllTags } from "../../lib/tags";
 import styles from "./tags.module.css";
 
 export const metadata = {
@@ -19,7 +19,7 @@ export default function TagsPage() {
     <div className={styles.tagsPage}>
       {/* 顶部广告 */}
       <div className={styles.topAdContainer}>
-        <ClientAdPlaceholder size="leaderboard" position="header" />
+        {/* ClientAdPlaceholder removed */}
       </div>
 
       <header className={styles.pageHeader}>
@@ -47,7 +47,7 @@ export default function TagsPage() {
 
       {/* 中间广告 */}
       <div className={styles.midAdContainer}>
-        <ClientAdPlaceholder size="rectangle" position="in-content" />
+        {/* ClientAdPlaceholder removed */}
       </div>
 
       {/* 底部链接区域 */}
@@ -82,7 +82,7 @@ export default function TagsPage() {
 
       {/* 底部广告 */}
       <div className={styles.bottomAdContainer}>
-        <ClientAdPlaceholder size="leaderboard" position="footer" />
+        {/* ClientAdPlaceholder removed */}
       </div>
     </div>
   );

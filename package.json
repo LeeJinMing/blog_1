@@ -18,14 +18,17 @@
     "serpapi": "^2.1.0"
   },
   "devDependencies": {
+    "next-sitemap": "^4.2.3",
     "standard": "^17.1.2",
     "typescript": "5.9.2"
   },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "next-sitemap --config next-sitemap.config.cjs",
     "start": "next start",
     "lint": "next lint",
+    "sitemap": "next-sitemap --config next-sitemap.config.cjs",
     "test-sitemap": "node scripts/test-sitemap.js"
   }
 }

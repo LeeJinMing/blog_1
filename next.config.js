@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // 基于blog2成功配置的关键设置
+  poweredByHeader: false,
+  trailingSlash: false,
+
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",

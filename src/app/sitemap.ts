@@ -1,9 +1,10 @@
 import { MetadataRoute } from "next";
-import { getPosts, formatDateForUrl, getUrlSafeSlug } from "../lib/db";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://blog-1-seven-pi.vercel.app";
   const currentDate = new Date();
+
+  console.log("🗺️ 生成动态sitemap开始...");
 
   // 静态页面
   const staticPages: MetadataRoute.Sitemap = [
@@ -61,57 +62,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  // 文章页面 - 添加超时和错误处理
-  let articlePages: MetadataRoute.Sitemap = [];
-  try {
-    console.log("🔍 开始获取文章用于动态sitemap...");
+  // 示例文章页面 - 暂时不从数据库获取
+  const sampleSlugs = [
+    "ai-revolution-business-transformation-2025",
+    "global-economy-trends-analysis-2025",
+    "technology-innovation-investment-2025",
+  ];
 
-    // 设置超时Promise
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error("数据库查询超时")), 15000); // 15秒超时
-    });
-
-    // 获取文章
-    const postsPromise = getPosts(200);
-    const posts = (await Promise.race([postsPromise, timeoutPromise])) as any[];
-
-    console.log(`📊 从数据库获取到 ${posts.length} 篇文章`);
-
-    if (Array.isArray(posts) && posts.length > 0) {
-      articlePages = posts
-        .filter((post) => post?.createdAt && post?.slug?.trim())
-        .map((post) => {
-          const dateStr = formatDateForUrl(post.createdAt);
-          const urlSafeSlug = getUrlSafeSlug(post.slug);
-
-          return {
-            url: `${baseUrl}/posts/${dateStr}/${urlSafeSlug}`,
-            lastModified: new Date(post.updatedAt || post.createdAt),
-            changeFrequency: "monthly" as const,
-            priority: 0.8,
-          };
-        });
-
-      console.log(`✅ 文章页面: ${articlePages.length} 篇`);
-    }
-  } catch (error) {
-    console.warn("⚠️ 无法从数据库获取文章用于sitemap:", error);
-    console.log("📝 使用示例文章");
-
-    // 添加示例文章作为fallback
-    const sampleSlugs = [
-      "ai-revolution-business-transformation-2025",
-      "global-economy-trends-analysis-2025",
-      "technology-innovation-investment-2025",
-    ];
-
-    articlePages = sampleSlugs.map((slug) => ({
-      url: `${baseUrl}/posts/20250810/${slug}`,
-      lastModified: currentDate,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    }));
-  }
+  const articlePages: MetadataRoute.Sitemap = sampleSlugs.map((slug) => ({
+    url: `${baseUrl}/posts/20250810/${slug}`,
+    lastModified: currentDate,
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
 
   const totalPages = [...staticPages, ...categoryPages, ...articlePages];
 

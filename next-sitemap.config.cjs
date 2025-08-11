@@ -5,19 +5,51 @@ module.exports = {
   generateIndexSitemap: false, // 对于小网站不需要索引sitemap
 
   // 排除的路径
-  exclude: [
-    "/api/*",
-    "/admin/*",
-    "/settings/*",
-    "/sitemap.xml", // 排除sitemap.xml自身避免循环引用
-    "/_not-found",
-    "/404",
-    "/500",
-  ],
+  exclude: ["/api/*", "/admin/*", "/settings/*", "/_not-found", "/404", "/500"],
 
   // 额外的路径（动态路由和分类页面）
   additionalPaths: async (config) => {
     const paths = [];
+
+    // 首先添加主页和核心页面
+    paths.push(
+      {
+        loc: "/",
+        changefreq: "daily",
+        priority: 1.0,
+        lastmod: new Date().toISOString(),
+      },
+      {
+        loc: "/about",
+        changefreq: "monthly",
+        priority: 0.8,
+        lastmod: new Date().toISOString(),
+      },
+      {
+        loc: "/archives",
+        changefreq: "weekly",
+        priority: 0.7,
+        lastmod: new Date().toISOString(),
+      },
+      {
+        loc: "/categories",
+        changefreq: "weekly",
+        priority: 0.6,
+        lastmod: new Date().toISOString(),
+      },
+      {
+        loc: "/tags",
+        changefreq: "weekly",
+        priority: 0.6,
+        lastmod: new Date().toISOString(),
+      },
+      {
+        loc: "/search",
+        changefreq: "monthly",
+        priority: 0.5,
+        lastmod: new Date().toISOString(),
+      }
+    );
 
     // 添加分类页面
     const categories = [
@@ -110,7 +142,7 @@ module.exports = {
     additionalSitemaps: ["https://blog-1-seven-pi.vercel.app/sitemap.xml"],
   },
 
-  // 自定义转换
+  // 自定义转换 - 这会被 additionalPaths 覆盖，但保留作为备用
   transform: async (config, path) => {
     let priority = 0.7;
     let changefreq = "weekly";

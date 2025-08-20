@@ -4,7 +4,8 @@ import { getPosts, formatDateForUrl, getUrlSafeSlug } from "@/lib/db";
 export const revalidate = 3600;
 
 export async function GET() {
-  const rawBase = process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
+  const rawBase =
+    process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
   const baseUrl = rawBase.replace(/\/+$/, "");
   const nowIso = new Date().toISOString();
 
@@ -30,16 +31,19 @@ export async function GET() {
       if (seen.has(loc)) continue;
       seen.add(loc);
       const lastMod = new Date(p.updatedAt || p.createdAt).toISOString();
-      postUrls.push(`<url><loc>${loc}</loc><lastmod>${lastMod}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>`);
+      postUrls.push(
+        `<url><loc>${loc}</loc><lastmod>${lastMod}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>`
+      );
     }
   } catch (e) {
     // keep static only
   }
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n` +
-  `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-  [...staticUrls, ...postUrls].join("\n") +
-  `\n</urlset>`;
+  const xml =
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    [...staticUrls, ...postUrls].join("\n") +
+    `\n</urlset>`;
 
   return new NextResponse(xml, {
     status: 200,
@@ -50,5 +54,3 @@ export async function GET() {
     },
   });
 }
-
-

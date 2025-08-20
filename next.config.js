@@ -51,23 +51,10 @@ const nextConfig = {
       {
         source: "/sitemap.xml",
         headers: [
-          {
-            key: "Content-Type",
-            value: "application/xml; charset=utf-8",
-          },
-          {
-            key: "Cache-Control",
-            value: "public, max-age=3600, s-maxage=3600",
-          },
-          {
-            key: "X-Content-Type-Options",
-            value: "nosniff",
-          },
-          // 覆盖全局CSP，确保GSC解析不受任何策略影响
-          {
-            key: "Content-Security-Policy",
-            value: "default-src 'none'",
-          },
+          { key: "Content-Type", value: "application/xml; charset=utf-8" },
+          { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Robots-Tag", value: "noindex" },
         ],
       },
       // robots.txt专用headers

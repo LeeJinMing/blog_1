@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getPosts, formatDateForUrl, getUrlSafeSlug } from "@/lib/db";
 
-export const revalidate = 3600;
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const rawBase =
@@ -49,8 +50,10 @@ export async function GET() {
     status: 200,
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      "Cache-Control": "public, max-age=0, must-revalidate",
       "X-Content-Type-Options": "nosniff",
+      // 与 blog_2 对齐
+      "X-Robots-Tag": "noindex",
     },
   });
 }

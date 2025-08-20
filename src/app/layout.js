@@ -104,7 +104,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-
         <meta name="google-adsense-account" content="ca-pub-1911238866563211" />
 
         {/* 延迟加载广告与分析，避免首屏阻塞与抓取噪音 */}
@@ -202,7 +201,11 @@ export default function RootLayout({ children }) {
         {/* Vercel Analytics for visitor tracking */}
         <AnalyticsWrapper />
         {/* Google Analytics 延迟加载 */}
-        <script async defer src="https://www.googletagmanager.com/gtag/js?id=G-NLVJ6REK1M" />
+        <script
+          async
+          defer
+          src="https://www.googletagmanager.com/gtag/js?id=G-NLVJ6REK1M"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `

@@ -52,8 +52,6 @@ export async function GET() {
       "Content-Type": "application/xml",
       "Cache-Control": "public, max-age=0, must-revalidate",
       "X-Content-Type-Options": "nosniff",
-      // 与 blog_2 对齐
-      "X-Robots-Tag": "noindex",
     },
   });
 }

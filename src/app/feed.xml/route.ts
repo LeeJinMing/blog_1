@@ -4,14 +4,18 @@ import { getPosts, formatDateForUrl, getUrlSafeSlug } from "@/lib/db";
 export const revalidate = 1800;
 
 export async function GET() {
-  const rawBase = process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
+  const rawBase =
+    process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
   const baseUrl = rawBase.replace(/\/+$/, "");
 
   try {
     const posts = await getPosts(20);
     const items = posts
       .filter((p) => p?.slug && p?.createdAt)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
       .slice(0, 20)
       .map((p) => {
         const dateStr = formatDateForUrl(p.createdAt);
@@ -51,5 +55,3 @@ export async function GET() {
     return new NextResponse("Service Unavailable", { status: 503 });
   }
 }
-
-

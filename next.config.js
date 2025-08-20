@@ -84,7 +84,10 @@ const nextConfig = {
         source: "/feed.xml",
         headers: [
           { key: "Content-Type", value: "application/rss+xml; charset=utf-8" },
-          { key: "Cache-Control", value: "public, max-age=1800, s-maxage=1800" },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=1800, s-maxage=1800",
+          },
         ],
       },
       // 静态资源缓存

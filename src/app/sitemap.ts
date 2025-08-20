@@ -1,52 +1,22 @@
 import { MetadataRoute } from "next";
+import { getPosts, formatDateForUrl, getUrlSafeSlug } from "@/lib/db";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://blog-1-seven-pi.vercel.app";
-  const currentDate = new Date();
-
-  console.log("🗺️ 生成动态sitemap开始...");
+  const rawBase = process.env.NEXT_PUBLIC_BASE_URL || "https://blog-1-seven-pi.vercel.app";
+  const baseUrl = rawBase.replace(/\/+$/, "");
+  const now = new Date();
 
   // 静态页面
   const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: currentDate,
-      changeFrequency: "daily",
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/archives`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/categories`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/tags`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/search`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
+    { url: baseUrl, lastModified: now, changeFrequency: "daily", priority: 1.0 },
+    { url: `${baseUrl}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/archives`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${baseUrl}/categories`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${baseUrl}/tags`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${baseUrl}/search`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
   ];
 
-  // 分类页面
+  // 固定分类入口（如需可改为动态）
   const categories = [
     "politics-diplomacy",
     "business-economy",
@@ -54,37 +24,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "international-relations",
     "culture-society",
   ];
-
   const categoryPages: MetadataRoute.Sitemap = categories.map((category) => ({
     url: `${baseUrl}/category/${category}`,
-    lastModified: currentDate,
-    changeFrequency: "weekly" as const,
+    lastModified: now,
+    changeFrequency: "weekly",
     priority: 0.8,
   }));
 
-  // 示例文章页面 - 暂时不从数据库获取
-  const sampleSlugs = [
-    "ai-revolution-business-transformation-2025",
-    "global-economy-trends-analysis-2025",
-    "technology-innovation-investment-2025",
-  ];
+  // 文章页面 - 从数据库读取
+  let articlePages: MetadataRoute.Sitemap = [];
+  try {
+    const posts = await getPosts(500);
+    const unique = new Map<string, { url: string; lastModified: Date; changeFrequency: "monthly"; priority: number }>();
+    for (const post of posts) {
+      if (!post?.slug || !post?.createdAt) continue;
+      const dateStr = formatDateForUrl(post.createdAt);
+      const slug = getUrlSafeSlug(post.slug);
+      const loc = `${baseUrl}/posts/${dateStr}/${slug}`;
+      const lastMod = new Date(post.updatedAt || post.createdAt);
+      if (!unique.has(loc)) {
+        unique.set(loc, { url: loc, lastModified: lastMod, changeFrequency: "monthly", priority: 0.8 });
+      }
+    }
+    articlePages = Array.from(unique.values());
+  } catch (e) {
+    console.error("Sitemap posts fetch failed:", (e as Error).message);
+  }
 
-  const articlePages: MetadataRoute.Sitemap = sampleSlugs.map((slug) => ({
-    url: `${baseUrl}/posts/20250810/${slug}`,
-    lastModified: currentDate,
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-  }));
-
-  const totalPages = [...staticPages, ...categoryPages, ...articlePages];
-
-  console.log(`🗺️ 动态sitemap生成完成: ${totalPages.length} 个条目`);
-  console.log(`   - 静态页面: ${staticPages.length}`);
-  console.log(`   - 分类页面: ${categoryPages.length}`);
-  console.log(`   - 文章页面: ${articlePages.length}`);
-
-  return totalPages;
+  const total = [...staticPages, ...categoryPages, ...articlePages];
+  return total;
 }
 
-// 设置重新验证时间
-export const revalidate = 3600; // 1小时重新验证
+export const revalidate = 3600;

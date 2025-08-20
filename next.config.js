@@ -63,6 +63,11 @@ const nextConfig = {
             key: "X-Content-Type-Options",
             value: "nosniff",
           },
+          // 覆盖全局CSP，确保GSC解析不受任何策略影响
+          {
+            key: "Content-Security-Policy",
+            value: "default-src 'none'",
+          },
         ],
       },
       // robots.txt专用headers

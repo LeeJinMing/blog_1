@@ -104,26 +104,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* Google AdSense - 智能广告配置 */}
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1911238866563211"
-          crossOrigin="anonymous"
-        />
 
         <meta name="google-adsense-account" content="ca-pub-1911238866563211" />
 
-        {/* 启用Auto Ads智能广告配置 */}
+        {/* 延迟加载广告与分析，避免首屏阻塞与抓取噪音 */}
         <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-1911238866563211",
-                enable_page_level_ads: true,
-                overlays: {bottom: true}
-              });
-            `,
-          }}
+          async
+          defer
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1911238866563211"
+          crossOrigin="anonymous"
         />
 
         {/* Google Search Console验证 */}
@@ -212,6 +201,20 @@ export default function RootLayout({ children }) {
 
         {/* Vercel Analytics for visitor tracking */}
         <AnalyticsWrapper />
+        {/* Google Analytics 延迟加载 */}
+        <script async defer src="https://www.googletagmanager.com/gtag/js?id=G-NLVJ6REK1M" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);} 
+              setTimeout(function(){
+                gtag('js', new Date());
+                gtag('config', 'G-NLVJ6REK1M');
+              }, 1500);
+            `,
+          }}
+        />
 
         {/* Vercel Speed Insights for performance monitoring */}
         <SpeedInsights />
